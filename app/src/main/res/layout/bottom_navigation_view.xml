@@ -32,12 +32,12 @@
 
     </RadioButton>
 
-    <RadioButton
-        android:id="@+id/nav_tools_button"
-        android:drawableTop="@drawable/selector_bottom_navigation_view_icon_tools"
-        android:text="@string/menu_tools"
-        style="@style/AppTheme.RadioButtonLikeBottomNavigationView">
+<!--    <RadioButton-->
+<!--        android:id="@+id/nav_tools_button"-->
+<!--        android:drawableTop="@drawable/selector_bottom_navigation_view_icon_tools"-->
+<!--        android:text="@string/menu_tools"-->
+<!--        style="@style/AppTheme.RadioButtonLikeBottomNavigationView">-->
 
-    </RadioButton>
+<!--    </RadioButton>-->
 
 </RadioGroup>

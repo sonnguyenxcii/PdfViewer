@@ -8,24 +8,32 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import py.com.opentech.drawerwithbottomnavigation.R
+import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
-    private lateinit var homeViewModel: HomeViewModel
+    //    private lateinit var homeViewModel: HomeViewModel
+    var listData: ArrayList<PdfModel> = ArrayList()
+    lateinit var adapter: HomeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        homeViewModel =
-//            ViewModelProviders.of(this).get(HomeViewModel::class.java)
+
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_home)
-//        homeViewModel.text.observe(this, Observer {
-//            textView.text = it
-//        })
+        val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
+        adapter = HomeAdapter(context!!, listData, this)
+        recyclerView.adapter = adapter
         return root
+    }
+
+    override fun onItemClick(pos: Int) {
+
     }
 }

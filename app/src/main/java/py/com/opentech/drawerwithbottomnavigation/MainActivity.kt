@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,
-                R.id.nav_tools,
+//                R.id.nav_tools,
                 R.id.nav_share, R.id.nav_send
             ),
             drawer_layout //Note that we use kotlinx.android.synthetic to get the drawerLayout reference in the xml
@@ -67,10 +67,10 @@ class MainActivity : AppCompatActivity() {
                     nav_slideshow_button.isChecked = true
                     navigateTo(R.id.nav_slideshow)
                 }
-                R.id.nav_tools -> {
-                    nav_tools_button.isChecked = true
-                    navigateTo(R.id.nav_tools)
-                }
+//                R.id.nav_tools -> {
+//                    nav_tools_button.isChecked = true
+//                    navigateTo(R.id.nav_tools)
+//                }
 
                 R.id.nav_share -> {
                     Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show()
@@ -98,9 +98,9 @@ class MainActivity : AppCompatActivity() {
         nav_slideshow_button.setOnClickListener {
             navigateTo(R.id.nav_slideshow)
         }
-        nav_tools_button.setOnClickListener {
-            navigateTo(R.id.nav_tools)
-        }
+//        nav_tools_button.setOnClickListener {
+//            navigateTo(R.id.nav_tools)
+//        }
     }
 
     private fun navigateTo(resId: Int) {
