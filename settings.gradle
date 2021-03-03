@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "PdfViewer"
+rootProject.name='Drawer with bottom navigation'
