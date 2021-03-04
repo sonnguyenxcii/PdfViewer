@@ -5,10 +5,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import butterknife.BindView
-import butterknife.ButterKnife
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 
@@ -27,12 +26,13 @@ class HomeAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val itemView: View
-        if (viewType === LIST_ITEM) {
+        if (viewType == LIST_ITEM) {
+
             itemView =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_home, null)
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_home,  parent, false)
         } else {
             itemView =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_home_grid, null)
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_home_grid,  parent, false)
         }
         return ItemViewHolder(itemView)
 
@@ -42,20 +42,17 @@ class HomeAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
             val data: PdfModel = list[position]
-            holder.name?.setText(data.name)
-            holder.size?.setText("" + data.size)
-//            holder.bind(holder.itemView.context, movie)
+            holder.name.text = data.name
+            holder.size.text = "" + data.size
 
+            holder.itemView.setOnClickListener {
+                clickListener.onItemClick(holder.adapterPosition)
 
-//            holder.root?.setOnClickListener {
-//                clickListener.onItemClick(holder.adapterPosition)
-//
-//            }
-//
-//            holder.sign?.setOnClickListener {
-//                clickListener.onItemClick(position)
-//            }
+            }
+            holder.more.setOnClickListener {
+                clickListener.onMoreClick(holder.adapterPosition)
 
+            }
 
         }
     }
@@ -69,24 +66,18 @@ class HomeAdapter(
 
     override fun getItemViewType(position: Int): Int {
         if (isSwitchView) {
-            return LIST_ITEM;
-        }else{
-            return GRID_ITEM;
+            return LIST_ITEM
+        } else {
+            return GRID_ITEM
         }
     }
 }
 
-class ItemViewHolder(itemView: View?) : RecyclerView.ViewHolder(
-    itemView!!
+class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
+    itemView
 ) {
-    @BindView(R.id.name)
-    var name: TextView? = null
+    val name = itemView.findViewById<AppCompatTextView>(R.id.name)
+    val size = itemView.findViewById<AppCompatTextView>(R.id.size)
+    val more = itemView.findViewById<AppCompatImageView>(R.id.more)
 
-    @BindView(R.id.size)
-    var size: TextView? = null
-
-
-    init {
-        ButterKnife.bind(this, itemView!!)
-    }
 }
