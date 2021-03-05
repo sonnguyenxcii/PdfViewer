@@ -1,7 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
@@ -13,6 +13,8 @@ import androidx.navigation.ui.setupWithNavController
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.bottom_navigation_view.*
+import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -72,13 +74,15 @@ class MainActivity : AppCompatActivity() {
 //                    navigateTo(R.id.nav_tools)
 //                }
 
-                R.id.nav_share -> {
-                    Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show()
+                R.id.nav_scan -> {
+                    navigateToScan()
+//                    Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show()
 //                    nav_tools_button.isChecked = true
 //                    navigateTo(R.id.nav_tools)
                 }
-                R.id.nav_send -> {
-                    Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show()
+                R.id.nav_merge -> {
+                    navigateToMerge()
+//                    Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show()
 //                    nav_tools_button.isChecked = true
 //                    navigateTo(R.id.nav_tools)
                 }
@@ -105,5 +109,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigateTo(resId: Int) {
         navController.navigate(resId)
+    }
+
+    private fun navigateToScan() {
+
+        var intent = Intent(this, ScanPdfActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun navigateToMerge() {
+
+        var intent = Intent(this, MergePdfActivity::class.java)
+        startActivity(intent)
     }
 }

@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
+import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 
 
 class HomeAdapter(
@@ -29,10 +30,12 @@ class HomeAdapter(
         if (viewType == LIST_ITEM) {
 
             itemView =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_home,  parent, false)
+                LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_list_home, parent, false)
         } else {
             itemView =
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_home_grid,  parent, false)
+                LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_list_home_grid, parent, false)
         }
         return ItemViewHolder(itemView)
 
@@ -43,7 +46,7 @@ class HomeAdapter(
         if (holder is ItemViewHolder) {
             val data: PdfModel = list[position]
             holder.name.text = data.name
-            holder.size.text = "" + data.size
+            holder.size.text = Utils.convertToStringRepresentation(data.size!!)
 
             holder.itemView.setOnClickListener {
                 clickListener.onItemClick(holder.adapterPosition)

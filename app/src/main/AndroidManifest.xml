@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="py.com.opentech.drawerwithbottomnavigation">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.pdf.PdfViewerActivity"
+            />
+        <activity android:name=".ui.scan.ScanPdfActivity" />
+        <activity android:name=".ui.merge.MergePdfActivity" />
     </application>
 
 </manifest>
