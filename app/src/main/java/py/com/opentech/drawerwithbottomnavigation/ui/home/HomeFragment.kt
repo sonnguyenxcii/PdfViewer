@@ -46,11 +46,11 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         return root
     }
 
-    fun readFile() {
-        listData.addAll(getExternalPDFFileList())
-        adapter.notifyDataSetChanged()
-        // do something
-    }
+//    fun readFile() {
+//        listData.addAll(getExternalPDFFileList())
+//        adapter.notifyDataSetChanged()
+//        // do something
+//    }
 
     fun requestRead() {
         if (ContextCompat.checkSelfPermission(
@@ -99,38 +99,4 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         startActivity(intent)
     }
 
-    private fun getExternalPDFFileList(): ArrayList<PdfModel> {
-        val cr: ContentResolver = activity?.getContentResolver()!!
-        val uri: Uri = MediaStore.Files.getContentUri("external")
-        val projection =
-            arrayOf(
-                MediaStore.Files.FileColumns._ID,
-                MediaStore.Files.FileColumns.DISPLAY_NAME,
-                MediaStore.Files.FileColumns.SIZE
-            )
-//        val selection = (MediaStore.Files.FileColumns.MEDIA_TYPE + "="
-//                + MediaStore.Files.FileColumns.MEDIA_TYPE)
-//        val selectionArgs: Array<String>? = null
-        val selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
-        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")
-        val selectionArgsPdf = arrayOf(mimeType)
-        val cursor: Cursor = cr.query(uri, projection, selectionMimeType, selectionArgsPdf, null)!!
-        val uriList: ArrayList<PdfModel> = ArrayList()
-        cursor.moveToFirst()
-        while (!cursor.isAfterLast()) {
-            val columnIndex: Int = cursor.getColumnIndex(projection[0])
-            val fileId: Long = cursor.getLong(columnIndex)
-            val fileUri: Uri = Uri.parse(uri.toString().toString() + "/" + fileId)
-            val displayName: String = cursor.getString(cursor.getColumnIndex(projection[1]))
-            val size: Long = cursor.getLong(cursor.getColumnIndex(projection[2]))
-            uriList.add(PdfModel(displayName, fileUri.toString(), size))
-            cursor.moveToNext()
-            println("--displayName----------------------" + displayName)
-        }
-        cursor.close()
-        println("--uriList----------------------" + uriList.size)
-
-
-        return uriList
-    }
 }

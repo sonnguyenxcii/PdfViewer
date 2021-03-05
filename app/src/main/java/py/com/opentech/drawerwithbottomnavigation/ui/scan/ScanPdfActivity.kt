@@ -39,7 +39,6 @@ class ScanPdfActivity : AppCompatActivity() {
                 .withListener(object : MultiplePermissionsListener {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                         if (report.areAllPermissionsGranted()) {
-//                            typeUpload = 3
 //                            showImagePickerOptions34()
                         }
 //                        if (report.isAnyPermissionPermanentlyDenied) {
