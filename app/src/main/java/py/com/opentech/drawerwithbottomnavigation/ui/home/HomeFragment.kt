@@ -25,7 +25,6 @@ import java.io.File
 
 class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
-    //    private lateinit var homeViewModel: HomeViewModel
     var listData: ArrayList<PdfModel> = ArrayList()
     lateinit var adapter: HomeAdapter
     private val MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1
@@ -37,9 +36,6 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-
-
-//        getList()
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         adapter = HomeAdapter(requireContext(), listData, this)
@@ -101,34 +97,6 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         var intent = Intent(context, PdfViewerActivity::class.java)
         intent.putExtra("url", path)
         startActivity(intent)
-    }
-
-    private fun getList() {
-//        val list = ArrayList<PdfModel>()
-        for (i in 0 until 10) {
-            val model = PdfModel()
-            model.name = "Name " + i
-            model.size = 56
-            listData.add(model)
-        }
-//        return list
-    }
-
-    fun Search_Dir(dir: File) {
-        val pdfPattern = ".pdf"
-        val FileList: Array<File> = dir.listFiles()
-        if (FileList != null) {
-            for (i in FileList.indices) {
-                if (FileList[i].isDirectory()) {
-                    Search_Dir(FileList[i])
-                } else {
-                    if (FileList[i].getName().endsWith(pdfPattern)) {
-                        //here you have that file.
-
-                    }
-                }
-            }
-        }
     }
 
     private fun getExternalPDFFileList(): ArrayList<PdfModel> {
