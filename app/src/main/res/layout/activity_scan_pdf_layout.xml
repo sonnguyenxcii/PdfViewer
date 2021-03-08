@@ -17,13 +17,19 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/library"
-        android:layout_width="@dimen/_50sdp"
+        android:layout_width="@dimen/_40sdp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_12sdp"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_menu_slideshow"
+        android:src="@drawable/ic_menu_gallery"
         app:layout_constraintBottom_toBottomOf="@id/camera"
         app:layout_constraintLeft_toRightOf="@id/camera"
         app:layout_constraintTop_toTopOf="@id/camera" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:id="@+id/preview"
+        android:background="@android:color/black"
+        android:visibility="gone"
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

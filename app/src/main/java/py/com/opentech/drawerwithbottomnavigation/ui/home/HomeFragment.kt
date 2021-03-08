@@ -1,24 +1,31 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.home
 
-import android.Manifest
-import android.content.ContentResolver
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.database.Cursor
+import android.content.pm.ShortcutInfo
+import android.content.pm.ShortcutManager
+import android.graphics.drawable.Icon
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.MimeTypeMap
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.widget.Toast
+import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.realm.Realm
+import org.greenrobot.eventbus.EventBus
+import py.com.opentech.drawerwithbottomnavigation.BuildConfig
+import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
+import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
+import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import java.io.File
 
@@ -27,7 +34,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
     var listData: ArrayList<PdfModel> = ArrayList()
     lateinit var adapter: HomeAdapter
-    private val MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1
+    protected var application: PdfApplication? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,56 +47,154 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         recyclerView.layoutManager = LinearLayoutManager(activity)
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
+        application = PdfApplication.create(activity)
 
-        requestRead()
+        application?.global?.listData?.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                listData.clear()
+                listData.addAll(it)
+                adapter.notifyDataSetChanged()
+            }
+        })
 
         return root
     }
 
-//    fun readFile() {
-//        listData.addAll(getExternalPDFFileList())
-//        adapter.notifyDataSetChanged()
-//        // do something
-//    }
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().postSticky(FileChangeEvent())
 
-    fun requestRead() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-            )
-        } else {
-            readFile()
-        }
     }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                readFile()
-            } else {
-                // Permission Denied
-//                Toast.makeText(this@ToolbarActivity, "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-            return
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
     override fun onItemClick(pos: Int) {
         gotoViewPdf(listData[pos].path!!)
     }
 
-    override fun onMoreClick(pos: Int) {
+    override fun onMoreClick(pos: Int, view: View) {
+        //Creating the instance of PopupMenu
+        //Creating the instance of PopupMenu
+        val popup = PopupMenu(requireContext(), view)
+        //Inflating the Popup using xml file
+        //Inflating the Popup using xml file
+        popup.menuInflater
+            .inflate(R.menu.poupup_menu, popup.getMenu())
+
+        //registering popup with OnMenuItemClickListener
+
+        //registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+            override fun onMenuItemClick(item: MenuItem?): Boolean {
+
+                if (item?.itemId == R.id.open) {
+                    gotoViewPdf(listData[pos].path!!)
+                } else if (item?.itemId == R.id.delete) {
+
+                    deleteFile(listData[pos].path!!)
+                } else if (item?.itemId == R.id.bookmark) {
+                    addToBookmark(listData[pos].path!!)
+                } else if (item?.itemId == R.id.share) {
+                    share(listData[pos].path!!)
+                } else if (item?.itemId == R.id.shortcut) {
+                    createShortcut(listData[pos].path!!)
+                }
+                return true
+            }
+
+        })
+
+        popup.show() //showing popup menu
+
+    }
+
+    private fun createShortcut(path: String) {
+        val filename: String = path.substring(path.lastIndexOf("/") + 1)
+
+        var shortcutManager: ShortcutManager? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            shortcutManager = context?.getSystemService(ShortcutManager::class.java)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (shortcutManager != null) {
+                if (shortcutManager.isRequestPinShortcutSupported) {
+                    val shortcut = ShortcutInfo.Builder(context, getString(R.string.app_name))
+                        .setShortLabel(filename)
+                        .setLongLabel(filename)
+                        .setIcon(Icon.createWithResource(context, R.drawable.ic_pdf))
+                        .setIntent(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse(path)
+                            )
+                        )
+                        .build()
+                    shortcutManager.requestPinShortcut(shortcut, null)
+                } else Toast.makeText(
+                    context,
+                    "Pinned shortcuts are not supported!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    fun share(path: String) {
+        val intentShareFile = Intent(Intent.ACTION_SEND)
+        val fileWithinMyDir = File(path)
+
+        if (fileWithinMyDir.exists()) {
+            intentShareFile.type = "application/pdf"
+            val photoURI = context?.let {
+                FileProvider.getUriForFile(
+                    it, BuildConfig.APPLICATION_ID + ".provider",
+                    fileWithinMyDir
+                )
+            }
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, photoURI)
+            intentShareFile.putExtra(
+                Intent.EXTRA_SUBJECT,
+                "Sharing File..."
+            )
+            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
+            startActivity(Intent.createChooser(intentShareFile, "Share File"))
+        }
+    }
+
+    fun addToBookmark(path: String) {
+        var model = getBookmarkByPath(path)
+        if (model.isNullOrEmpty()) {
+            saveBookmark(path)
+        }
+        Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show()
+    }
+
+    fun saveBookmark(path: String) {
+        var realm = Realm.getDefaultInstance()
+        var id = PdfApplication.bookmarkPrimaryKey.getAndIncrement();
+
+        realm.executeTransactionAsync { realm ->
+            val model: BookmarkRealmObject =
+                realm?.createObject(BookmarkRealmObject::class.java, id)!!
+            model.path = path
+        }
+    }
+
+
+    fun getBookmarkByPath(path: String): List<BookmarkRealmObject?>? {
+        var realm = Realm.getDefaultInstance()
+
+        return realm.where(BookmarkRealmObject::class.java).equalTo("path", path).findAll()
+    }
+
+
+    fun deleteFile(path: String) {
+        val fdelete = File(path)
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                System.out.println("file Deleted :" + path)
+            } else {
+                System.out.println("file not Deleted :" + path)
+            }
+        }
+        EventBus.getDefault().postSticky(FileChangeEvent())
 
     }
 

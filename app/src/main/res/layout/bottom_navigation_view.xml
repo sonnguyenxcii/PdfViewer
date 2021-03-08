@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="8dp"
     android:paddingBottom="2dp"
     android:background="@android:color/white"
     app:layout_constraintBottom_toBottomOf="parent">
 
     <RadioButton
+        android:paddingTop="8dp"
+
         android:id="@+id/nav_home_button"
         android:checked="true"
         android:drawableTop="@drawable/selector_bottom_navigation_view_icon_home"
@@ -20,6 +21,8 @@
     </RadioButton>
 
     <RadioButton
+        android:paddingTop="8dp"
+
         android:id="@+id/nav_gallery_button"
         android:drawableTop="@drawable/selector_bottom_navigation_view_icon_gallery"
         android:text="@string/menu_gallery"
@@ -28,8 +31,9 @@
     </RadioButton>
 
     <RadioButton
+        android:paddingTop="8dp"
         android:id="@+id/nav_slideshow_button"
-        android:drawableTop="@drawable/selector_bottom_navigation_view_icon_slideshow"
+        android:drawableTop="@drawable/selector_bottom_navigation_view_icon_bookmark"
         android:text="@string/menu_slideshow"
         style="@style/AppTheme.RadioButtonLikeBottomNavigationView">
 

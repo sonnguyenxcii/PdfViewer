@@ -1,22 +1,23 @@
-package py.com.opentech.drawerwithbottomnavigation.ui.home
+package py.com.opentech.drawerwithbottomnavigation.ui.merge
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
+import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 
 
-class HomeAdapter(
+class MultiFileSelectAdapter(
     val context: Context,
-    private val list: List<PdfModel>,
-    val clickListener: RecycleViewOnClickListener
+    private val list: List<PdfModel>, val clickListener: RecycleViewOnClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var pos = 0
@@ -27,16 +28,16 @@ class HomeAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val itemView: View
-        if (viewType == LIST_ITEM) {
+//        if (viewType == LIST_ITEM) {
 
             itemView =
-                LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_home, parent, false)
-        } else {
-            itemView =
-                LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_home_grid, parent, false)
-        }
+                LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_file_select, parent, false)
+//        } else {
+//            itemView =
+//                LayoutInflater.from(parent.getContext())
+//                    .inflate(R.layout.item_list_home_grid, parent, false)
+//        }
         return ItemViewHolder(itemView)
 
     }
@@ -50,12 +51,11 @@ class HomeAdapter(
 
             holder.itemView.setOnClickListener {
                 clickListener.onItemClick(holder.adapterPosition)
-
+//                data.isCheck = !data.isCheck!!
+//                notifyItemChanged(holder.adapterPosition)
             }
-            holder.more.setOnClickListener {
-                clickListener.onMoreClick(holder.adapterPosition,it)
 
-            }
+            holder.check.isChecked = data.isCheck!!
 
         }
     }
@@ -81,6 +81,6 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
 ) {
     val name = itemView.findViewById<AppCompatTextView>(R.id.name)
     val size = itemView.findViewById<AppCompatTextView>(R.id.size)
-    val more = itemView.findViewById<AppCompatImageView>(R.id.more)
+    val check = itemView.findViewById<AppCompatCheckBox>(R.id.check)
 
 }

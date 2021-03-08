@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/open"
+        android:title="Mở"/>
+
+    <item
+        android:id="@+id/delete"
+        android:title="Xóa tài liệu"/>
+
+    <item
+        android:id="@+id/bookmark"
+        android:title="Thêm vào đánh dấu"/>
+
+    <item
+        android:id="@+id/share"
+        android:title="Chia sẻ thư mục"/>
+
+    <item
+        android:id="@+id/shortcut"
+        android:title="Phím tắt"/>
+
+</menu>
