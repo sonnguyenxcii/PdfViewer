@@ -43,6 +43,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.infideap.drawerbehaviorexample.drawer.AdvanceDrawer5Activity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -8,5 +8,7 @@
 
     <color name="blue">#50AFB8</color>
     <color name="blue50">#8050AFB8</color>
+    <color name="navBgColor">#63AC9F</color>
+    <color name="transparent">#00ffffff</color>
 
 </resources>
