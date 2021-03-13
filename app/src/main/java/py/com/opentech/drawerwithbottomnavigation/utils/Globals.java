@@ -9,6 +9,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.PdfModel;
 public class Globals {
 
     private MutableLiveData<List<PdfModel>> listData = new MutableLiveData<>();
+    public MutableLiveData<Boolean> isListMode = new MutableLiveData<>();
 
     public MutableLiveData<List<PdfModel>> getListData() {
         return listData;

@@ -36,10 +36,10 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_home)
+        setContentView(R.layout.activity_choose_file)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.title = "Chọn File"
+        supportActionBar!!.title = "Select the file"
         val recyclerView: RecyclerView = findViewById(R.id.recycleView)
 
         recyclerView.layoutManager = LinearLayoutManager(this)

@@ -24,14 +24,4 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
-<!--    <com.google.android.material.navigation.NavigationView-->
-<!--        android:id="@+id/nav_view_notification"-->
-<!--        android:background="@color/colorPrimary"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_gravity="end"-->
-<!--        android:fitsSystemWindows="false">-->
-<!--&lt;!&ndash;        <include layout="@layout/content_notification"/>&ndash;&gt;-->
-<!--    </com.google.android.material.navigation.NavigationView>-->
-
 </com.infideap.drawerbehavior.AdvanceDrawerLayout>

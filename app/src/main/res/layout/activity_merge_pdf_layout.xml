@@ -2,28 +2,70 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@drawable/bg_normal"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/addFile"
-        android:layout_width="@dimen/_70sdp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_12sdp"
-        android:adjustViewBounds="true"
-        android:src="@drawable/ic_baseline_add_circle_24"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="@dimen/_100sdp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/cameraBg"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/bg_circle_green"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_plus_white"
+            app:layout_constraintBottom_toBottomOf="@id/cameraBg"
+            app:layout_constraintLeft_toLeftOf="@id/cameraBg"
+            app:layout_constraintRight_toRightOf="@id/cameraBg"
+            app:layout_constraintTop_toTopOf="@id/cameraBg" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:fontFamily="@font/seguisb"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="Click + to select the PDF file"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/cameraBg" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--    <androidx.appcompat.widget.AppCompatImageView-->
-<!--        android:id="@+id/library"-->
-<!--        android:layout_width="@dimen/_50sdp"-->
+<!--        android:id="@+id/addFile"-->
+<!--        android:layout_width="@dimen/_70sdp"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="@dimen/_12sdp"-->
+<!--        android:layout_marginBottom="@dimen/_12sdp"-->
 <!--        android:adjustViewBounds="true"-->
-<!--        android:src="@drawable/ic_menu_slideshow"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/camera"-->
-<!--        app:layout_constraintLeft_toRightOf="@id/camera"-->
-<!--        app:layout_constraintTop_toTopOf="@id/camera" />-->
+<!--        android:src="@drawable/ic_baseline_add_circle_24"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

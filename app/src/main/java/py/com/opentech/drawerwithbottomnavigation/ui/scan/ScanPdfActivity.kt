@@ -34,11 +34,6 @@ import java.lang.String
 
 class ScanPdfActivity : AppCompatActivity() {
 
-    //    @BindView(R.id.camera)
-//    lateinit var camera: AppCompatImageView
-//
-//    @BindView(R.id.library)
-//    lateinit var library: AppCompatImageView
     var RATIO_X = 2
     var RATIO_Y = 3
     private var currentAvatar: Uri? = null
@@ -48,10 +43,9 @@ class ScanPdfActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_pdf_layout)
 
-//        ButterKnife.bind(this)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.title = "Máy quét"
+        supportActionBar!!.title = "PDF Scanner"
 
         camera.setOnClickListener {
             Dexter.withContext(this)

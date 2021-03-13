@@ -12,16 +12,16 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="py.com.opentech.drawerwithbottomnavigation.ui.gallery.GalleryFragment"
+        android:id="@+id/recent"
+        android:name="py.com.opentech.drawerwithbottomnavigation.ui.gallery.RecentFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_bookmark" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="py.com.opentech.drawerwithbottomnavigation.ui.slideshow.SlideshowFragment"
+        android:id="@+id/nav_bookmark"
+        android:name="py.com.opentech.drawerwithbottomnavigation.ui.slideshow.BookmarkFragment"
         android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_recent" />
 
     <fragment
         android:id="@+id/nav_tools"

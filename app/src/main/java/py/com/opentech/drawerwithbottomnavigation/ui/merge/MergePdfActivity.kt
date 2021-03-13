@@ -22,7 +22,7 @@ class MergePdfActivity : AppCompatActivity() {
         ButterKnife.bind(this)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.title = "Sáp nhập"
+        supportActionBar!!.title = "Merge PDF"
 
         addFile.setOnClickListener {
             var intent = Intent(this, MultiFileSelectActivity::class.java)

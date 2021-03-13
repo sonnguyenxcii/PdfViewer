@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.appcompat.app.AppCompatActivity
-import com.infideap.drawerbehaviorexample.drawer.AdvanceDrawer5Activity
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 
 
@@ -36,7 +35,7 @@ class SplashScreen : AppCompatActivity() {
     }
 
     fun gotoMain() {
-        val intent = Intent(this, AdvanceDrawer5Activity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
         finish()
     }

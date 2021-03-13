@@ -16,6 +16,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
@@ -36,6 +37,8 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     lateinit var adapter: HomeAdapter
     protected var application: PdfApplication? = null
 
+    var isListMode: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,7 +47,12 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+
+        recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+            requireContext(),
+            2
+        )
+
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
         application = PdfApplication.create(activity)
@@ -53,6 +61,18 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
             if (it != null) {
                 listData.clear()
                 listData.addAll(it)
+                adapter.notifyDataSetChanged()
+            }
+        })
+
+        application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                isListMode = it
+                recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                    requireContext(),
+                    2
+                )
+                adapter.isSwitchView = isListMode
                 adapter.notifyDataSetChanged()
             }
         })
@@ -71,23 +91,17 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
     override fun onMoreClick(pos: Int, view: View) {
         //Creating the instance of PopupMenu
-        //Creating the instance of PopupMenu
         val popup = PopupMenu(requireContext(), view)
         //Inflating the Popup using xml file
-        //Inflating the Popup using xml file
         popup.menuInflater
-            .inflate(R.menu.poupup_menu, popup.getMenu())
+            .inflate(R.menu.poupup_menu, popup.menu)
 
-        //registering popup with OnMenuItemClickListener
-
-        //registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
             override fun onMenuItemClick(item: MenuItem?): Boolean {
 
                 if (item?.itemId == R.id.open) {
                     gotoViewPdf(listData[pos].path!!)
                 } else if (item?.itemId == R.id.delete) {
-
                     deleteFile(listData[pos].path!!)
                 } else if (item?.itemId == R.id.bookmark) {
                     addToBookmark(listData[pos].path!!)

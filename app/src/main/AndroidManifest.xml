@@ -43,8 +43,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.infideap.drawerbehaviorexample.drawer.AdvanceDrawer5Activity"
+
+        <activity android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"
+
             />
 
         <provider

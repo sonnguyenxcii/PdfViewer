@@ -22,7 +22,7 @@ class HomeAdapter(
     var pos = 0
     private val LIST_ITEM = 0
     private val GRID_ITEM = 1
-    var isSwitchView = true
+    var isSwitchView = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 

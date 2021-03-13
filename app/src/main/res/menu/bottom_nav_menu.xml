@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/home"
+        android:id="@+id/nav_home"
         android:icon="@drawable/ic_list"
         android:title="Folder" />
     <item
-        android:id="@+id/placeholder"
+        android:id="@+id/nav_bookmark"
         android:title="" />
     <item
-        android:id="@+id/Search"
+        android:id="@+id/recent"
         android:icon="@drawable/ic_recent"
         android:title="Recently" />
 </menu>

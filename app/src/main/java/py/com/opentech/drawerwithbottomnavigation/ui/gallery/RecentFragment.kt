@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
@@ -31,11 +33,12 @@ import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import java.io.File
 
 
-class GalleryFragment : Fragment(), RecycleViewOnClickListener {
+class RecentFragment : Fragment(), RecycleViewOnClickListener {
 
     var listData: ArrayList<PdfModel> = ArrayList()
     lateinit var adapter: HomeAdapter
     protected var application: PdfApplication? = null
+    var isListMode: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,13 +46,27 @@ class GalleryFragment : Fragment(), RecycleViewOnClickListener {
         savedInstanceState: Bundle?
     ): View? {
 
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+        val root = inflater.inflate(R.layout.fragment_recent, container, false)
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+//        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+            requireContext(),
+            2
+        )
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
         application = PdfApplication.create(activity)
-
+        application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                isListMode = it
+                recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                    requireContext(),
+                    2
+                )
+                adapter.isSwitchView = isListMode
+                adapter.notifyDataSetChanged()
+            }
+        })
         return root
     }
 
