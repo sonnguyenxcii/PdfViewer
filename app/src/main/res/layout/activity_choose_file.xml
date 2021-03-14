@@ -4,10 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_normal"
-    android:paddingLeft="@dimen/_12sdp"
-    android:paddingRight="@dimen/_12sdp"
-    android:paddingBottom="@dimen/_12sdp">
+    android:background="@drawable/bg_normal">
 
 
     <androidx.recyclerview.widget.RecyclerView

@@ -1,5 +1,6 @@
-package py.com.opentech.drawerwithbottomnavigation.ui.home
+package py.com.opentech.drawerwithbottomnavigation
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -7,99 +8,146 @@ import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.activity_search.*
 import org.greenrobot.eventbus.EventBus
-import py.com.opentech.drawerwithbottomnavigation.BuildConfig
-import py.com.opentech.drawerwithbottomnavigation.PdfApplication
-import py.com.opentech.drawerwithbottomnavigation.R
-import py.com.opentech.drawerwithbottomnavigation.SearchActivity
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
+import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
+import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import java.io.File
 
 
-class HomeFragment : Fragment(), RecycleViewOnClickListener {
+class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
 
     var listData: ArrayList<PdfModel> = ArrayList()
     lateinit var adapter: HomeAdapter
     protected var application: PdfApplication? = null
 
-    var isListMode: Boolean = false
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_search)
+        application = PdfApplication.create(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
-        val searchBox: View = root.findViewById(R.id.searchBox)
-
-        recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-            requireContext(),
-            2
-        )
-
-        adapter = HomeAdapter(requireContext(), listData, this)
+        val recyclerView: RecyclerView = findViewById(R.id.recycleView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = HomeAdapter(this, listData, this)
+        adapter.isSwitchView = true
         recyclerView.adapter = adapter
-        application = PdfApplication.create(activity)
 
-        application?.global?.listData?.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                listData.clear()
+        cancel.setOnClickListener {
+            finish()
+        }
+
+        edtSearch.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (TextUtils.isEmpty(s.toString())) {
+                    clear.visibility = View.GONE
+                    content.visibility = View.GONE
+                    listData.clear()
+                    adapter.notifyDataSetChanged()
+                } else {
+                    clear.visibility = View.VISIBLE
+
+                }
+            }
+
+        })
+
+        edtSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // Your action on done
+                processData()
+                false
+            } else false
+        })
+
+        clear.setOnClickListener {
+            edtSearch.setText("")
+            content.visibility = View.GONE
+
+        }
+
+    }
+
+    @SuppressLint("StringFormatInvalid")
+    fun processData() {
+        var temp = application?.global?.listData?.value?.filter {
+            it.name!!.toLowerCase().contains(edtSearch.text.toString().toLowerCase())
+        }
+        if (temp.isNullOrEmpty()) {
+            searchResultEmpty.visibility= View.VISIBLE
+            searchResult.visibility= View.GONE
+
+            searchResultEmptyTittle.setText(
+                getString(
+                    R.string.search_result_empty_tittle,
+                    edtSearch.text.toString()
+                )
+            )
+        } else {
+
+            searchResultEmpty.visibility= View.GONE
+            searchResult.visibility= View.VISIBLE
+
+            searchResultTittle.setText(
+                getString(
+                    R.string.search_result_tittle,
+                    edtSearch.text.toString()
+                )
+            )
+
+            var count = temp.size.toString()
+            resultCount.setText(getString(R.string.search_result_count,count))
+
+            listData.clear()
+            temp?.let {
                 listData.addAll(it)
                 adapter.notifyDataSetChanged()
             }
-        })
-
-        application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                isListMode = it
-                recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-                    requireContext(),
-                    2
-                )
-                adapter.isSwitchView = isListMode
-                adapter.notifyDataSetChanged()
-            }
-        })
-
-        searchBox.setOnClickListener {
-            var intent = Intent(context, SearchActivity::class.java)
-            startActivity(intent)
         }
 
-        return root
-    }
-
-    override fun onResume() {
-        super.onResume()
-        EventBus.getDefault().postSticky(FileChangeEvent())
+        content.visibility = View.VISIBLE
 
     }
+
+    fun gotoViewPdf(path: String) {
+        var intent = Intent(this, PdfViewerActivity::class.java)
+        intent.putExtra("url", path)
+        startActivity(intent)
+    }
+
     override fun onItemClick(pos: Int) {
         gotoViewPdf(listData[pos].path!!)
+
     }
 
     override fun onMoreClick(pos: Int, view: View) {
         //Creating the instance of PopupMenu
-        val popup = PopupMenu(requireContext(), view)
+        val popup = PopupMenu(this, view)
         //Inflating the Popup using xml file
         popup.menuInflater
             .inflate(R.menu.poupup_menu, popup.menu)
@@ -110,7 +158,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                 if (item?.itemId == R.id.open) {
                     gotoViewPdf(listData[pos].path!!)
                 } else if (item?.itemId == R.id.delete) {
-                    deleteFile(listData[pos].path!!)
+                    deletePdfFile(listData[pos].path!!)
                 } else if (item?.itemId == R.id.bookmark) {
                     addToBookmark(listData[pos].path!!)
                 } else if (item?.itemId == R.id.share) {
@@ -124,23 +172,23 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         })
 
         popup.show() //showing popup menu
-
     }
+
 
     private fun createShortcut(path: String) {
         val filename: String = path.substring(path.lastIndexOf("/") + 1)
 
         var shortcutManager: ShortcutManager? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            shortcutManager = context?.getSystemService(ShortcutManager::class.java)
+            shortcutManager = getSystemService(ShortcutManager::class.java)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (shortcutManager != null) {
                 if (shortcutManager.isRequestPinShortcutSupported) {
-                    val shortcut = ShortcutInfo.Builder(context, getString(R.string.app_name))
+                    val shortcut = ShortcutInfo.Builder(this, getString(R.string.app_name))
                         .setShortLabel(filename)
                         .setLongLabel(filename)
-                        .setIcon(Icon.createWithResource(context, R.drawable.ic_pdf))
+                        .setIcon(Icon.createWithResource(this, R.drawable.ic_pdf))
                         .setIntent(
                             Intent(
                                 Intent.ACTION_VIEW,
@@ -150,7 +198,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                         .build()
                     shortcutManager.requestPinShortcut(shortcut, null)
                 } else Toast.makeText(
-                    context,
+                    this,
                     "Pinned shortcuts are not supported!",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -164,7 +212,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
         if (fileWithinMyDir.exists()) {
             intentShareFile.type = "application/pdf"
-            val photoURI = context?.let {
+            val photoURI = let {
                 FileProvider.getUriForFile(
                     it, BuildConfig.APPLICATION_ID + ".provider",
                     fileWithinMyDir
@@ -185,7 +233,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         if (model.isNullOrEmpty()) {
             saveBookmark(path)
         }
-        Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Added to bookmark", Toast.LENGTH_SHORT).show()
     }
 
     fun saveBookmark(path: String) {
@@ -207,7 +255,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     }
 
 
-    fun deleteFile(path: String) {
+    fun deletePdfFile(path: String) {
         val fdelete = File(path)
         if (fdelete.exists()) {
             if (fdelete.delete()) {
@@ -219,11 +267,4 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         EventBus.getDefault().postSticky(FileChangeEvent())
 
     }
-
-    fun gotoViewPdf(path: String) {
-        var intent = Intent(context, PdfViewerActivity::class.java)
-        intent.putExtra("url", path)
-        startActivity(intent)
-    }
-
 }

@@ -14,4 +14,7 @@
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
     <string name="toast_image_intent_null">Image picker option is missing!</string>
+    <string name="search_result_tittle">Search results for: \"%s\"</string>
+    <string name="search_result_empty_tittle">No results for: \"%s\"</string>
+    <string name="search_result_count">Show %s items</string>
 </resources>
