@@ -48,6 +48,7 @@ class MultiFileSelectAdapter(
             val data: PdfModel = list[position]
             holder.name.text = data.name
             holder.size.text = Utils.convertToStringRepresentation(data.size!!)
+            holder.date.text = data.date
 
             holder.itemView.setOnClickListener {
                 clickListener.onItemClick(holder.adapterPosition)
@@ -82,5 +83,6 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
     val name = itemView.findViewById<AppCompatTextView>(R.id.name)
     val size = itemView.findViewById<AppCompatTextView>(R.id.size)
     val check = itemView.findViewById<AppCompatCheckBox>(R.id.check)
+    val date = itemView.findViewById<AppCompatTextView>(R.id.date)
 
 }

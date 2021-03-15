@@ -16,11 +16,14 @@ public class PdfApplication extends Application {
     private Globals instance;
     public static AtomicLong bookmarkPrimaryKey;
     public static AtomicLong recentPrimaryKey;
+    public static volatile Context applicationContext = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
         initRealm();
+        applicationContext = getApplicationContext();
+
     }
 
     public synchronized Globals getGlobal() {

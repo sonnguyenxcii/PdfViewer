@@ -49,6 +49,7 @@
             android:theme="@style/AppTheme.NoActionBar"
 
             />
+        <activity android:name=".ui.fileexplorer.FileExplorerActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

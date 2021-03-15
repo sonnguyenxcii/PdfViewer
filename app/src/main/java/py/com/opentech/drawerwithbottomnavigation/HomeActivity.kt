@@ -24,6 +24,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
+import py.com.opentech.drawerwithbottomnavigation.ui.fileexplorer.FileExplorerActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Utils
@@ -153,7 +154,8 @@ class HomeActivity : AppCompatActivity(),
 
             }
             R.id.nav_file_manager -> {
-                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
+                navigateToFile()
+//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
 //                drawer!!.openDrawer(GravityCompat.END)
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
@@ -202,6 +204,11 @@ class HomeActivity : AppCompatActivity(),
     private fun navigateToMerge() {
 
         var intent = Intent(this, MergePdfActivity::class.java)
+        startActivity(intent)
+    }
+    private fun navigateToFile() {
+
+        var intent = Intent(this, FileExplorerActivity::class.java)
         startActivity(intent)
     }
 
