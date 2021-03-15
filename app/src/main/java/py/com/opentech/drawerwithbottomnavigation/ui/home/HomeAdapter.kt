@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
@@ -47,22 +48,38 @@ class HomeAdapter(
             val data: PdfModel = list[position]
             holder.name.text = data.name
             holder.size.text = Utils.convertToStringRepresentation(data.size!!)
+            holder.date.text = data.date
+            if (data.isBookmark!!) {
+                holder.bookmarkIcon.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_bookmark_active
+                    )
+                )
+            } else {
+                holder.bookmarkIcon.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_bookmark_inactive
+                    )
+                )
 
+            }
             holder.itemView.setOnClickListener {
                 clickListener.onItemClick(holder.adapterPosition)
 
             }
             holder.more.setOnClickListener {
-                clickListener.onMoreClick(holder.adapterPosition,it)
+                clickListener.onMoreClick(holder.adapterPosition, it)
+
+            }
+
+            holder.bookmark.setOnClickListener {
+                clickListener.onBookmarkClick(holder.adapterPosition)
 
             }
 
         }
-    }
-
-    fun toggleItemViewType(): Boolean {
-        isSwitchView = !isSwitchView
-        return isSwitchView
     }
 
     override fun getItemCount(): Int = list.size
@@ -82,5 +99,8 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
     val name = itemView.findViewById<AppCompatTextView>(R.id.name)
     val size = itemView.findViewById<AppCompatTextView>(R.id.size)
     val more = itemView.findViewById<AppCompatImageView>(R.id.more)
+    val date = itemView.findViewById<AppCompatTextView>(R.id.date)
+    val bookmark = itemView.findViewById<View>(R.id.bookmark)
+    val bookmarkIcon = itemView.findViewById<AppCompatImageView>(R.id.bookmarkIcon)
 
 }

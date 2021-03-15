@@ -10,6 +10,8 @@ data class PdfModel(
     var name: String? = "",
     var path: String? = "",
     var size: Long? = 0,
-    var isCheck: Boolean? = false
+    var date: String? = "",
+    var isCheck: Boolean? = false,
+    var isBookmark: Boolean? = false
 
 ) : Parcelable

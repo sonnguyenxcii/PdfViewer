@@ -1,4 +1,4 @@
-package py.com.opentech.drawerwithbottomnavigation.ui.gallery
+package py.com.opentech.drawerwithbottomnavigation.ui.recent
 
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -48,21 +48,22 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
 
         val root = inflater.inflate(R.layout.fragment_recent, container, false)
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
-//        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-            requireContext(),
-            2
-        )
+        recyclerView.layoutManager =
+            if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                requireContext(),
+                2
+            )
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
         application = PdfApplication.create(activity)
         application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 isListMode = it
-                recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-                    requireContext(),
-                    2
-                )
+                recyclerView.layoutManager =
+                    if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                        requireContext(),
+                        2
+                    )
                 adapter.isSwitchView = isListMode
                 adapter.notifyDataSetChanged()
             }
@@ -77,11 +78,14 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
 
         models?.forEach { bm ->
             application?.global?.listData?.value?.forEach { data ->
-                if (bm?.path?.equals(data.path)!!){
+                if (bm?.path?.equals(data.path)!!) {
+                    var model = getBookmarkByPath(data.path!!)
+                    data.isBookmark = !model.isNullOrEmpty()
                     listData.add(data)
                 }
             }
         }
+
         adapter.notifyDataSetChanged()
     }
 
@@ -120,7 +124,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
                 } else if (item?.itemId == R.id.bookmark) {
                     addToBookmark(listData[pos].path!!)
 
-                }else if (item?.itemId == R.id.share) {
+                } else if (item?.itemId == R.id.share) {
                     share(listData[pos].path!!)
                 } else if (item?.itemId == R.id.shortcut) {
                     createShortcut(listData[pos].path!!)
@@ -134,6 +138,29 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
 
     }
 
+    override fun onBookmarkClick(pos: Int) {
+        var data = listData[pos]
+        var bookmarkStatus = data.isBookmark!!
+
+        if (bookmarkStatus){
+            deleteFromBookmark(data.path!!)
+        }else{
+            addToBookmark(data.path!!)
+        }
+
+        data.isBookmark = !bookmarkStatus
+        adapter.notifyItemChanged(pos)
+    }
+
+    fun deleteFromBookmark(path: String) {
+        var realm = Realm.getDefaultInstance()
+
+        realm.executeTransaction { realm ->
+            val result: RealmResults<BookmarkRealmObject> =
+                realm.where(BookmarkRealmObject::class.java).equalTo("path", path).findAll()
+            result.deleteAllFromRealm()
+        }
+    }
     private fun createShortcut(path: String) {
         val filename: String = path.substring(path.lastIndexOf("/") + 1)
 
@@ -165,7 +192,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
         }
     }
 
-    fun share(path: String){
+    fun share(path: String) {
         val intentShareFile = Intent(Intent.ACTION_SEND)
         val fileWithinMyDir = File(path)
 
@@ -186,6 +213,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
             startActivity(Intent.createChooser(intentShareFile, "Share File"))
         }
     }
+
     fun addToBookmark(path: String) {
         var model = getBookmarkByPath(path)
         if (model.isNullOrEmpty()) {

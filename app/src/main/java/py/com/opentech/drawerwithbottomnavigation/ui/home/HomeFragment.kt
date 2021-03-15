@@ -1,5 +1,6 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.home
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -11,7 +12,10 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
@@ -20,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
+import io.realm.RealmResults
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.greenrobot.eventbus.EventBus
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
@@ -31,6 +36,8 @@ import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeFragment : Fragment(), RecycleViewOnClickListener {
@@ -51,19 +58,29 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
         val searchBox: View = root.findViewById(R.id.searchBox)
 
-        recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-            requireContext(),
-            2
-        )
+        recyclerView.layoutManager =
+            if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                requireContext(),
+                2
+            )
 
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
         application = PdfApplication.create(activity)
 
-        application?.global?.listData?.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
+        application?.global?.listData?.observe(viewLifecycleOwner, Observer { list ->
+            if (list != null) {
+
                 listData.clear()
-                listData.addAll(it)
+
+                list.forEach {
+                    println("---------------------" + it.path!!)
+                    var model = getBookmarkByPath(it.path!!)
+                    it.isBookmark = !model.isNullOrEmpty()
+                    println("---------------------" + model?.size)
+
+                }
+                listData.addAll(list)
                 adapter.notifyDataSetChanged()
             }
         })
@@ -71,10 +88,11 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 isListMode = it
-                recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-                    requireContext(),
-                    2
-                )
+                recyclerView.layoutManager =
+                    if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                        requireContext(),
+                        2
+                    )
                 adapter.isSwitchView = isListMode
                 adapter.notifyDataSetChanged()
             }
@@ -93,6 +111,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         EventBus.getDefault().postSticky(FileChangeEvent())
 
     }
+
     override fun onItemClick(pos: Int) {
         gotoViewPdf(listData[pos].path!!)
     }
@@ -110,7 +129,8 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                 if (item?.itemId == R.id.open) {
                     gotoViewPdf(listData[pos].path!!)
                 } else if (item?.itemId == R.id.delete) {
-                    deleteFile(listData[pos].path!!)
+                    onConfirmDelete(listData[pos].path!!)
+//                    deleteFile(listData[pos].path!!)
                 } else if (item?.itemId == R.id.bookmark) {
                     addToBookmark(listData[pos].path!!)
                 } else if (item?.itemId == R.id.share) {
@@ -125,6 +145,30 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
         popup.show() //showing popup menu
 
+    }
+
+    override fun onBookmarkClick(pos: Int) {
+        var data = listData[pos]
+        var bookmarkStatus = data.isBookmark!!
+
+        if (bookmarkStatus) {
+            deleteFromBookmark(data.path!!)
+        } else {
+            addToBookmark(data.path!!)
+        }
+
+        data.isBookmark = !bookmarkStatus
+        adapter.notifyItemChanged(pos)
+    }
+
+    fun deleteFromBookmark(path: String) {
+        var realm = Realm.getDefaultInstance()
+
+        realm.executeTransaction { realm ->
+            val result: RealmResults<BookmarkRealmObject> =
+                realm.where(BookmarkRealmObject::class.java).equalTo("path", path).findAll()
+            result.deleteAllFromRealm()
+        }
     }
 
     private fun createShortcut(path: String) {
@@ -185,7 +229,6 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         if (model.isNullOrEmpty()) {
             saveBookmark(path)
         }
-        Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show()
     }
 
     fun saveBookmark(path: String) {
@@ -225,5 +268,28 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         intent.putExtra("url", path)
         startActivity(intent)
     }
+
+    fun onConfirmDelete(path: String) {
+        val alertDialog: AlertDialog
+        val dialogBuilder = AlertDialog.Builder(context)
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.dialog_delete_layout, null)
+        dialogBuilder.setView(dialogView)
+
+        val ok = dialogView.findViewById<AppCompatButton>(R.id.ok)
+        val cancel = dialogView.findViewById<AppCompatButton>(R.id.cancel)
+        alertDialog = dialogBuilder.create()
+        alertDialog.setCancelable(true)
+        Objects.requireNonNull(alertDialog.window)
+            ?.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.show()
+
+        ok.setOnClickListener { v: View? ->
+            deleteFile(path)
+            alertDialog.dismiss()
+        }
+        cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
+    }
+
 
 }

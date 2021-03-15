@@ -26,7 +26,10 @@ import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeActivity : AppCompatActivity(),
@@ -39,7 +42,7 @@ class HomeActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_advance5)
+        setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
 
         this.application?.global?.isListMode?.postValue(true)
@@ -135,6 +138,13 @@ class HomeActivity : AppCompatActivity(),
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
+            R.id.space1 -> {
+//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
+//                drawer!!.openDrawer(GravityCompat.END)
+                drawer!!.closeDrawer(GravityCompat.START)
+                return false
+
+            }
             R.id.nav_home -> {
 //                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
 //                drawer!!.openDrawer(GravityCompat.END)
@@ -179,11 +189,6 @@ class HomeActivity : AppCompatActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-//            R.id.nav_gallery -> {
-//                Toast.makeText(this, "gallery", Toast.LENGTH_SHORT).show()
-////                drawer!!.openDrawer(GravityCompat.END)
-//                return true
-//            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -215,7 +220,8 @@ class HomeActivity : AppCompatActivity(),
                         && !File(it, ".nomedia").exists() //there is no .nomedia file inside
             }.filter { it.extension == "pdf" }
             .toList().forEach {
-                uriList.add(PdfModel(it.name, it.absolutePath, it.length()))
+                val lastModDate = Date(it.lastModified())
+                uriList.add(PdfModel(it.name, it.absolutePath, it.length(),Utils.formatDate(lastModDate)))
             }
 
         return uriList

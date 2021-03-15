@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_32sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginEnd="@dimen/_32sdp"
+            android:background="@drawable/background_button_radius_white_16"
+            android:orientation="vertical">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/infoHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:fontFamily="@font/segoe_normal"
+                android:text="Do you want to delete this file?"
+                android:textColor="#000000"
+                android:textSize="@dimen/_12ssp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/ok"
+                android:layout_width="@dimen/_130sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:background="@drawable/background_button_radius_primary_8"
+                android:text="Ok"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                tools:targetApi="lollipop" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/cancel"
+                android:layout_width="@dimen/_130sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_16sdp"
+                android:background="@drawable/bg_button_radius_border_primary"
+                android:text="Cancel"
+                android:textColor="@color/colorBtnDialog"
+                android:textSize="14sp"
+                tools:targetApi="lollipop" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/_65sdp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_delete" />
+    </FrameLayout>
+
+
+</LinearLayout>

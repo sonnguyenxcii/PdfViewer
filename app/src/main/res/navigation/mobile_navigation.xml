@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/recent"
-        android:name="py.com.opentech.drawerwithbottomnavigation.ui.gallery.RecentFragment"
+        android:name="py.com.opentech.drawerwithbottomnavigation.ui.recent.RecentFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_bookmark" />
 
     <fragment
         android:id="@+id/nav_bookmark"
-        android:name="py.com.opentech.drawerwithbottomnavigation.ui.slideshow.BookmarkFragment"
+        android:name="py.com.opentech.drawerwithbottomnavigation.ui.bookmark.BookmarkFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_recent" />
 

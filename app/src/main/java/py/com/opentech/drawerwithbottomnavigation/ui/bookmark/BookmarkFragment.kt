@@ -1,4 +1,4 @@
-package py.com.opentech.drawerwithbottomnavigation.ui.slideshow
+package py.com.opentech.drawerwithbottomnavigation.ui.bookmark
 
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -11,13 +11,11 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +26,6 @@ import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
-import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
@@ -81,6 +78,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
         models?.forEach { bm ->
             application?.global?.listData?.value?.forEach { data ->
               if (bm?.path?.equals(data.path)!!){
+                  data.isBookmark = true
                   listData.add(data)
               }
             }
@@ -136,6 +134,23 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
 
         popup.show() //showing popup menu
 
+    }
+
+    override fun onBookmarkClick(pos: Int) {
+        var data = listData[pos]
+//        var bookmarkStatus = data.isBookmark!!
+
+//        if (bookmarkStatus){
+
+            deleteFromBookmark(data.path!!)
+        listData.removeAt(pos)
+        adapter.notifyDataSetChanged()
+//        }else{
+//            addToBookmark(data.path!!)
+//        }
+
+//        data.isBookmark = !bookmarkStatus
+//        adapter.notifyDataSetChanged()
     }
 
 

@@ -1,4 +1,4 @@
-package py.com.opentech.drawerwithbottomnavigation.ui.gallery
+package py.com.opentech.drawerwithbottomnavigation.ui.recent
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

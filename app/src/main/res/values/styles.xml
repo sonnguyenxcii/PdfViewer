@@ -62,4 +62,20 @@
         <item name="android:progressBackgroundTint">@color/white</item>
         <item name="android:progressTint">@color/colorPrimary</item>
     </style>
+
+<!--    <style name="ApBaseDrawerNavigationMenuStyle" parent="Theme.AppCompat.DayNight.DarkActionBar">-->
+<!--        <item name="colorControlNormal">@null</item>-->
+<!--        <item name="android:color">@color/text_color</item>-->
+<!--        <item name="android:textColor">@color/text_color</item>-->
+<!--        <item name="android:textColorHint">@color/text_color</item>-->
+<!--        <item name="android:textColorPrimary">@color/text_color</item>-->
+<!--        <item name="android:textColorSecondary">@color/gray_shade_555555</item>-->
+<!--        <item name="android:background">#548893</item>-->
+<!--        <item name="android:colorPrimary">@color/text_color</item>-->
+<!--        <item name="android:colorControlHighlight">@color/text_color</item>-->
+<!--    </style>-->
+    <style name="NavigationView"  parent="Base.Theme.AppCompat">
+        <item name="android:listDivider">@color/navBgColor</item>
+<!--        <item name="android:textColorSecondary">@color/white</item>-->
+    </style>
 </resources>

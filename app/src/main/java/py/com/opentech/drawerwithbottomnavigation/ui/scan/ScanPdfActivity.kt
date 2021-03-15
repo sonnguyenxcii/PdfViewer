@@ -207,7 +207,7 @@ class ScanPdfActivity : AppCompatActivity() {
 //            var bitmap = BitmapFactory.decodeFile(currentAvatar.toString());
 
                 var pdfDocument = PdfDocument()
-                var myPageInfo = PdfDocument.PageInfo.Builder(960, 1280, 1).create();
+                var myPageInfo = PdfDocument.PageInfo.Builder(bitmap.width, bitmap.height, 1).create();
                 var page = pdfDocument.startPage(myPageInfo)
 
                 page.canvas.drawBitmap(bitmap, 0f, 0f, null)
@@ -244,13 +244,14 @@ class ScanPdfActivity : AppCompatActivity() {
 
     var fileName = ""
     fun showInputName() {
-        val taskEditText = EditText(this)
+        val view = layoutInflater.inflate(R.layout.dialog_input_name, null)
+        val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
         val dialog: AlertDialog = AlertDialog.Builder(this)
-            .setTitle("")
+            .setTitle("Create PDF")
             .setMessage("Input name of file")
-            .setView(taskEditText)
+            .setView(view)
             .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-                val task = String.valueOf(taskEditText.text)
+                val task = String.valueOf(categoryEditText.text)
                 if (!TextUtils.isEmpty(task)) {
                     fileName = task
                     convertButton()
@@ -261,6 +262,7 @@ class ScanPdfActivity : AppCompatActivity() {
             .create()
         dialog.show()
     }
+
 
     fun gotoViewPdf(path: kotlin.String) {
         var intent = Intent(this, PdfViewerActivity::class.java)

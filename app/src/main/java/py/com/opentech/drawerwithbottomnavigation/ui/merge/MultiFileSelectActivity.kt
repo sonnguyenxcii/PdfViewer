@@ -92,7 +92,11 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
     }
 
     override fun onMoreClick(pos: Int, view: View) {
-        TODO("Not yet implemented")
+
+    }
+
+    override fun onBookmarkClick(pos: Int) {
+
     }
 
     fun caculateSelectCount() {
@@ -110,13 +114,15 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
 
     var fileName = ""
     fun showInputName() {
-        val taskEditText = EditText(this)
+
+        val view = layoutInflater.inflate(R.layout.dialog_input_name, null)
+        val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
         val dialog: AlertDialog = AlertDialog.Builder(this)
-            .setTitle("")
+            .setTitle("Create PDF")
             .setMessage("Input name of file")
-            .setView(taskEditText)
+            .setView(view)
             .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-                val task = String.valueOf(taskEditText.text)
+                val task = String.valueOf(categoryEditText.text)
                 if (!TextUtils.isEmpty(task)) {
                     fileName = task
                     downloadAndCombinePDFs()
@@ -144,7 +150,6 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
                     ut.addSource(file)
                 }
             }
-
 
             val fileOutputStream = FileOutputStream(file)
             try {

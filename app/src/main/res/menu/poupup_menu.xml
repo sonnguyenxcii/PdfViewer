@@ -8,9 +8,9 @@
         android:id="@+id/delete"
         android:title="Xóa tài liệu"/>
 
-    <item
-        android:id="@+id/bookmark"
-        android:title="Thêm vào đánh dấu"/>
+<!--    <item-->
+<!--        android:id="@+id/bookmark"-->
+<!--        android:title="Thêm vào đánh dấu"/>-->
 
     <item
         android:id="@+id/share"

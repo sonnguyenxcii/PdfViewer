@@ -1,6 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -13,7 +14,9 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.realm.Realm
+import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_search.*
 import org.greenrobot.eventbus.EventBus
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
@@ -49,7 +53,6 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         adapter = HomeAdapter(this, listData, this)
         adapter.isSwitchView = true
         recyclerView.adapter = adapter
-
         cancel.setOnClickListener {
             finish()
         }
@@ -90,6 +93,8 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
             content.visibility = View.GONE
 
         }
+        edtSearch.requestFocus()
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
     }
 
@@ -121,7 +126,7 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
             )
 
             var count = temp.size.toString()
-            resultCount.setText(getString(R.string.search_result_count,count))
+            resultCount.setText(getString(R.string.search_result_count, count))
 
             listData.clear()
             temp?.let {
@@ -174,6 +179,29 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         popup.show() //showing popup menu
     }
 
+    override fun onBookmarkClick(pos: Int) {
+        var data = listData[pos]
+        var bookmarkStatus = data.isBookmark!!
+
+        if (bookmarkStatus){
+            deleteFromBookmark(data.path!!)
+        }else{
+            addToBookmark(data.path!!)
+        }
+
+        data.isBookmark = !bookmarkStatus
+        adapter.notifyItemChanged(pos)
+    }
+
+    fun deleteFromBookmark(path: String) {
+        var realm = Realm.getDefaultInstance()
+
+        realm.executeTransaction { realm ->
+            val result: RealmResults<BookmarkRealmObject> =
+                realm.where(BookmarkRealmObject::class.java).equalTo("path", path).findAll()
+            result.deleteAllFromRealm()
+        }
+    }
 
     private fun createShortcut(path: String) {
         val filename: String = path.substring(path.lastIndexOf("/") + 1)
@@ -233,7 +261,7 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         if (model.isNullOrEmpty()) {
             saveBookmark(path)
         }
-        Toast.makeText(this, "Added to bookmark", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "Added to bookmark", Toast.LENGTH_SHORT).show()
     }
 
     fun saveBookmark(path: String) {

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_list"
@@ -20,19 +23,25 @@
             android:id="@+id/nav_pdf_merge"
             android:icon="@drawable/ic_merge_files"
             android:title="Merge PDF" />
+        <item
+            android:id="@+id/space1"
+            android:title="" />
+        <!--        <menu>-->
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_message_square"
+            android:title="Feedback" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share"
+            android:title="Share" />
+        <!--        </menu>-->
     </group>
 
-    <item android:title="">
-        <menu>
-            <item
-                android:id="@+id/nav_feedback"
-                android:icon="@drawable/ic_message_square"
-                android:title="Feedback" />
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_share"
-                android:title="Share" />
-        </menu>
-    </item>
+    <!--    <item android:title=""-->
+
+    <!--        >-->
+    <!--     -->
+    <!--    </item>-->
 
 </menu>

@@ -13,5 +13,6 @@
     <color name="colorPrimaryText">#999999</color>
 
     <color name="colorBgItem">#DDF2F4</color>
+    <color name="colorBtnDialog">#61A99C</color>
 
 </resources>

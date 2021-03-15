@@ -101,7 +101,7 @@
             android:id="@+id/bookmark"
             android:layout_width="@dimen/_30sdp"
             android:layout_height="@dimen/_30sdp"
-            android:layout_marginRight="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
             android:background="@drawable/bg_circle_oran"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent">

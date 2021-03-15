@@ -1,6 +1,8 @@
 package py.com.opentech.drawerwithbottomnavigation.utils;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Utils {
     private static final long K = 1024;
@@ -8,15 +10,16 @@ public class Utils {
     private static final long G = M * K;
     private static final long T = G * K;
 
-    public static String convertToStringRepresentation(final long value){
-        final long[] dividers = new long[] { T, G, M, K, 1 };
-        final String[] units = new String[] { "TB", "GB", "MB", "KB", "B" };
-        if(value < 1)
+
+    public static String convertToStringRepresentation(final long value) {
+        final long[] dividers = new long[]{T, G, M, K, 1};
+        final String[] units = new String[]{"TB", "GB", "MB", "KB", "B"};
+        if (value < 1)
             throw new IllegalArgumentException("Invalid file size: " + value);
         String result = null;
-        for(int i = 0; i < dividers.length; i++){
+        for (int i = 0; i < dividers.length; i++) {
             final long divider = dividers[i];
-            if(value >= divider){
+            if (value >= divider) {
                 result = format(value, divider, units[i]);
                 break;
             }
@@ -26,9 +29,16 @@ public class Utils {
 
     private static String format(final long value,
                                  final long divider,
-                                 final String unit){
+                                 final String unit) {
         final double result =
                 divider > 1 ? (double) value / (double) divider : (double) value;
         return new DecimalFormat("#,##0.#").format(result) + " " + unit;
+    }
+
+    public static String formatDate(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("MMM dd,yyyy");
+
+        String result = format.format(date);
+        return result;
     }
 }
