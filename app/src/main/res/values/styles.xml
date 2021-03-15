@@ -58,4 +58,8 @@
         <item name="colorPrimaryVariant">#0F9D58</item>
         <item name="colorOnPrimary">#000</item>
     </style>
+    <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">@color/white</item>
+        <item name="android:progressTint">@color/colorPrimary</item>
+    </style>
 </resources>
