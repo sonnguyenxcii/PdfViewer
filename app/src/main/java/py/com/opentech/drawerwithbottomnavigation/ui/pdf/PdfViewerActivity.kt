@@ -65,6 +65,8 @@ class PdfViewerActivity : AppCompatActivity() {
             if (file_uri != null){
                 fileUri = file_uri
                 viewFileFromStream()
+            }else{
+
             }
 
         } else {
@@ -87,6 +89,9 @@ class PdfViewerActivity : AppCompatActivity() {
         }
         share.setOnClickListener {
             url?.let { it1 -> shareFile(it1) }
+            fileUri?.let {
+                shareFileUri(it)
+            }
         }
 
         seekBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -210,6 +215,27 @@ class PdfViewerActivity : AppCompatActivity() {
             intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
             startActivity(Intent.createChooser(intentShareFile, "Share File"))
         }
+    }
+    fun shareFileUri(uri: Uri) {
+        val intentShareFile = Intent(Intent.ACTION_SEND)
+//        val fileWithinMyDir = File(path)
+
+//        if (fileWithinMyDir.exists()) {
+            intentShareFile.type = "application/pdf"
+//            val photoURI = let {
+//                FileProvider.getUriForFile(
+//                    it, BuildConfig.APPLICATION_ID + ".provider",
+//                    fileWithinMyDir
+//                )
+//            }
+            intentShareFile.putExtra(Intent.EXTRA_STREAM, uri)
+            intentShareFile.putExtra(
+                Intent.EXTRA_SUBJECT,
+                "Sharing File..."
+            )
+            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
+            startActivity(Intent.createChooser(intentShareFile, "Share File"))
+//        }
     }
 
     fun viewFileFromStream() {
