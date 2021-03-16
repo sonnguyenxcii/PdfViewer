@@ -24,7 +24,6 @@ import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
 import java.lang.String
 
 
@@ -133,23 +132,29 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
             .create()
         dialog.show()
     }
+
     @Throws(IOException::class)
     private fun downloadAndCombinePDFs(): File {
         val dialog: android.app.AlertDialog? = SpotsDialog.Builder().setContext(this).build()
 
         dialog?.show()
         val file = File(
-            Environment.getExternalStorageDirectory().absolutePath + File.separator + "PdfViewer" + File.separator,
+//            getExternalFilesDir(null)?.absolutePath + File.separator,
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
             "$fileName.pdf"
         )
-        Thread{
+
+        Thread {
             val ut = PDFMergerUtility()
             listData.forEach {
                 if (it.isCheck!!) {
-                    var file = File(it.path)
-                    ut.addSource(file)
+                    var fileTemp = File(it.path)
+                    ut.addSource(fileTemp)
                 }
             }
+
+            if (file.exists())
+                file.delete()
 
             val fileOutputStream = FileOutputStream(file)
             try {

@@ -207,16 +207,19 @@ class ScanPdfActivity : AppCompatActivity() {
 //            var bitmap = BitmapFactory.decodeFile(currentAvatar.toString());
 
                 var pdfDocument = PdfDocument()
-                var myPageInfo = PdfDocument.PageInfo.Builder(bitmap.width, bitmap.height, 1).create();
+                var myPageInfo =
+                    PdfDocument.PageInfo.Builder(bitmap.width, bitmap.height, 1).create()
                 var page = pdfDocument.startPage(myPageInfo)
 
                 page.canvas.drawBitmap(bitmap, 0f, 0f, null)
                 pdfDocument.finishPage(page)
 
-//        String pdfFile = directory + “/myPDFFile_3.pdf”
-//        var myPDFFile =  File(pdfFile)
+                val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath)
+                if (!dir.exists()) {
+                    dir.mkdir()
+                }
                 val myPDFFile = File(
-                    Environment.getExternalStorageDirectory().absolutePath + File.separator + "PdfViewer" + File.separator,
+                    dir,
                     "$fileName.pdf"
                 )
                 try {

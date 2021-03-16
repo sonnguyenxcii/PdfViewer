@@ -1,7 +1,11 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.SeekBar
@@ -9,6 +13,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
+import androidx.loader.content.CursorLoader
 import com.github.barteksc.pdfviewer.PDFView
 import io.realm.Realm
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
@@ -28,6 +33,8 @@ class PdfViewerActivity : AppCompatActivity() {
     var seekBar: SeekBar? = null
     var url: String? = null
     var currentPage = 0
+    var viewType = 0 // 0: file, 1: content
+    var fileUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,31 +51,48 @@ class PdfViewerActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.title = ""
-        url = intent.extras!!.getString("url")
 
-//        val skeletonScreen = Skeleton.bind(root)
-//            .load(R.layout.layout_img_skeleton)
-//            .show()
-        System.out.println("----url-------" + url)
-        viewFile()
-        url?.let { addToRecent(it) }
+        val action = intent.action
+        val type = intent.type
+
+        if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
+
+            // Get the file from the intent object
+            val file_uri = intent.data
+            println("----------------------file_uri--------" + file_uri)
+            viewType = 1
+
+            if (file_uri != null){
+                fileUri = file_uri
+                viewFileFromStream()
+            }
+
+        } else {
+            url = intent.extras!!.getString("url")
+            println("------url------------------------" + url)
+            viewType = 0
+            url?.let {
+                viewFile()
+                addToRecent(it)
+            }
+        }
 
         rotate.setOnClickListener {
             isSwipeHorizontal = !isSwipeHorizontal
-            viewFile()
+            if (viewType==0){
+                viewFile()
+            }else{
+                viewFileFromStream()
+            }
         }
         share.setOnClickListener {
             url?.let { it1 -> shareFile(it1) }
         }
 
-//        seekBar!!.min = 0
-//        seekBar.onSeekChangeListener = OnSeekChangeListener{}
-//        pdfView.jumpTo()
-
         seekBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                println("-progress---------------------------"+progress)
-                if (fromUser){
+                println("-progress---------------------------" + progress)
+                if (fromUser) {
                     pdfView!!.jumpTo(progress)
                 }
             }
@@ -188,5 +212,41 @@ class PdfViewerActivity : AppCompatActivity() {
         }
     }
 
+    fun viewFileFromStream() {
+        val thread = Thread {
+            try {
+                pdfView!!.fromUri(fileUri)
+                    .enableSwipe(true) // allows to block changing pages using swipe
+                    .swipeHorizontal(isSwipeHorizontal)
+                    .enableDoubletap(true)
+                    .defaultPage(currentPage)
+                    .fitEachPage(true)
+                    .onPageChange { page: Int, pageCount: Int ->
+                        currentPage = page
+                        println("----onPageChange-----------------------" + page)
+
+                        seekBar?.progress = page
+
+                    } // allows to draw something on the current page, usually visible in the middle of the screen
+                    // allows to draw something on all pages, separately for every page. Called only for visible pages
+                    .onLoad {
+                        seekBar!!.max = it - 1
+                        println("----onLoadDone-----------------------" + it)
+
+                    } // called after document is loaded and starts to be rendered
+                    //                            .nightMode(true)
+                    .enableAnnotationRendering(true) // render annotations (such as comments, colors or forms)
+                    .password(null)
+                    .scrollHandle(null)
+                    .enableAntialiasing(true) // improve rendering a little bit on low-res screens
+                    .spacing(10)
+
+                    .load()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        thread.start()
+    }
 
 }

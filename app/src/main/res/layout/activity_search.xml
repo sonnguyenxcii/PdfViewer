@@ -36,6 +36,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/cancel"
+            app:cardBackgroundColor="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             card_view:cardElevation="@dimen/_3sdp"
             card_view:cardUseCompatPadding="true">
@@ -45,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/_12sdp"
+                android:background="@color/white"
                 android:paddingTop="@dimen/_10sdp"
                 android:paddingRight="@dimen/_12sdp"
                 android:paddingBottom="@dimen/_10sdp">

@@ -3,6 +3,7 @@ package py.com.opentech.drawerwithbottomnavigation
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.Gravity
@@ -175,12 +176,14 @@ class HomeActivity : AppCompatActivity(),
             }
 
             R.id.nav_feedback -> {
-                Toast.makeText(this, "feedback", Toast.LENGTH_SHORT).show()
+                composeEmail()
+//                Toast.makeText(this, "feedback", Toast.LENGTH_SHORT).show()
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
             }
             R.id.nav_share -> {
-                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show()
+                shareApp()
+//                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show()
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
             }
@@ -228,7 +231,13 @@ class HomeActivity : AppCompatActivity(),
             }.filter { it.extension == "pdf" }
             .toList().forEach {
                 val lastModDate = Date(it.lastModified())
-                uriList.add(PdfModel(it.name, it.absolutePath, it.length(),Utils.formatDate(lastModDate)))
+                uriList.add(
+                    PdfModel(
+                        it.name, it.absolutePath, it.length(), Utils.formatDate(
+                            lastModDate
+                        )
+                    )
+                )
             }
 
         return uriList
@@ -273,5 +282,29 @@ class HomeActivity : AppCompatActivity(),
         }.start()
 
 
+    }
+
+    fun composeEmail() {
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.data = Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, "chongdaquan@gmail.com")
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback about PDF Reader")
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    fun shareApp(){
+        try {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "PDF Reader")
+            var shareMessage = "\nLet me recommend you this application\n\n"
+            shareMessage ="""${shareMessage}https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}""".trimIndent()
+            shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
+            startActivity(Intent.createChooser(shareIntent, "Choose one"))
+        } catch (e: Exception) {
+            //e.toString();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -20,6 +21,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +37,8 @@ import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
@@ -129,7 +133,7 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
             resultCount.setText(getString(R.string.search_result_count, count))
 
             listData.clear()
-            temp?.let {
+            temp.let {
                 listData.addAll(it)
                 adapter.notifyDataSetChanged()
             }
@@ -163,7 +167,7 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
                 if (item?.itemId == R.id.open) {
                     gotoViewPdf(listData[pos].path!!)
                 } else if (item?.itemId == R.id.delete) {
-                    deletePdfFile(listData[pos].path!!)
+                    onConfirmDelete(pos)
                 } else if (item?.itemId == R.id.bookmark) {
                     addToBookmark(listData[pos].path!!)
                 } else if (item?.itemId == R.id.share) {
@@ -280,6 +284,57 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         var realm = Realm.getDefaultInstance()
 
         return realm.where(BookmarkRealmObject::class.java).equalTo("path", path).findAll()
+    }
+
+    fun onConfirmDelete(pos: Int) {
+        val alertDialog: AlertDialog
+        val dialogBuilder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        val dialogView: View = inflater.inflate(R.layout.dialog_delete_layout, null)
+        dialogBuilder.setView(dialogView)
+
+        val ok = dialogView.findViewById<AppCompatButton>(R.id.ok)
+        val cancel = dialogView.findViewById<AppCompatButton>(R.id.cancel)
+        alertDialog = dialogBuilder.create()
+        alertDialog.setCancelable(true)
+        Objects.requireNonNull(alertDialog.window)
+            ?.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.show()
+
+        ok.setOnClickListener { v: View? ->
+            var path = listData[pos].path
+            path?.let { deletePdfFile(it) }
+            listData.removeAt(pos)
+            adapter.notifyDataSetChanged()
+
+            if (listData.isNullOrEmpty()) {
+                searchResultEmpty.visibility= View.VISIBLE
+                searchResult.visibility= View.GONE
+
+                searchResultEmptyTittle.setText(
+                    getString(
+                        R.string.search_result_empty_tittle,
+                        edtSearch.text.toString()
+                    )
+                )
+            } else {
+
+                searchResultEmpty.visibility= View.GONE
+                searchResult.visibility= View.VISIBLE
+
+                searchResultTittle.setText(
+                    getString(
+                        R.string.search_result_tittle,
+                        edtSearch.text.toString()
+                    )
+                )
+
+                var count = listData.size.toString()
+                resultCount.setText(getString(R.string.search_result_count, count))
+            }
+            alertDialog.dismiss()
+        }
+        cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
     }
 
 
