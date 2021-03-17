@@ -9,6 +9,8 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
@@ -40,6 +42,13 @@ android {
     packagingOptions {
 
         exclude "META-INF/DEPENDENCIES"
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 
@@ -89,5 +98,8 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
+
 }
 

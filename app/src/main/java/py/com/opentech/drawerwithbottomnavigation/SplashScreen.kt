@@ -17,10 +17,10 @@ class SplashScreen : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
 
         progressBar.progress = i
-        val mCountDownTimer = object : CountDownTimer(5000, 100) {
+        val mCountDownTimer = object : CountDownTimer(3000, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 i++
-                progressBar.progress = i as Int * 100 / (5000 / 100)
+                progressBar.progress = i as Int * 100 / (3000 / 100)
             }
 
             override fun onFinish() {
