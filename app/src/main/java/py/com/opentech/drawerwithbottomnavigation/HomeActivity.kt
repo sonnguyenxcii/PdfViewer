@@ -17,7 +17,18 @@ import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAdCallback
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.navigation.NavigationView
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.tasks.Task
+import com.hosseiniseyro.apprating.AppRatingDialog
+import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import com.infideap.drawerbehavior.AdvanceDrawerLayout
 import kotlinx.android.synthetic.main.app_bar_default.*
 import org.greenrobot.eventbus.EventBus
@@ -28,6 +39,8 @@ import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.ui.fileexplorer.FileExplorerActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 import java.io.File
 import java.util.*
@@ -35,7 +48,7 @@ import kotlin.collections.ArrayList
 
 
 class HomeActivity : AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener {
+    NavigationView.OnNavigationItemSelectedListener , RatingDialogListener {
 
     private var drawer: AdvanceDrawerLayout? = null
     private lateinit var navController: NavController
@@ -50,6 +63,10 @@ class HomeActivity : AppCompatActivity(),
         this.application?.global?.isListMode?.postValue(true)
 
         setupNavController()
+        Admod.getInstance().loadBanner(this, Constants.ADMOB_Banner)
+        Admod.getInstance().setNumToShowAds(3)
+
+        Admod.getInstance().initVideoAds(this,Constants.ADMOB_Reward)
 
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
 
@@ -63,7 +80,24 @@ class HomeActivity : AppCompatActivity(),
         bottomNavigationView.menu.getItem(1).isEnabled = false
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            navigateTo(item.itemId)
+            if (item.itemId == R.id.recent){
+                if (InternetConnection.checkConnection(this)){
+                    Admod.getInstance().forceShowInterstitial(
+                        this,
+                        application?.mInterstitialAd,
+                        object : AdCallback() {
+                            override fun onAdClosed() {
+                                navigateTo(item.itemId)
+                            }
+                        }
+                    )
+                }else{
+                    navigateToBookmark()
+                }
+            }else{
+                navigateTo(item.itemId)
+            }
+
             true
         }
 
@@ -77,8 +111,19 @@ class HomeActivity : AppCompatActivity(),
         }
 
         fab.setOnClickListener {
-            navigateTo(R.id.nav_bookmark)
-            bottomNavigationView.selectedItemId = R.id.nav_bookmark
+            if (InternetConnection.checkConnection(this)){
+                Admod.getInstance().forceShowInterstitial(
+                    this,
+                    application?.mInterstitialAd,
+                    object : AdCallback() {
+                        override fun onAdClosed() {
+                            navigateToBookmark()
+                        }
+                    }
+                )
+            }else{
+                navigateToBookmark()
+            }
         }
 
         mode.setOnClickListener {
@@ -96,6 +141,11 @@ class HomeActivity : AppCompatActivity(),
                 }
             }
         })
+    }
+
+    fun navigateToBookmark(){
+        navigateTo(R.id.nav_bookmark)
+        bottomNavigationView.selectedItemId = R.id.nav_bookmark
     }
 
     private fun setupNavController() {
@@ -163,13 +213,56 @@ class HomeActivity : AppCompatActivity(),
 
             }
             R.id.nav_pdf_scan -> {
-                navigateToScan()
+                var isEarn = false
+                Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
+                    override fun onUserEarnedReward(p0: RewardItem) {
+                        isEarn = true
+                    }
+
+                    override fun onRewardedAdClosed() {
+                        super.onRewardedAdClosed()
+                        if (isEarn){
+                            navigateToScan()
+                        }
+
+                    }
+
+                    override fun onRewardedAdFailedToShow(p0: AdError?) {
+                        super.onRewardedAdFailedToShow(p0)
+                        navigateToScan()
+
+                    }
+                })
+//                Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
+//                    override fun onUserEarnedReward(p0: RewardItem) {
+//                        navigateToScan()
+//                    }
+//                })
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
             }
 
             R.id.nav_pdf_merge -> {
-                navigateToMerge()
+                var isEarn = false
+                Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
+                    override fun onUserEarnedReward(p0: RewardItem) {
+                        isEarn = true
+                    }
+
+                    override fun onRewardedAdClosed() {
+                        super.onRewardedAdClosed()
+                        if (isEarn){
+                            navigateToMerge()
+                        }
+
+                    }
+
+                    override fun onRewardedAdFailedToShow(p0: AdError?) {
+                        super.onRewardedAdFailedToShow(p0)
+                        navigateToMerge()
+
+                    }
+                })
 
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
@@ -183,6 +276,13 @@ class HomeActivity : AppCompatActivity(),
             }
             R.id.nav_share -> {
                 shareApp()
+//                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show()
+                drawer!!.closeDrawer(GravityCompat.START)
+                return false
+            }
+            R.id.nav_rating -> {
+                showRate()
+//                shareApp()
 //                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show()
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
@@ -305,6 +405,84 @@ class HomeActivity : AppCompatActivity(),
             startActivity(Intent.createChooser(shareIntent, "Choose one"))
         } catch (e: Exception) {
             //e.toString();
+        }
+    }
+
+    fun showRate() {
+        AppRatingDialog.Builder()
+            .setPositiveButtonText("Submit")
+            .setNegativeButtonText("Cancel")
+            .setNeutralButtonText("Later")
+            .setNoteDescriptions(
+                Arrays.asList(
+                    "Very Bad",
+                    "Not good",
+                    "Quite ok",
+                    "Very Good",
+                    "Excellent !!!"
+                )
+            )
+            .setDefaultRating(5)
+            .setThreshold(3)
+            .setTitle("Did you like the app?")
+            .setDescription("Let us know what you think")
+            .setCommentInputEnabled(true)
+            .setDefaultComment("This app is pretty cool !")
+            .setStarColor(R.color.navBgColor)
+            .setNoteDescriptionTextColor(R.color.colorPrimaryDark)
+            .setTitleTextColor(R.color.black)
+            .setDescriptionTextColor(R.color.descriptionTextColor)
+            .setHint("Please write your comment here ...")
+            .setHintTextColor(R.color.white)
+            .setCommentTextColor(R.color.white)
+            .setCommentBackgroundColor(R.color.blue50)
+            .setDialogBackgroundColor(R.color.white)
+            .setCancelable(false)
+            .setCanceledOnTouchOutside(false)
+            .create(this)
+            .show()
+    }
+
+    override fun onNegativeButtonClicked() {
+
+    }
+
+    override fun onNeutralButtonClicked() {
+    }
+
+    override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
+        if (rate>=4){
+            askRatings()
+
+        }else{
+//            finish()
+        }
+    }
+
+    override fun onPositiveButtonClickedWithoutComment(rate: Int) {
+        if (rate>=4){
+            askRatings()
+
+        }else{
+//            finish()
+        }
+    }
+
+    fun askRatings() {
+        val manager = ReviewManagerFactory.create(this)
+        val request: Task<ReviewInfo> = manager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful()) {
+                // We can get the ReviewInfo object
+                val reviewInfo: ReviewInfo = task.getResult()
+                val flow: Task<Void> = manager.launchReviewFlow(this, reviewInfo)
+                flow.addOnCompleteListener { task2 ->
+//                    finish()
+                }
+            } else {
+//                finish()
+                // There was some problem, continue regardless of the result.
+            }
         }
     }
 }

@@ -3,6 +3,12 @@ package py.com.opentech.drawerwithbottomnavigation;
 import android.app.Application;
 import android.content.Context;
 
+import com.ads.control.Admod;
+import com.ads.control.AdsApplication;
+import com.ads.control.AppOpenManager;
+import com.google.android.gms.ads.InterstitialAd;
+
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.realm.Realm;
@@ -10,20 +16,39 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject;
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject;
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants;
 import py.com.opentech.drawerwithbottomnavigation.utils.Globals;
 
-public class PdfApplication extends Application {
+public class PdfApplication extends AdsApplication {
     private Globals instance;
     public static AtomicLong bookmarkPrimaryKey;
     public static AtomicLong recentPrimaryKey;
     public static volatile Context applicationContext = null;
+    public InterstitialAd mInterstitialAd;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashScreen.class);
+
         initRealm();
         applicationContext = getApplicationContext();
+        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
+    }
 
+    @Override
+    public boolean enableAdsResume() {
+        return true;
+    }
+
+    @Override
+    public List<String> getListTestDeviceId() {
+        return null;
+    }
+
+    @Override
+    public String getOpenAppAdId() {
+        return Constants.ADMOB_Open_App;
     }
 
     public synchronized Globals getGlobal() {

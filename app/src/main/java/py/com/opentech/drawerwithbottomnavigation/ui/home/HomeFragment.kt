@@ -1,5 +1,6 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -12,8 +13,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.PopupMenu
@@ -23,6 +23,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
 import io.realm.Realm
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -35,6 +37,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -57,6 +60,8 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
         val searchBox: View = root.findViewById(R.id.searchBox)
+
+        Admod.getInstance().loadSmallNative(activity,Constants.ADMOB_Native_Home,root)
 
         recyclerView.layoutManager =
             if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
@@ -113,7 +118,16 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     }
 
     override fun onItemClick(pos: Int) {
-        gotoViewPdf(listData[pos].path!!)
+        Admod.getInstance().forceShowInterstitial(
+            context,
+            application?.mInterstitialAd,
+            object : AdCallback() {
+                override fun onAdClosed() {
+                    gotoViewPdf(listData[pos].path!!)
+                }
+            }
+        )
+
     }
 
     override fun onMoreClick(pos: Int, view: View) {

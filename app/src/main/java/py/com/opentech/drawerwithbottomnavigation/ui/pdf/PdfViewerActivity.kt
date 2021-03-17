@@ -1,32 +1,33 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
-import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
-import androidx.loader.content.CursorLoader
 import com.github.barteksc.pdfviewer.PDFView
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.android.play.core.tasks.Task
+import com.hosseiniseyro.apprating.AppRatingDialog
+import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import io.realm.Realm
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import java.io.File
+import java.util.*
 
 
 /**
  * Shows the terms and agreements. Simply calls a webview.
  */
-class PdfViewerActivity : AppCompatActivity() {
+class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     var isSwipeHorizontal = false
     var pdfView: PDFView? = null
@@ -40,11 +41,9 @@ class PdfViewerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdf_viewer)
         pdfView = findViewById<PDFView>(R.id.pdfView)
-        val progress = findViewById<ProgressBar>(R.id.progress)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         val rotate = findViewById<View>(R.id.rotate)
         val share = findViewById<View>(R.id.share)
-        val root = findViewById<View>(R.id.root)
         seekBar = findViewById<SeekBar>(R.id.seekBar)
 
         setSupportActionBar(toolbar)
@@ -56,22 +55,18 @@ class PdfViewerActivity : AppCompatActivity() {
         val type = intent.type
 
         if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
-
-            // Get the file from the intent object
             val file_uri = intent.data
-            println("----------------------file_uri--------" + file_uri)
             viewType = 1
 
-            if (file_uri != null){
+            if (file_uri != null) {
                 fileUri = file_uri
                 viewFileFromStream()
-            }else{
+            } else {
 
             }
 
         } else {
             url = intent.extras!!.getString("url")
-            println("------url------------------------" + url)
             viewType = 0
             url?.let {
                 viewFile()
@@ -81,9 +76,9 @@ class PdfViewerActivity : AppCompatActivity() {
 
         rotate.setOnClickListener {
             isSwipeHorizontal = !isSwipeHorizontal
-            if (viewType==0){
+            if (viewType == 0) {
                 viewFile()
-            }else{
+            } else {
                 viewFileFromStream()
             }
         }
@@ -96,7 +91,6 @@ class PdfViewerActivity : AppCompatActivity() {
 
         seekBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                println("-progress---------------------------" + progress)
                 if (fromUser) {
                     pdfView!!.jumpTo(progress)
                 }
@@ -110,14 +104,11 @@ class PdfViewerActivity : AppCompatActivity() {
         })
     }
 
-//    val onSeekChangeListener = OnSeekChangeListener(){}
 
     fun viewFile() {
         val thread = Thread {
             try {
-//                    InputStream input = new URL(url).openStream();
-                pdfView!!.fromFile(File(url)) //                    pdfView.fromFile(new File("file://"+url))
-                    //                    pdfView.fromStream(input)
+                pdfView!!.fromFile(File(url))
                     .enableSwipe(true) // allows to block changing pages using swipe
                     .swipeHorizontal(isSwipeHorizontal)
                     .enableDoubletap(true)
@@ -128,18 +119,12 @@ class PdfViewerActivity : AppCompatActivity() {
                         println("----onPageChange-----------------------" + page)
 
                         seekBar?.progress = page
-//                        Toast.makeText(
-//                            this@PdfViewerActivity,
-//                            "Trang " + (page + 1) + "/" + pageCount,
-//                            Toast.LENGTH_SHORT
-//                        ).show()
+
                     } // allows to draw something on the current page, usually visible in the middle of the screen
                     // allows to draw something on all pages, separately for every page. Called only for visible pages
                     .onLoad {
                         seekBar!!.max = it - 1
-                        println("----onLoadDone-----------------------" + it)
-//                        skeletonScreen.hide()
-//                        progress!!.visibility = View.GONE
+
                     } // called after document is loaded and starts to be rendered
                     //                            .nightMode(true)
                     .enableAnnotationRendering(true) // render annotations (such as comments, colors or forms)
@@ -157,8 +142,44 @@ class PdfViewerActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+//        onBackPressed()
+        showRate()
         return true
+    }
+
+    fun showRate() {
+        AppRatingDialog.Builder()
+            .setPositiveButtonText("Submit")
+            .setNegativeButtonText("Cancel")
+            .setNeutralButtonText("Later")
+            .setNoteDescriptions(
+                Arrays.asList(
+                    "Very Bad",
+                    "Not good",
+                    "Quite ok",
+                    "Very Good",
+                    "Excellent !!!"
+                )
+            )
+            .setDefaultRating(5)
+            .setThreshold(3)
+            .setTitle("Did you like the app?")
+            .setDescription("Let us know what you think")
+            .setCommentInputEnabled(true)
+            .setDefaultComment("This app is pretty cool !")
+            .setStarColor(R.color.navBgColor)
+            .setNoteDescriptionTextColor(R.color.colorPrimaryDark)
+            .setTitleTextColor(R.color.black)
+            .setDescriptionTextColor(R.color.descriptionTextColor)
+            .setHint("Please write your comment here ...")
+            .setHintTextColor(R.color.white)
+            .setCommentTextColor(R.color.white)
+            .setCommentBackgroundColor(R.color.blue50)
+            .setDialogBackgroundColor(R.color.white)
+            .setCancelable(false)
+            .setCanceledOnTouchOutside(false)
+            .create(this)
+            .show()
     }
 
     fun addToRecent(path: String) {
@@ -216,26 +237,17 @@ class PdfViewerActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intentShareFile, "Share File"))
         }
     }
+
     fun shareFileUri(uri: Uri) {
         val intentShareFile = Intent(Intent.ACTION_SEND)
-//        val fileWithinMyDir = File(path)
-
-//        if (fileWithinMyDir.exists()) {
-            intentShareFile.type = "application/pdf"
-//            val photoURI = let {
-//                FileProvider.getUriForFile(
-//                    it, BuildConfig.APPLICATION_ID + ".provider",
-//                    fileWithinMyDir
-//                )
-//            }
-            intentShareFile.putExtra(Intent.EXTRA_STREAM, uri)
-            intentShareFile.putExtra(
-                Intent.EXTRA_SUBJECT,
-                "Sharing File..."
-            )
-            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
-            startActivity(Intent.createChooser(intentShareFile, "Share File"))
-//        }
+        intentShareFile.type = "application/pdf"
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, uri)
+        intentShareFile.putExtra(
+            Intent.EXTRA_SUBJECT,
+            "Sharing File..."
+        )
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
+        startActivity(Intent.createChooser(intentShareFile, "Share File"))
     }
 
     fun viewFileFromStream() {
@@ -249,7 +261,6 @@ class PdfViewerActivity : AppCompatActivity() {
                     .fitEachPage(true)
                     .onPageChange { page: Int, pageCount: Int ->
                         currentPage = page
-                        println("----onPageChange-----------------------" + page)
 
                         seekBar?.progress = page
 
@@ -257,7 +268,6 @@ class PdfViewerActivity : AppCompatActivity() {
                     // allows to draw something on all pages, separately for every page. Called only for visible pages
                     .onLoad {
                         seekBar!!.max = it - 1
-                        println("----onLoadDone-----------------------" + it)
 
                     } // called after document is loaded and starts to be rendered
                     //                            .nightMode(true)
@@ -273,6 +283,51 @@ class PdfViewerActivity : AppCompatActivity() {
             }
         }
         thread.start()
+    }
+
+    override fun onNegativeButtonClicked() {
+        finish()
+    }
+
+    override fun onNeutralButtonClicked() {
+        finish()
+
+    }
+
+    override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
+        if (rate>=4){
+            askRatings()
+
+        }else{
+            finish()
+        }
+    }
+
+    override fun onPositiveButtonClickedWithoutComment(rate: Int) {
+        if (rate>=4){
+            askRatings()
+
+        }else{
+            finish()
+        }
+    }
+
+    fun askRatings() {
+        val manager = ReviewManagerFactory.create(this)
+        val request: Task<ReviewInfo> = manager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful()) {
+                // We can get the ReviewInfo object
+                val reviewInfo: ReviewInfo = task.getResult()
+                val flow: Task<Void> = manager.launchReviewFlow(this, reviewInfo)
+                flow.addOnCompleteListener { task2 ->
+                    finish()
+                }
+            } else {
+                finish()
+                // There was some problem, continue regardless of the result.
+            }
+        }
     }
 
 }

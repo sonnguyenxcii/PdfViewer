@@ -26,6 +26,14 @@
         app:itemTextColor="@color/white"
         app:insetForeground="@color/white"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_drawer" >
+
+        <include
+            layout="@layout/layout_banner_control"
+            android:layout_width="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+    </com.google.android.material.navigation.NavigationView>
 
 </com.infideap.drawerbehavior.AdvanceDrawerLayout>

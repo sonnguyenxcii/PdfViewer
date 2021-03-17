@@ -15,4 +15,9 @@
     <color name="colorBgItem">#DDF2F4</color>
     <color name="colorBtnDialog">#61A99C</color>
 
+    <color name="starColor">#57a6f0</color>
+    <color name="noteDescriptionTextColor">#57a6f0</color>
+    <color name="titleTextColor">#D9141627</color>
+    <color name="descriptionTextColor">#80141627</color>
+    <color name="commentTextColor">#D9141627</color>
 </resources>

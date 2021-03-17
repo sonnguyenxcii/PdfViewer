@@ -19,6 +19,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
 import io.realm.Realm
 import io.realm.RealmResults
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
@@ -96,7 +98,16 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
 
 
     override fun onItemClick(pos: Int) {
-        gotoViewPdf(listData[pos].path!!)
+        Admod.getInstance().forceShowInterstitial(
+            context,
+            application?.mInterstitialAd,
+            object : AdCallback() {
+                override fun onAdClosed() {
+                    gotoViewPdf(listData[pos].path!!)
+                }
+            }
+        )
+//        gotoViewPdf(listData[pos].path!!)
     }
 
     override fun onMoreClick(pos: Int, view: View) {

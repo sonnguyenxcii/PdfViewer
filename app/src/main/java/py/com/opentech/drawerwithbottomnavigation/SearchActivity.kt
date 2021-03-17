@@ -26,6 +26,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
 import io.realm.Realm
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.activity_search.*
@@ -87,7 +89,16 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         edtSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // Your action on done
-                processData()
+                Admod.getInstance().forceShowInterstitial(
+                    this,
+                    application?.mInterstitialAd,
+                    object : AdCallback() {
+                        override fun onAdClosed() {
+                            processData()
+                        }
+                    }
+                )
+
                 false
             } else false
         })

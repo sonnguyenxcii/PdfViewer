@@ -23,6 +23,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:layout_marginBottom="@dimen/_8sdp"
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -92,12 +93,14 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <include
+            layout="@layout/layout_small_native_control"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_16sdp" />
+            android:layout_marginTop="@dimen/_8sdp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
