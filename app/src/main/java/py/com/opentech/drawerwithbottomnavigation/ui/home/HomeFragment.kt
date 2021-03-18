@@ -61,7 +61,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
         val searchBox: View = root.findViewById(R.id.searchBox)
 
-        Admod.getInstance().loadSmallNative(activity,Constants.ADMOB_Native_Home,root)
+        Admod.getInstance().loadSmallNativeFragment(activity,Constants.ADMOB_Native_Home,root)
 
         recyclerView.layoutManager =
             if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(

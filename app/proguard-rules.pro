@@ -24,3 +24,13 @@
 -dontwarn com.yalantis.ucrop**
 -keep class com.yalantis.ucrop** { *; }
 -keep interface com.yalantis.ucrop** { *; }
+
+ -keepattributes *Annotation*
+
+ -keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+ }
+
+  -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+  -keep class py.com.opentech.drawerwithbottomnavigation.model.** { *; }

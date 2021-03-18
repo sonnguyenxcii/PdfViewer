@@ -1,6 +1,5 @@
 package py.com.opentech.drawerwithbottomnavigation;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.ads.control.Admod;
@@ -33,7 +32,10 @@ public class PdfApplication extends AdsApplication {
 
         initRealm();
         applicationContext = getApplicationContext();
+        Admod.getInstance().init(this, null);
+
         mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
+
     }
 
     @Override

@@ -35,9 +35,10 @@ class SplashScreen : AppCompatActivity() {
 
         mCountDownTimer.start()
 
+       var  timeoutInMilliseconds : Long = 3000
         Admod.getInstance().loadSplashInterstitalAds(this,
             Constants.ADMOB_Interstitial,
-            3000,
+            timeoutInMilliseconds,
             object : AdCallback() {
                 override fun onAdClosed() {
                     gotoMain()
@@ -47,6 +48,10 @@ class SplashScreen : AppCompatActivity() {
                     gotoMain()
                 }
             })
+
+//        if (timeoutInMilliseconds<=0){
+//            gotoMain()
+//        }
     }
 
     fun gotoMain() {

@@ -9,7 +9,6 @@ import android.os.Environment
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -81,7 +80,7 @@ class HomeActivity : AppCompatActivity(),
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             if (item.itemId == R.id.recent){
-                if (InternetConnection.checkConnection(this)){
+//                if (InternetConnection.checkConnection(this)){
                     Admod.getInstance().forceShowInterstitial(
                         this,
                         application?.mInterstitialAd,
@@ -91,9 +90,9 @@ class HomeActivity : AppCompatActivity(),
                             }
                         }
                     )
-                }else{
-                    navigateToBookmark()
-                }
+//                }else{
+//                    navigateToBookmark()
+//                }
             }else{
                 navigateTo(item.itemId)
             }
@@ -111,7 +110,7 @@ class HomeActivity : AppCompatActivity(),
         }
 
         fab.setOnClickListener {
-            if (InternetConnection.checkConnection(this)){
+//            if (InternetConnection.checkConnection(this)){
                 Admod.getInstance().forceShowInterstitial(
                     this,
                     application?.mInterstitialAd,
@@ -121,9 +120,9 @@ class HomeActivity : AppCompatActivity(),
                         }
                     }
                 )
-            }else{
-                navigateToBookmark()
-            }
+//            }else{
+//                navigateToBookmark()
+//            }
         }
 
         mode.setOnClickListener {
@@ -213,56 +212,63 @@ class HomeActivity : AppCompatActivity(),
 
             }
             R.id.nav_pdf_scan -> {
-                var isEarn = false
-                Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
-                    override fun onUserEarnedReward(p0: RewardItem) {
-                        isEarn = true
-                    }
+                if (!InternetConnection.checkConnection(this)){
+                    navigateToScan()
 
-                    override fun onRewardedAdClosed() {
-                        super.onRewardedAdClosed()
-                        if (isEarn){
-                            navigateToScan()
+                }else{
+                    var isEarn = false
+                    Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
+                        override fun onUserEarnedReward(p0: RewardItem) {
+                            isEarn = true
                         }
 
-                    }
+                        override fun onRewardedAdClosed() {
+                            super.onRewardedAdClosed()
+                            if (isEarn){
+                                navigateToScan()
+                            }
+                        }
 
-                    override fun onRewardedAdFailedToShow(p0: AdError?) {
-                        super.onRewardedAdFailedToShow(p0)
-                        navigateToScan()
+                        override fun onRewardedAdFailedToShow(p0: AdError?) {
+                            super.onRewardedAdFailedToShow(p0)
+                            navigateToScan()
 
-                    }
-                })
-//                Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
-//                    override fun onUserEarnedReward(p0: RewardItem) {
-//                        navigateToScan()
-//                    }
-//                })
+                        }
+                    })
+                }
+
+
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
             }
 
             R.id.nav_pdf_merge -> {
-                var isEarn = false
-                Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
-                    override fun onUserEarnedReward(p0: RewardItem) {
-                        isEarn = true
-                    }
+                 if (!InternetConnection.checkConnection(this)){
+                     navigateToMerge()
 
-                    override fun onRewardedAdClosed() {
-                        super.onRewardedAdClosed()
-                        if (isEarn){
-                            navigateToMerge()
-                        }
+                }else{
+                     var isEarn = false
+                     Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
+                         override fun onUserEarnedReward(p0: RewardItem) {
+                             isEarn = true
+                         }
 
-                    }
+                         override fun onRewardedAdClosed() {
+                             super.onRewardedAdClosed()
+                             if (isEarn){
+                                 navigateToMerge()
+                             }
 
-                    override fun onRewardedAdFailedToShow(p0: AdError?) {
-                        super.onRewardedAdFailedToShow(p0)
-                        navigateToMerge()
+                         }
 
-                    }
-                })
+                         override fun onRewardedAdFailedToShow(p0: AdError?) {
+                             super.onRewardedAdFailedToShow(p0)
+                             navigateToMerge()
+
+                         }
+                     })
+                }
+
 
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
