@@ -1,6 +1,5 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.home
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.ShortcutInfo
@@ -13,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.PopupMenu
@@ -27,7 +25,6 @@ import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import io.realm.Realm
 import io.realm.RealmResults
-import kotlinx.android.synthetic.main.fragment_home.*
 import org.greenrobot.eventbus.EventBus
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
@@ -61,7 +58,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
         val searchBox: View = root.findViewById(R.id.searchBox)
 
-        Admod.getInstance().loadSmallNativeFragment(activity,Constants.ADMOB_Native_Home,root)
+        Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Home, root)
 
         recyclerView.layoutManager =
             if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
