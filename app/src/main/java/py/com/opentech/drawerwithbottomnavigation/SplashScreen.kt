@@ -21,10 +21,10 @@ class SplashScreen : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
         
         progressBar.progress = i
-        val mCountDownTimer = object : CountDownTimer(2000, 100) {
+        val mCountDownTimer = object : CountDownTimer(3000, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 i++
-                progressBar.progress = i as Int * 100 / (2000 / 100)
+                progressBar.progress = i as Int * 100 / (3000 / 100)
             }
 
             override fun onFinish() {
@@ -36,7 +36,7 @@ class SplashScreen : AppCompatActivity() {
 
         mCountDownTimer.start()
 
-       var  timeoutInMilliseconds : Long = 2000
+       var  timeoutInMilliseconds : Long = 3000
         Admod.getInstance().loadSplashInterstitalAds(this,
             Constants.ADMOB_Interstitial,
             timeoutInMilliseconds,
