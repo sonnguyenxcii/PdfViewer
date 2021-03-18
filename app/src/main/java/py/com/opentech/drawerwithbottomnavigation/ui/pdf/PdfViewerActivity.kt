@@ -147,6 +147,11 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         return true
     }
 
+    override fun onBackPressed() {
+//        super.onBackPressed()
+        showRate()
+    }
+
     fun showRate() {
         AppRatingDialog.Builder()
             .setPositiveButtonText("Submit")

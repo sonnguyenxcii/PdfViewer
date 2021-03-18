@@ -63,7 +63,6 @@ class HomeActivity : AppCompatActivity(),
 
         setupNavController()
         Admod.getInstance().loadBanner(this, Constants.ADMOB_Banner)
-        Admod.getInstance().setNumToShowAds(3)
 
         Admod.getInstance().initVideoAds(this,Constants.ADMOB_Reward)
 
