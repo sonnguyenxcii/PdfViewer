@@ -20,6 +20,7 @@ import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
 import java.io.File
 import java.util.*
 
@@ -143,13 +144,23 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     override fun onSupportNavigateUp(): Boolean {
 //        onBackPressed()
-        showRate()
+        if (!isRating()){
+            showRate()
+        }else{
+            finish()
+        }
+
         return true
     }
 
     override fun onBackPressed() {
 //        super.onBackPressed()
-        showRate()
+//        showRate()
+        if (!isRating()){
+            showRate()
+        }else{
+            finish()
+        }
     }
 
     fun showRate() {
@@ -166,12 +177,11 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                     "Excellent !!!"
                 )
             )
-            .setDefaultRating(5)
+            .setDefaultRating(0)
             .setThreshold(3)
             .setTitle("Did you like the app?")
             .setDescription("Let us know what you think")
             .setCommentInputEnabled(true)
-            .setDefaultComment("This app is pretty cool !")
             .setStarColor(R.color.navBgColor)
             .setNoteDescriptionTextColor(R.color.colorPrimaryDark)
             .setTitleTextColor(R.color.black)
@@ -300,19 +310,23 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     }
 
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
-        if (rate>=4){
+        setRatingStatus()
+
+        if (rate >= 4) {
             askRatings()
 
-        }else{
+        } else {
             finish()
         }
     }
 
     override fun onPositiveButtonClickedWithoutComment(rate: Int) {
-        if (rate>=4){
+        setRatingStatus()
+
+        if (rate >= 4) {
             askRatings()
 
-        }else{
+        } else {
             finish()
         }
     }
@@ -335,4 +349,17 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         }
     }
 
+    fun setRatingStatus() {
+
+        var editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putBoolean("isRating", true)
+        editor.apply()
+    }
+
+    fun isRating(): Boolean {
+        val prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE)
+        val isRating = prefs.getBoolean("isRating", false)
+
+        return isRating
+    }
 }

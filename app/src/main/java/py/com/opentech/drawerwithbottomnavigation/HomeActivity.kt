@@ -427,12 +427,11 @@ class HomeActivity : AppCompatActivity(),
                     "Excellent !!!"
                 )
             )
-            .setDefaultRating(5)
+            .setDefaultRating(0)
             .setThreshold(3)
             .setTitle("Did you like the app?")
             .setDescription("Let us know what you think")
             .setCommentInputEnabled(true)
-            .setDefaultComment("This app is pretty cool !")
             .setStarColor(R.color.navBgColor)
             .setNoteDescriptionTextColor(R.color.colorPrimaryDark)
             .setTitleTextColor(R.color.black)
