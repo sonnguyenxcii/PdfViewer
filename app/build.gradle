@@ -15,7 +15,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId "com.proxinc.pdfreader.viewer"
+        applicationId "com.pdfreader.scanner.pdfviewer"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
