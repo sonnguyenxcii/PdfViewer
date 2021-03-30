@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.proxinc.pdfreader.viewer",
+  "applicationId": "com.pdfreader.scanner.pdfviewer",
   "variantName": "processReleaseResources",
   "elements": [
     {
