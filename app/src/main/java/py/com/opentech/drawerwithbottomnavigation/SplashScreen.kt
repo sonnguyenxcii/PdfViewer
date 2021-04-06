@@ -30,7 +30,7 @@ class SplashScreen : AppCompatActivity() {
             override fun onFinish() {
                 i++
                 progressBar.progress = 100
-                process()
+//                process()
             }
         }
 

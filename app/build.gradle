@@ -28,7 +28,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug{
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
     implementation 'com.karumi:dexter:6.2.2'
 
-    implementation 'org.apache.pdfbox:pdfbox:2.0.2'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.23'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.6'
@@ -87,13 +87,9 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
-//    annotationProcessor 'io.realm:realm-android:0.84.1'
     implementation 'org.greenrobot:eventbus:3.2.0'
 
     implementation 'com.infideap.drawerbehavior:drawer-behavior:1.0.4'
-//    implementation 'com.ethanhua:skeleton:1.1.2'
-//    implementation 'io.supercharge:shimmerlayout:2.1.0'
-//    implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
     implementation 'com.google.android.gms:play-services-ads:19.8.0'
 
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
@@ -102,10 +98,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.github.eGame-Global:AndMuduleAds:1.3.7'
 
-//    implementation 'com.suddenh4x.ratingdialog:awesome-app-rating:2.3.0'
     implementation 'com.github.hosseiniSeyRo:android-app-rating:1.1.2'
     implementation 'com.google.android.play:core:1.10.0'
 
-
+//    implementation "commons-logging:commons-logging-api:1.1"
 }
 

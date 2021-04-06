@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/open"
-        android:title="Mở"/>
+        android:title="Open"/>
 
     <item
         android:id="@+id/bookmark"
-        android:title="Xóa khỏi đánh dấu"/>
+        android:title="Remove from bookmark"/>
     <item
         android:id="@+id/share"
-        android:title="Chia sẻ thư mục"/>
+        android:title="Share"/>
 
     <item
         android:id="@+id/shortcut"
-        android:title="Phím tắt"/>
+        android:title="Shortcut"/>
 </menu>

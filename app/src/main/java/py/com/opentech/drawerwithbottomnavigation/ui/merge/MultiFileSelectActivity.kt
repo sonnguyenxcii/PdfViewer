@@ -136,10 +136,9 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
     @Throws(IOException::class)
     private fun downloadAndCombinePDFs(): File {
         val dialog: android.app.AlertDialog? = SpotsDialog.Builder().setContext(this).build()
-
         dialog?.show()
+
         val file = File(
-//            getExternalFilesDir(null)?.absolutePath + File.separator,
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
             "$fileName.pdf"
         )
@@ -162,11 +161,12 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
                 ut.mergeDocuments(MemoryUsageSetting.setupTempFileOnly())
             } catch (e: Exception) {
                 e.printStackTrace()
+                e.message?.let { showAlertDialog(it) }
             } finally {
                 fileOutputStream.close()
-            }
+                dialog?.dismiss()
 
-            dialog?.dismiss()
+            }
 
             gotoViewPdf(file.absolutePath)
         }.start()
@@ -181,5 +181,22 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
         intent.putExtra("url", path)
         startActivity(intent)
         finish()
+    }
+
+    fun showAlertDialog(msg: kotlin.String) {
+        if (isFinishing) return
+        try {
+            val dialogBuilder = android.app.AlertDialog.Builder(this)
+            dialogBuilder.setTitle(null)
+            dialogBuilder.setIcon(R.mipmap.ic_launcher)
+            dialogBuilder.setMessage(msg)
+            dialogBuilder.setPositiveButton(
+                "OK"
+            ) { dialog: DialogInterface?, which: Int ->}
+            dialogBuilder.setCancelable(false)
+            dialogBuilder.show()
+        } catch (e: java.lang.Exception) {
+//            Debug.e("---  Exception BaseActivity " + e.message)
+        }
     }
 }

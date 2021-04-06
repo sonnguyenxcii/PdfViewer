@@ -87,7 +87,7 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         })
 
         edtSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 // Your action on done
                 Admod.getInstance().forceShowInterstitial(
                     this,

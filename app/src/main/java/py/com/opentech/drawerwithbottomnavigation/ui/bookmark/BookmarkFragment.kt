@@ -75,7 +75,6 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
         super.onResume()
         listData.clear()
         var models = getBookmarkByPath()
-        println("--bookmarks------------" + models?.size)
 
         models?.forEach { bm ->
             application?.global?.listData?.value?.forEach { data ->
@@ -84,7 +83,6 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
                   listData.add(data)
               }
             }
-            println("--bookmark------------" + bm?.path)
         }
         adapter.notifyDataSetChanged()
     }

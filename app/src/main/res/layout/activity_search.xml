@@ -67,7 +67,7 @@
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:fontFamily="@font/segoe_normal"
                     android:hint="Search"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionSearch"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="@color/black"

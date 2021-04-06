@@ -21,6 +21,7 @@ import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
+import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
 import java.io.File
 import java.util.*
 
@@ -83,12 +84,16 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                 viewFileFromStream()
             }
         }
-        share.setOnClickListener {
-            url?.let { it1 -> shareFile(it1) }
-            fileUri?.let {
-                shareFileUri(it)
+
+
+        share.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                url?.let { it1 -> shareFile(it1) }
+                fileUri?.let {
+                    shareFileUri(it)
+                }
             }
-        }
+        })
 
         seekBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
