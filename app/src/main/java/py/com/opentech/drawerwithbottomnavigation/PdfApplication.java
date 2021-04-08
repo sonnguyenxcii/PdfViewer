@@ -6,6 +6,7 @@ import com.ads.control.Admod;
 import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
 import com.google.android.gms.ads.InterstitialAd;
+import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,6 +36,7 @@ public class PdfApplication extends AdsApplication {
         Admod.getInstance().init(this, null);
 
         mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
+        PDFBoxResourceLoader.init(getApplicationContext());
 
     }
 

@@ -50,17 +50,12 @@ class SplashScreen : AppCompatActivity() {
                 }
 
                 override fun onAdFailedToLoad(i: Int) {
-
                     process()
                 }
 
                 override fun onAdFailedToLoad(i: LoadAdError?) {
                     super.onAdFailedToLoad(i)
-
-                }
-
-                override fun onAdImpression() {
-                    super.onAdImpression()
+                    process()
 
                 }
 

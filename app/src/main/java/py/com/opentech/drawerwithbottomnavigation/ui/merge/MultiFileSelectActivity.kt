@@ -13,9 +13,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tom_roush.pdfbox.io.MemoryUsageSetting
+import com.tom_roush.pdfbox.multipdf.PDFMergerUtility
 import dmax.dialog.SpotsDialog
-import org.apache.pdfbox.io.MemoryUsageSetting
-import org.apache.pdfbox.multipdf.PDFMergerUtility
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
@@ -158,7 +158,8 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
             val fileOutputStream = FileOutputStream(file)
             try {
                 ut.destinationStream = fileOutputStream
-                ut.mergeDocuments(MemoryUsageSetting.setupTempFileOnly())
+                ut.mergeDocuments(true)
+//                ut.mergeDocuments(MemoryUsageSetting.setupTempFileOnly())
             } catch (e: Exception) {
                 e.printStackTrace()
                 e.message?.let { showAlertDialog(it) }
@@ -192,7 +193,7 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
             dialogBuilder.setMessage(msg)
             dialogBuilder.setPositiveButton(
                 "OK"
-            ) { dialog: DialogInterface?, which: Int ->}
+            ) { dialog: DialogInterface?, which: Int -> }
             dialogBuilder.setCancelable(false)
             dialogBuilder.show()
         } catch (e: java.lang.Exception) {

@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
     implementation 'com.karumi:dexter:6.2.2'
 
-    implementation 'org.apache.pdfbox:pdfbox:2.0.23'
+//    implementation 'org.apache.pdfbox:pdfbox:2.0.23'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
 
     implementation 'com.github.yalantis:ucrop:2.2.6'
@@ -101,6 +101,8 @@ dependencies {
     implementation 'com.github.hosseiniSeyRo:android-app-rating:1.1.2'
     implementation 'com.google.android.play:core:1.10.0'
 
-//    implementation "commons-logging:commons-logging-api:1.1"
+    implementation 'com.tom_roush:pdfbox-android:1.8.10.3'
+
+
 }
 
