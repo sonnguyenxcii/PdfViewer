@@ -98,11 +98,17 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
     }
 
     override fun onItemClick(pos: Int) {
+
+        val params = Bundle()
+        params.putString("button_click", "Open File")
+        application?.firebaseAnalytics?.logEvent("Recently_Layout", params)
+
         Admod.getInstance().forceShowInterstitial(
             context,
             application?.mInterstitialAd,
             object : AdCallback() {
                 override fun onAdClosed() {
+
                     gotoViewPdf(listData[pos].path!!)
                 }
             }
@@ -125,6 +131,11 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
             override fun onMenuItemClick(item: MenuItem?): Boolean {
 
                 if (item?.itemId == R.id.open) {
+
+                    val params = Bundle()
+                    params.putString("more_action_click", "Open File")
+                    application?.firebaseAnalytics?.logEvent("Recently_Layout", params)
+
                     gotoViewPdf(listData[pos].path!!)
                 } else if (item?.itemId == R.id.delete) {
                     deleteFromRecent(listData[pos].path!!)
@@ -152,12 +163,19 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
     override fun onBookmarkClick(pos: Int) {
         var data = listData[pos]
         var bookmarkStatus = data.isBookmark!!
+        val params = Bundle()
 
         if (bookmarkStatus){
+            params.putString("bookmark_file", "0")
+
             deleteFromBookmark(data.path!!)
+
         }else{
+            params.putString("bookmark_file", "1")
+
             addToBookmark(data.path!!)
         }
+        application?.firebaseAnalytics?.logEvent("Recently_Layout", params)
 
         data.isBookmark = !bookmarkStatus
         adapter.notifyItemChanged(pos)

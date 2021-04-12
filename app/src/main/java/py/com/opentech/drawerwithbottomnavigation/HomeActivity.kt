@@ -47,7 +47,7 @@ import kotlin.collections.ArrayList
 
 
 class HomeActivity : AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener , RatingDialogListener {
+    NavigationView.OnNavigationItemSelectedListener, RatingDialogListener {
 
     private var drawer: AdvanceDrawerLayout? = null
     private lateinit var navController: NavController
@@ -64,7 +64,7 @@ class HomeActivity : AppCompatActivity(),
         setupNavController()
         Admod.getInstance().loadBanner(this, Constants.ADMOB_Banner)
 
-        Admod.getInstance().initVideoAds(this,Constants.ADMOB_Reward)
+        Admod.getInstance().initVideoAds(this, Constants.ADMOB_Reward)
 
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
 
@@ -78,22 +78,35 @@ class HomeActivity : AppCompatActivity(),
         bottomNavigationView.menu.getItem(1).isEnabled = false
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
-            if (item.itemId == R.id.recent){
+            if (item.itemId == R.id.recent) {
+
+                val params = Bundle()
+                params.putString("button_click", "Recently")
+                application?.firebaseAnalytics?.logEvent("Home_Layout", params)
+
 //                if (InternetConnection.checkConnection(this)){
-                    Admod.getInstance().forceShowInterstitial(
-                        this,
-                        application?.mInterstitialAd,
-                        object : AdCallback() {
-                            override fun onAdClosed() {
-                                navigateTo(item.itemId)
-                            }
+                Admod.getInstance().forceShowInterstitial(
+                    this,
+                    application?.mInterstitialAd,
+                    object : AdCallback() {
+                        override fun onAdClosed() {
+                            navigateTo(item.itemId)
                         }
-                    )
+                    }
+                )
 //                }else{
 //                    navigateToBookmark()
 //                }
+            } else if (item.itemId == R.id.nav_home) {
+
+                val params = Bundle()
+                params.putString("button_click", "Folder")
+                application?.firebaseAnalytics?.logEvent("Home_Layout", params)
+
+                navigateTo(item.itemId)
             }else{
                 navigateTo(item.itemId)
+
             }
 
             true
@@ -109,16 +122,19 @@ class HomeActivity : AppCompatActivity(),
         }
 
         fab.setOnClickListener {
+            val params = Bundle()
+            params.putString("button_click", "Bookmark")
+            application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 //            if (InternetConnection.checkConnection(this)){
-                Admod.getInstance().forceShowInterstitial(
-                    this,
-                    application?.mInterstitialAd,
-                    object : AdCallback() {
-                        override fun onAdClosed() {
-                            navigateToBookmark()
-                        }
+            Admod.getInstance().forceShowInterstitial(
+                this,
+                application?.mInterstitialAd,
+                object : AdCallback() {
+                    override fun onAdClosed() {
+                        navigateToBookmark()
                     }
-                )
+                }
+            )
 //            }else{
 //                navigateToBookmark()
 //            }
@@ -141,7 +157,7 @@ class HomeActivity : AppCompatActivity(),
         })
     }
 
-    fun navigateToBookmark(){
+    fun navigateToBookmark() {
         navigateTo(R.id.nav_bookmark)
         bottomNavigationView.selectedItemId = R.id.nav_bookmark
     }
@@ -203,6 +219,11 @@ class HomeActivity : AppCompatActivity(),
 
             }
             R.id.nav_file_manager -> {
+
+                val params = Bundle()
+                params.putString("menu_click", "File Management")
+                application?.firebaseAnalytics?.logEvent("Menu_Layout", params)
+
                 navigateToFile()
 //                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
 //                drawer!!.openDrawer(GravityCompat.END)
@@ -211,19 +232,24 @@ class HomeActivity : AppCompatActivity(),
 
             }
             R.id.nav_pdf_scan -> {
-                if (!InternetConnection.checkConnection(this)){
+
+                val params = Bundle()
+                params.putString("menu_click", "PDF Scanner")
+                application?.firebaseAnalytics?.logEvent("Menu_Layout", params)
+
+                if (!InternetConnection.checkConnection(this)) {
                     navigateToScan()
 
-                }else{
+                } else {
                     var isEarn = false
-                    Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
+                    Admod.getInstance().loadVideoAds(this, object : RewardedAdCallback() {
                         override fun onUserEarnedReward(p0: RewardItem) {
                             isEarn = true
                         }
 
                         override fun onRewardedAdClosed() {
                             super.onRewardedAdClosed()
-                            if (isEarn){
+                            if (isEarn) {
                                 navigateToScan()
                             }
                         }
@@ -242,30 +268,35 @@ class HomeActivity : AppCompatActivity(),
             }
 
             R.id.nav_pdf_merge -> {
-                 if (!InternetConnection.checkConnection(this)){
-                     navigateToMerge()
 
-                }else{
-                     var isEarn = false
-                     Admod.getInstance().loadVideoAds(this,object : RewardedAdCallback(){
-                         override fun onUserEarnedReward(p0: RewardItem) {
-                             isEarn = true
-                         }
+                val params = Bundle()
+                params.putString("menu_click", "Merge PDF")
+                application?.firebaseAnalytics?.logEvent("Menu_Layout", params)
 
-                         override fun onRewardedAdClosed() {
-                             super.onRewardedAdClosed()
-                             if (isEarn){
-                                 navigateToMerge()
-                             }
+                if (!InternetConnection.checkConnection(this)) {
+                    navigateToMerge()
 
-                         }
+                } else {
+                    var isEarn = false
+                    Admod.getInstance().loadVideoAds(this, object : RewardedAdCallback() {
+                        override fun onUserEarnedReward(p0: RewardItem) {
+                            isEarn = true
+                        }
 
-                         override fun onRewardedAdFailedToShow(p0: AdError?) {
-                             super.onRewardedAdFailedToShow(p0)
-                             navigateToMerge()
+                        override fun onRewardedAdClosed() {
+                            super.onRewardedAdClosed()
+                            if (isEarn) {
+                                navigateToMerge()
+                            }
 
-                         }
-                     })
+                        }
+
+                        override fun onRewardedAdFailedToShow(p0: AdError?) {
+                            super.onRewardedAdFailedToShow(p0)
+                            navigateToMerge()
+
+                        }
+                    })
                 }
 
 
@@ -314,6 +345,7 @@ class HomeActivity : AppCompatActivity(),
         var intent = Intent(this, MergePdfActivity::class.java)
         startActivity(intent)
     }
+
     private fun navigateToFile() {
 
         var intent = Intent(this, FileExplorerActivity::class.java)
@@ -391,7 +423,8 @@ class HomeActivity : AppCompatActivity(),
 
     fun composeEmail() {
         val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data = Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
+        intent.data =
+            Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, "chongdaquan@gmail.com")
         intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback about PDF Reader")
         if (intent.resolveActivity(packageManager) != null) {
@@ -399,13 +432,14 @@ class HomeActivity : AppCompatActivity(),
         }
     }
 
-    fun shareApp(){
+    fun shareApp() {
         try {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "PDF Reader")
             var shareMessage = "\nLet me recommend you this application\n\n"
-            shareMessage ="""${shareMessage}https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}""".trimIndent()
+            shareMessage =
+                """${shareMessage}https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}""".trimIndent()
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage)
             startActivity(Intent.createChooser(shareIntent, "Choose one"))
         } catch (e: Exception) {
@@ -455,19 +489,19 @@ class HomeActivity : AppCompatActivity(),
     }
 
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
-        if (rate>=4){
+        if (rate >= 4) {
             askRatings()
 
-        }else{
+        } else {
 //            finish()
         }
     }
 
     override fun onPositiveButtonClickedWithoutComment(rate: Int) {
-        if (rate>=4){
+        if (rate >= 4) {
             askRatings()
 
-        }else{
+        } else {
 //            finish()
         }
     }

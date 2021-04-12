@@ -6,6 +6,7 @@ import com.ads.control.Admod;
 import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
 import com.yalantis.ucrop.UCropActivity;
 
@@ -32,6 +33,7 @@ public class PdfApplication extends AdsApplication {
     public static AtomicLong recentPrimaryKey;
     public static volatile Context applicationContext = null;
     public InterstitialAd mInterstitialAd;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate() {
@@ -49,6 +51,7 @@ public class PdfApplication extends AdsApplication {
 
         mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
         PDFBoxResourceLoader.init(getApplicationContext());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
     }
 
@@ -129,5 +132,13 @@ public class PdfApplication extends AdsApplication {
             results.deleteAllFromRealm();
             realm.commitTransaction();
         }
+    }
+
+    public FirebaseAnalytics getFirebaseAnalytics() {
+        return mFirebaseAnalytics;
+    }
+
+    public void setFirebaseAnalytics(FirebaseAnalytics mFirebaseAnalytics) {
+        this.mFirebaseAnalytics = mFirebaseAnalytics;
     }
 }

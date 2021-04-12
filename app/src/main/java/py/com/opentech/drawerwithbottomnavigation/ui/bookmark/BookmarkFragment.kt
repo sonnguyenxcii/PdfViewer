@@ -48,7 +48,6 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
 
         val root = inflater.inflate(R.layout.fragment_bookmark, container, false)
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
-//        recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
             requireContext(),
             2
@@ -96,6 +95,11 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
 
 
     override fun onItemClick(pos: Int) {
+
+        val params = Bundle()
+        params.putString("button_click", "Open File")
+        application?.firebaseAnalytics?.logEvent("Bookmark_Layout", params)
+
         Admod.getInstance().forceShowInterstitial(
             context,
             application?.mInterstitialAd,
@@ -124,12 +128,21 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
             override fun onMenuItemClick(item: MenuItem?): Boolean {
 
                 if (item?.itemId == R.id.open) {
+
+                    val params = Bundle()
+                    params.putString("more_action_click", "Open File")
+                    application?.firebaseAnalytics?.logEvent("Bookmark_Layout", params)
+
                     gotoViewPdf(listData[pos].path!!)
                 } else if (item?.itemId == R.id.bookmark) {
                     deleteFromBookmark(listData[pos].path!!)
 
                     listData.removeAt(pos)
                     adapter.notifyDataSetChanged()
+
+                    val params = Bundle()
+                    params.putString("bookmark_file", "0")
+                    application?.firebaseAnalytics?.logEvent("Bookmark_Layout", params)
 
                 }else if (item?.itemId == R.id.share) {
                     share(listData[pos].path!!)

@@ -72,6 +72,10 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
     }
 
     fun onDone() {
+        val params = Bundle()
+        params.putString("button_click", "Create/Merge")
+        application?.firebaseAnalytics?.logEvent("Merge_PDF_Layout", params)
+
         showInputName()
     }
 
@@ -121,6 +125,11 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
             .setMessage("Input name of file")
             .setView(view)
             .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+
+                val params = Bundle()
+                params.putString("button_click", "OK")
+                application?.firebaseAnalytics?.logEvent("Merge_PDF_Layout", params)
+
                 val task = String.valueOf(categoryEditText.text)
                 if (!TextUtils.isEmpty(task)) {
                     fileName = task

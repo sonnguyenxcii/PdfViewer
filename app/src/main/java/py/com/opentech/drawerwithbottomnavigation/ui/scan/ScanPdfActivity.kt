@@ -24,6 +24,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_scan_pdf_layout.*
+import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.ImagePickerActivity
@@ -38,6 +39,7 @@ class ScanPdfActivity : AppCompatActivity() {
     var RATIO_Y = 3
     private var currentAvatar: Uri? = null
     var hideIcon: Boolean = true
+    protected var application: PdfApplication?  = PdfApplication.create(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,11 @@ class ScanPdfActivity : AppCompatActivity() {
         supportActionBar!!.title = "PDF Scanner"
 
         camera.setOnClickListener {
+
+            val params = Bundle()
+            params.putString("button_click", "Camera")
+            application?.firebaseAnalytics?.logEvent("PDF_Scanner_Layout", params)
+
             Dexter.withContext(this)
                 .withPermissions(
                     Manifest.permission.CAMERA,
@@ -58,9 +65,6 @@ class ScanPdfActivity : AppCompatActivity() {
                         if (report.areAllPermissionsGranted()) {
                             launchCameraIntent()
                         }
-//                        if (report.isAnyPermissionPermanentlyDenied) {
-//                            showSettingsDialog()
-//                        }
                     }
 
                     override fun onPermissionRationaleShouldBeShown(
@@ -73,6 +77,9 @@ class ScanPdfActivity : AppCompatActivity() {
         }
 
         library.setOnClickListener {
+            val params = Bundle()
+            params.putString("button_click", "Image")
+            application?.firebaseAnalytics?.logEvent("PDF_Scanner_Layout", params)
             Dexter.withContext(this)
                 .withPermissions(
                     Manifest.permission.CAMERA,
@@ -187,6 +194,9 @@ class ScanPdfActivity : AppCompatActivity() {
     }
 
     fun onDone() {
+        val params = Bundle()
+        params.putString("button_click", "Create")
+        application?.firebaseAnalytics?.logEvent("PDF_Scanner_Layout", params)
         showInputName()
 
 //        downloadAndCombinePDFs()
@@ -254,6 +264,11 @@ class ScanPdfActivity : AppCompatActivity() {
             .setMessage("Input name of file")
             .setView(view)
             .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+
+                val params = Bundle()
+                params.putString("button_click", "OK")
+                application?.firebaseAnalytics?.logEvent("PDF_Scanner_Layout", params)
+
                 val task = String.valueOf(categoryEditText.text)
                 if (!TextUtils.isEmpty(task)) {
                     fileName = task
