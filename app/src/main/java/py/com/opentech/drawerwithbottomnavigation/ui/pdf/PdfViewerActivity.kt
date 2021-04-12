@@ -3,32 +3,35 @@ package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
+import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
 import com.github.barteksc.pdfviewer.PDFView
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.tasks.Task
 import com.hosseiniseyro.apprating.AppRatingDialog
 import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import io.realm.Realm
+import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
 import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
 import java.io.File
 import java.util.*
 
-
-/**
- * Shows the terms and agreements. Simply calls a webview.
- */
 class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     var isSwipeHorizontal = false
@@ -38,6 +41,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     var currentPage = 0
     var viewType = 0 // 0: file, 1: content
     var fileUri: Uri? = null
+    protected var application: PdfApplication? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,15 +59,16 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
         val action = intent.action
         val type = intent.type
+        application = PdfApplication.create(this)
 
         if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
             val file_uri = intent.data
             viewType = 1
+            prepareAds()
 
             if (file_uri != null) {
                 fileUri = file_uri
                 viewFileFromStream()
-            } else {
 
             }
 
@@ -86,7 +91,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         }
 
 
-        share.setOnClickListener(object :OnSingleClickListener(){
+        share.setOnClickListener(object : OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
                 url?.let { it1 -> shareFile(it1) }
                 fileUri?.let {
@@ -149,9 +154,9 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     override fun onSupportNavigateUp(): Boolean {
 //        onBackPressed()
-        if (!isRating()){
+        if (!isRating()) {
             showRate()
-        }else{
+        } else {
             finish()
         }
 
@@ -161,9 +166,9 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     override fun onBackPressed() {
 //        super.onBackPressed()
 //        showRate()
-        if (!isRating()){
+        if (!isRating()) {
             showRate()
-        }else{
+        } else {
             finish()
         }
     }
@@ -271,6 +276,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     }
 
     fun viewFileFromStream() {
+
         val thread = Thread {
             try {
                 pdfView!!.fromUri(fileUri)
@@ -366,5 +372,42 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         val isRating = prefs.getBoolean("isRating", false)
 
         return isRating
+    }
+
+    private var mInterstitialAd: InterstitialAd? = null
+
+    private fun prepareAds() {
+        preloadAdsLayout.visibility = View.VISIBLE
+        MobileAds.initialize(
+            this
+        ) { initializationStatus: InitializationStatus? -> }
+
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd!!.adUnitId = Constants.ADMOB_Interstitial
+        mInterstitialAd!!.adListener = mDefaultListener
+        val adRequest = AdRequest.Builder().build()
+        mInterstitialAd!!.loadAd(adRequest)
+    }
+
+    private val mDefaultListener: AdListener = object : AdListener() {
+        override fun onAdLoaded() {
+            super.onAdLoaded()
+            if (mInterstitialAd != null && mInterstitialAd!!.isLoaded) {
+
+                mInterstitialAd!!.show()
+                preloadAdsLayout.visibility = View.GONE
+
+            }
+        }
+
+        override fun onAdClosed() {
+
+        }
+
+        override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+            super.onAdFailedToLoad(loadAdError)
+            preloadAdsLayout.visibility = View.GONE
+
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import java.io.BufferedReader;
@@ -30,6 +32,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import py.com.opentech.drawerwithbottomnavigation.BuildConfig;
 import py.com.opentech.drawerwithbottomnavigation.R;
 
 public class DirectoryFragment extends Fragment {
@@ -234,7 +237,17 @@ public class DirectoryFragment extends Fragment {
                                 delegate.didSelectFiles(DirectoryFragment.this, files);
                             }
                         } else {
-                            showErrorBox("Choose correct file.");
+                            if (file.toString().contains(".jpg") || file.toString().contains(".png")|| file.toString().contains(".jpeg")) {
+                                Intent intent = new Intent();
+                                intent.setAction(android.content.Intent.ACTION_VIEW);
+                                Uri fileUri = FileProvider.getUriForFile(getContext(), BuildConfig.APPLICATION_ID + ".provider", file);
+                                intent.setDataAndType(fileUri, "image/*");
+                                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                startActivity(intent);
+                            } else {
+
+                            }
+//                            showErrorBox("Choose correct file.");
                             return;
                         }
 
@@ -394,9 +407,9 @@ public class DirectoryFragment extends Fragment {
                 return lhs.getName().compareToIgnoreCase(rhs.getName());
                 /*
                  * long lm = lhs.lastModified(); long rm = lhs.lastModified();
-				 * if (lm == rm) { return 0; } else if (lm > rm) { return -1; }
-				 * else { return 1; }
-				 */
+                 * if (lm == rm) { return 0; } else if (lm > rm) { return -1; }
+                 * else { return 1; }
+                 */
             }
         });
         for (File file : files) {

@@ -34,3 +34,6 @@
   -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
   -keep class py.com.opentech.drawerwithbottomnavigation.model.** { *; }
+
+-keepattributes SourceFile,LineNumberTable        # Keep file names and line numbers.
+-keep public class * extends java.lang.Exception  # Optional: Keep custom exceptions.

@@ -7,7 +7,10 @@ import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
 import com.google.android.gms.ads.InterstitialAd;
 import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
+import com.yalantis.ucrop.UCropActivity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -16,8 +19,12 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject;
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject;
+import py.com.opentech.drawerwithbottomnavigation.ui.merge.MultiFileSelectActivity;
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity;
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity;
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants;
 import py.com.opentech.drawerwithbottomnavigation.utils.Globals;
+import py.com.opentech.drawerwithbottomnavigation.utils.ImagePickerActivity;
 
 public class PdfApplication extends AdsApplication {
     private Globals instance;
@@ -30,10 +37,15 @@ public class PdfApplication extends AdsApplication {
     public void onCreate() {
         super.onCreate();
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashScreen.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(ScanPdfActivity.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(MultiFileSelectActivity.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(PdfViewerActivity.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(UCropActivity.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(ImagePickerActivity.class);
 
         initRealm();
         applicationContext = getApplicationContext();
-        Admod.getInstance().init(this, null);
+        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3"));
 
         mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
         PDFBoxResourceLoader.init(getApplicationContext());

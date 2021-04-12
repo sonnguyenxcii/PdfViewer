@@ -24,12 +24,18 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            firebaseCrashlytics {
+//                mappingFileUploadEnabled false
+//            }
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug{
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            firebaseCrashlytics {
+//                mappingFileUploadEnabled false
+//            }
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -102,6 +108,7 @@ dependencies {
     implementation 'com.google.android.play:core:1.10.0'
 
     implementation 'com.tom_roush:pdfbox-android:1.8.10.3'
+    implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
 
 }

@@ -38,4 +38,5 @@
             android:progressDrawable="@drawable/curvy_gradient_progress_green"
             app:layout_constraintTop_toBottomOf="@+id/txt_content" />
     </LinearLayout>
+    <include layout="@layout/include_preload_ads"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

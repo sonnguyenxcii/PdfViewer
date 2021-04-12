@@ -76,10 +76,8 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                 listData.clear()
 
                 list.forEach {
-                    println("---------------------" + it.path!!)
                     var model = getBookmarkByPath(it.path!!)
                     it.isBookmark = !model.isNullOrEmpty()
-                    println("---------------------" + model?.size)
 
                 }
                 listData.addAll(list)
