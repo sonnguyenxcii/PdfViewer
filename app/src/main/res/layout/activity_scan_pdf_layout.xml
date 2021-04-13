@@ -39,12 +39,10 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:fontFamily="@font/seguisb"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="@dimen/_8sdp"
             android:gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
@@ -53,6 +51,8 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cameraBg" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -91,12 +91,10 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
             android:ellipsize="marquee"
             android:fadingEdge="horizontal"
             android:fontFamily="@font/seguisb"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="@dimen/_8sdp"
             android:gravity="center"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
@@ -105,9 +103,17 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/libraryBg" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        layout="@layout/layout_small_native_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/preview"
@@ -115,4 +121,5 @@
         android:layout_height="match_parent"
         android:background="@android:color/black"
         android:visibility="gone" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

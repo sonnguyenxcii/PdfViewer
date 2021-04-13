@@ -32,12 +32,14 @@ public class PdfApplication extends AdsApplication {
     public static AtomicLong bookmarkPrimaryKey;
     public static AtomicLong recentPrimaryKey;
     public static volatile Context applicationContext = null;
-    public InterstitialAd mInterstitialAd;
+    public InterstitialAd mInterstitialAd,mInterstitialClickOpenAd,mInterstitialClickTabAd,mInterstitialSearchAd,mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3","11507FE661199D176A33735A46AF1470"));
+
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashScreen.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ScanPdfActivity.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(MultiFileSelectActivity.class);
@@ -47,9 +49,10 @@ public class PdfApplication extends AdsApplication {
 
         initRealm();
         applicationContext = getApplicationContext();
-        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3"));
 
-        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
+//        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
+        mInterstitialClickOpenAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Open_Item);
+        mInterstitialClickTabAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Tab_Menu);
         PDFBoxResourceLoader.init(getApplicationContext());
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 

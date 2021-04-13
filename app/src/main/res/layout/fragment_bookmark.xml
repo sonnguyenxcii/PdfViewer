@@ -21,6 +21,10 @@
             android:textSize="@dimen/_17ssp"
             android:textStyle="bold" />
 
+        <include
+            layout="@layout/layout_small_native_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleView"

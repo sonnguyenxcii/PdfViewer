@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.ads.control.Admod
 import com.bumptech.glide.Glide
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_scan_pdf_layout.*
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.ImagePickerActivity
 import java.io.File
 import java.io.FileOutputStream
@@ -39,15 +41,18 @@ class ScanPdfActivity : AppCompatActivity() {
     var RATIO_Y = 3
     private var currentAvatar: Uri? = null
     var hideIcon: Boolean = true
-    protected var application: PdfApplication?  = PdfApplication.create(this)
+    protected var application: PdfApplication? =null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan_pdf_layout)
 
+        application = PdfApplication.create(this)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.title = "PDF Scanner"
+
+        Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_PDF_Scanner)
 
         camera.setOnClickListener {
 

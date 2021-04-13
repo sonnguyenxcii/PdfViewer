@@ -2,7 +2,6 @@ package py.com.opentech.drawerwithbottomnavigation
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -17,7 +16,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +36,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObjec
 import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -53,6 +52,8 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         application = PdfApplication.create(this)
+
+        Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Search)
 
         val recyclerView: RecyclerView = findViewById(R.id.recycleView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -88,16 +89,21 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
 
         edtSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                // Your action on done
-                Admod.getInstance().forceShowInterstitial(
-                    this,
-                    application?.mInterstitialAd,
-                    object : AdCallback() {
-                        override fun onAdClosed() {
-                            processData()
+                if (application?.mInterstitialSearchAd != null) {
+                    // Your action on done
+                    Admod.getInstance().forceShowInterstitial(
+                        this,
+                        application?.mInterstitialSearchAd,
+                        object : AdCallback() {
+                            override fun onAdClosed() {
+                                processData()
+                            }
                         }
-                    }
-                )
+                    )
+                } else {
+                    processData()
+
+                }
 
                 false
             } else false
@@ -119,8 +125,8 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
             it.name!!.toLowerCase().contains(edtSearch.text.toString().toLowerCase())
         }
         if (temp.isNullOrEmpty()) {
-            searchResultEmpty.visibility= View.VISIBLE
-            searchResult.visibility= View.GONE
+            searchResultEmpty.visibility = View.VISIBLE
+            searchResult.visibility = View.GONE
 
             searchResultEmptyTittle.setText(
                 getString(
@@ -130,8 +136,8 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
             )
         } else {
 
-            searchResultEmpty.visibility= View.GONE
-            searchResult.visibility= View.VISIBLE
+            searchResultEmpty.visibility = View.GONE
+            searchResult.visibility = View.VISIBLE
 
             searchResultTittle.setText(
                 getString(
@@ -198,9 +204,9 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         var data = listData[pos]
         var bookmarkStatus = data.isBookmark!!
 
-        if (bookmarkStatus){
+        if (bookmarkStatus) {
             deleteFromBookmark(data.path!!)
-        }else{
+        } else {
             addToBookmark(data.path!!)
         }
 
@@ -319,8 +325,8 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
             adapter.notifyDataSetChanged()
 
             if (listData.isNullOrEmpty()) {
-                searchResultEmpty.visibility= View.VISIBLE
-                searchResult.visibility= View.GONE
+                searchResultEmpty.visibility = View.VISIBLE
+                searchResult.visibility = View.GONE
 
                 searchResultEmptyTittle.setText(
                     getString(
@@ -330,8 +336,8 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
                 )
             } else {
 
-                searchResultEmpty.visibility= View.GONE
-                searchResult.visibility= View.VISIBLE
+                searchResultEmpty.visibility = View.GONE
+                searchResult.visibility = View.VISIBLE
 
                 searchResultTittle.setText(
                     getString(

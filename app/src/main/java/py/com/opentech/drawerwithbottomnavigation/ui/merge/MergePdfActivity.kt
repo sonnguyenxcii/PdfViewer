@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import butterknife.ButterKnife
+import com.ads.control.Admod
 import kotlinx.android.synthetic.main.activity_merge_pdf_layout.*
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 
 
 class MergePdfActivity : AppCompatActivity() {
@@ -21,6 +23,11 @@ class MergePdfActivity : AppCompatActivity() {
         supportActionBar!!.title = "Merge PDF"
         application = PdfApplication.create(this)
 
+        Admod.getInstance().loadNative(this, Constants.ADMOB_Native_Merge_PDF)
+        if (application?.mInterstitialMergeAd == null) {
+                application?.mInterstitialMergeAd = Admod.getInstance()
+                    .getInterstitalAds(this, Constants.ADMOB_Interstitial_Merge_PDF)
+        }
         addFile.setOnClickListener {
 
             val params = Bundle()

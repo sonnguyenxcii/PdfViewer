@@ -4,6 +4,10 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
+    <include
+        layout="@layout/layout_small_native_control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:id="@+id/fragment_container"

@@ -9,10 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.ads.control.Admod;
+
 import java.util.ArrayList;
 
 import py.com.opentech.drawerwithbottomnavigation.R;
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity;
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants;
 
 public class FileExplorerActivity extends AppCompatActivity {
 
@@ -29,6 +32,8 @@ public class FileExplorerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("File Management");
+
+        Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_File_Management);
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();

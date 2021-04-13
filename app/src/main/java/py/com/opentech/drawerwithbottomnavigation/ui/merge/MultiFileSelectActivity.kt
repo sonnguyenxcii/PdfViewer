@@ -13,6 +13,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
 import com.tom_roush.pdfbox.io.MemoryUsageSetting
 import com.tom_roush.pdfbox.multipdf.PDFMergerUtility
 import dmax.dialog.SpotsDialog
@@ -21,6 +23,7 @@ import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -125,21 +128,37 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
             .setMessage("Input name of file")
             .setView(view)
             .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-
+                val text = categoryEditText.text.toString()
                 val params = Bundle()
                 params.putString("button_click", "OK")
                 application?.firebaseAnalytics?.logEvent("Merge_PDF_Layout", params)
-
-                val task = String.valueOf(categoryEditText.text)
-                if (!TextUtils.isEmpty(task)) {
-                    fileName = task
-                    downloadAndCombinePDFs()
+                if (InternetConnection.checkConnection(this)) {
+                    Admod.getInstance().forceShowInterstitial(
+                        this,
+                        application?.mInterstitialClickTabAd,
+                        object : AdCallback() {
+                            override fun onAdClosed() {
+                                doMergeTask(text)
+                            }
+                        }
+                    )
+                } else {
+                    doMergeTask(text)
                 }
+
 
             })
             .setNegativeButton("Cancel", null)
             .create()
         dialog.show()
+    }
+
+    fun doMergeTask(text: kotlin.String) {
+
+        if (!TextUtils.isEmpty(text)) {
+            fileName = text
+            downloadAndCombinePDFs()
+        }
     }
 
     @Throws(IOException::class)

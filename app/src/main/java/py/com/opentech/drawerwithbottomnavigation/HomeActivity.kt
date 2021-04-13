@@ -19,9 +19,11 @@ import androidx.navigation.findNavController
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.rewarded.RewardItem
-import com.google.android.gms.ads.rewarded.RewardedAdCallback
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationView
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
@@ -30,6 +32,7 @@ import com.hosseiniseyro.apprating.AppRatingDialog
 import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import com.infideap.drawerbehavior.AdvanceDrawerLayout
 import kotlinx.android.synthetic.main.app_bar_default.*
+import kotlinx.android.synthetic.main.include_preload_ads.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -53,18 +56,23 @@ class HomeActivity : AppCompatActivity(),
     private lateinit var navController: NavController
     private val MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1
     protected var application: PdfApplication? = null
+    private var mInterstitialAd: InterstitialAd? = null
+    private var mInterstitialFileAd: InterstitialAd? = null
+    private var mInterstitialMergeAd: InterstitialAd? = null
+    private var adRequest: AdRequest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
 
+        adRequest = AdRequest.Builder().build()
+
         this.application?.global?.isListMode?.postValue(true)
 
         setupNavController()
-        Admod.getInstance().loadBanner(this, Constants.ADMOB_Banner)
 
-        Admod.getInstance().initVideoAds(this, Constants.ADMOB_Reward)
+        Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Bottom_Left_Menu)
 
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
 
@@ -84,19 +92,19 @@ class HomeActivity : AppCompatActivity(),
                 params.putString("button_click", "Recently")
                 application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
-//                if (InternetConnection.checkConnection(this)){
-                Admod.getInstance().forceShowInterstitial(
-                    this,
-                    application?.mInterstitialAd,
-                    object : AdCallback() {
-                        override fun onAdClosed() {
-                            navigateTo(item.itemId)
+                if (InternetConnection.checkConnection(this)) {
+                    Admod.getInstance().forceShowInterstitial(
+                        this,
+                        application?.mInterstitialClickTabAd,
+                        object : AdCallback() {
+                            override fun onAdClosed() {
+                                navigateTo(item.itemId)
+                            }
                         }
-                    }
-                )
-//                }else{
-//                    navigateToBookmark()
-//                }
+                    )
+                } else {
+                    navigateTo(item.itemId)
+                }
             } else if (item.itemId == R.id.nav_home) {
 
                 val params = Bundle()
@@ -104,7 +112,7 @@ class HomeActivity : AppCompatActivity(),
                 application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
                 navigateTo(item.itemId)
-            }else{
+            } else {
                 navigateTo(item.itemId)
 
             }
@@ -125,19 +133,19 @@ class HomeActivity : AppCompatActivity(),
             val params = Bundle()
             params.putString("button_click", "Bookmark")
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-//            if (InternetConnection.checkConnection(this)){
-            Admod.getInstance().forceShowInterstitial(
-                this,
-                application?.mInterstitialAd,
-                object : AdCallback() {
-                    override fun onAdClosed() {
-                        navigateToBookmark()
+            if (InternetConnection.checkConnection(this)) {
+                Admod.getInstance().forceShowInterstitial(
+                    this,
+                    application?.mInterstitialClickTabAd,
+                    object : AdCallback() {
+                        override fun onAdClosed() {
+                            navigateToBookmark()
+                        }
                     }
-                }
-            )
-//            }else{
-//                navigateToBookmark()
-//            }
+                )
+            } else {
+                navigateToBookmark()
+            }
         }
 
         mode.setOnClickListener {
@@ -155,6 +163,8 @@ class HomeActivity : AppCompatActivity(),
                 }
             }
         })
+
+
     }
 
     fun navigateToBookmark() {
@@ -224,9 +234,9 @@ class HomeActivity : AppCompatActivity(),
                 params.putString("menu_click", "File Management")
                 application?.firebaseAnalytics?.logEvent("Menu_Layout", params)
 
-                navigateToFile()
-//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
-//                drawer!!.openDrawer(GravityCompat.END)
+
+                processToFile()
+
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
 
@@ -241,25 +251,56 @@ class HomeActivity : AppCompatActivity(),
                     navigateToScan()
 
                 } else {
-                    var isEarn = false
-                    Admod.getInstance().loadVideoAds(this, object : RewardedAdCallback() {
-                        override fun onUserEarnedReward(p0: RewardItem) {
-                            isEarn = true
-                        }
+                    preloadAdsLayout.visibility = View.VISIBLE
 
-                        override fun onRewardedAdClosed() {
-                            super.onRewardedAdClosed()
-                            if (isEarn) {
-                                navigateToScan()
+                    InterstitialAd.load(this, Constants.ADMOB_Interstitial_Pdf_Scanner,
+                        adRequest!!, object : InterstitialAdLoadCallback() {
+                            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                                // The mInterstitialAd reference will be null until
+                                // an ad is loaded.
+                                mInterstitialAd = interstitialAd
+
+                                mInterstitialAd?.fullScreenContentCallback =
+                                    object : FullScreenContentCallback() {
+                                        override fun onAdDismissedFullScreenContent() {
+                                            println("----onAdDismissedFullScreenContent---------------")
+                                            // Called when fullscreen content is dismissed.
+                                            preloadAdsLayout.visibility = View.GONE
+                                            mInterstitialAd = null
+                                            navigateToScan()
+
+                                        }
+
+                                        override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                            // Called when fullscreen content failed to show.
+                                            println("----onAdFailedToShowFullScreenContent---------------")
+                                            preloadAdsLayout.visibility = View.GONE
+                                            navigateToScan()
+
+                                        }
+
+                                        override fun onAdShowedFullScreenContent() {
+                                            preloadAdsLayout.visibility = View.GONE
+                                            // Called when fullscreen content is shown.
+                                            // Make sure to set your reference to null so you don't
+                                            // show it a second time.
+                                            mInterstitialAd = null
+
+                                        }
+                                    }
+
+                                mInterstitialAd!!.show(this@HomeActivity)
+
                             }
-                        }
 
-                        override fun onRewardedAdFailedToShow(p0: AdError?) {
-                            super.onRewardedAdFailedToShow(p0)
-                            navigateToScan()
+                            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                                // Handle the error
+                                mInterstitialAd = null
+                                preloadAdsLayout.visibility = View.GONE
+                                navigateToScan()
 
-                        }
-                    })
+                            }
+                        })
                 }
 
 
@@ -272,32 +313,32 @@ class HomeActivity : AppCompatActivity(),
                 val params = Bundle()
                 params.putString("menu_click", "Merge PDF")
                 application?.firebaseAnalytics?.logEvent("Menu_Layout", params)
-
-                if (!InternetConnection.checkConnection(this)) {
-                    navigateToMerge()
-
-                } else {
-                    var isEarn = false
-                    Admod.getInstance().loadVideoAds(this, object : RewardedAdCallback() {
-                        override fun onUserEarnedReward(p0: RewardItem) {
-                            isEarn = true
-                        }
-
-                        override fun onRewardedAdClosed() {
-                            super.onRewardedAdClosed()
-                            if (isEarn) {
-                                navigateToMerge()
-                            }
-
-                        }
-
-                        override fun onRewardedAdFailedToShow(p0: AdError?) {
-                            super.onRewardedAdFailedToShow(p0)
-                            navigateToMerge()
-
-                        }
-                    })
-                }
+                processToMerge()
+//                if (!InternetConnection.checkConnection(this)) {
+//                    navigateToMerge()
+//
+//                } else {
+//                    var isEarn = false
+//                    Admod.getInstance().loadVideoAds(this, object : RewardedAdCallback() {
+//                        override fun onUserEarnedReward(p0: RewardItem) {
+//                            isEarn = true
+//                        }
+//
+//                        override fun onRewardedAdClosed() {
+//                            super.onRewardedAdClosed()
+//                            if (isEarn) {
+//                                navigateToMerge()
+//                            }
+//
+//                        }
+//
+//                        override fun onRewardedAdFailedToShow(p0: AdError?) {
+//                            super.onRewardedAdFailedToShow(p0)
+//                            navigateToMerge()
+//
+//                        }
+//                    })
+//                }
 
 
                 drawer!!.closeDrawer(GravityCompat.START)
@@ -326,6 +367,116 @@ class HomeActivity : AppCompatActivity(),
         }
 //        drawer!!.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    fun processToFile() {
+
+        if (!InternetConnection.checkConnection(this)) {
+            navigateToFile()
+
+        } else {
+            preloadAdsLayout.visibility = View.VISIBLE
+
+            InterstitialAd.load(this, Constants.ADMOB_Interstitial_File_Management,
+                adRequest!!, object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialFileAd = interstitialAd
+
+                        mInterstitialFileAd?.fullScreenContentCallback =
+                            object : FullScreenContentCallback() {
+                                override fun onAdDismissedFullScreenContent() {
+                                    println("----onAdDismissedFullScreenContent---------------")
+                                    // Called when fullscreen content is dismissed.
+                                    preloadAdsLayout.visibility = View.GONE
+                                    mInterstitialFileAd = null
+                                    navigateToFile()
+
+                                }
+
+                                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                    // Called when fullscreen content failed to show.
+                                    println("----onAdFailedToShowFullScreenContent---------------")
+                                    preloadAdsLayout.visibility = View.GONE
+                                    navigateToFile()
+
+                                }
+
+                                override fun onAdShowedFullScreenContent() {
+                                    preloadAdsLayout.visibility = View.GONE
+                                    mInterstitialFileAd = null
+
+                                }
+                            }
+
+                        mInterstitialFileAd!!.show(this@HomeActivity)
+
+                    }
+
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        mInterstitialFileAd = null
+                        preloadAdsLayout.visibility = View.GONE
+                        navigateToFile()
+
+                    }
+                })
+        }
+    }
+
+    fun processToMerge() {
+
+        if (!InternetConnection.checkConnection(this)) {
+            navigateToMerge()
+
+        } else {
+            preloadAdsLayout.visibility = View.VISIBLE
+
+            InterstitialAd.load(this, Constants.ADMOB_Interstitial_Merge_PDF,
+                adRequest!!, object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialMergeAd = interstitialAd
+
+                        mInterstitialMergeAd?.fullScreenContentCallback =
+                            object : FullScreenContentCallback() {
+                                override fun onAdDismissedFullScreenContent() {
+                                    println("----onAdDismissedFullScreenContent---------------")
+                                    // Called when fullscreen content is dismissed.
+                                    preloadAdsLayout.visibility = View.GONE
+                                    mInterstitialMergeAd = null
+                                    navigateToMerge()
+
+                                }
+
+                                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                    // Called when fullscreen content failed to show.
+                                    println("----onAdFailedToShowFullScreenContent---------------")
+                                    preloadAdsLayout.visibility = View.GONE
+                                    navigateToMerge()
+
+                                }
+
+                                override fun onAdShowedFullScreenContent() {
+                                    preloadAdsLayout.visibility = View.GONE
+                                    mInterstitialMergeAd = null
+
+                                }
+                            }
+
+                        mInterstitialMergeAd!!.show(this@HomeActivity)
+
+                    }
+
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        mInterstitialMergeAd = null
+                        preloadAdsLayout.visibility = View.GONE
+                        navigateToMerge()
+
+                    }
+                })
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

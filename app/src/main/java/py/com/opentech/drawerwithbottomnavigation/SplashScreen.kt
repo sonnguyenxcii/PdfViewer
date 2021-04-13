@@ -10,6 +10,7 @@ import com.google.android.gms.ads.initialization.InitializationStatus
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 
 
 class SplashScreen : AppCompatActivity() {
@@ -22,7 +23,10 @@ class SplashScreen : AppCompatActivity() {
         setTheme(R.style.SplashTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-        prepareAds()
+
+        if (InternetConnection.checkConnection(this)) {
+            prepareAds()
+        }
 
         progressBar.progress = i
         val mCountDownTimer = object : CountDownTimer(3000, 100) {
@@ -36,7 +40,11 @@ class SplashScreen : AppCompatActivity() {
                 progressBar.progress = 100
                 mAnimationDone = true
                 if (!mPrepareAdsDone) {
-                    mInterstitialAd!!.adListener = AdListener()
+
+                    if (mInterstitialAd != null) {
+                        mInterstitialAd!!.adListener = AdListener()
+                    }
+
                     gotoMain()
                 }
             }
@@ -58,12 +66,8 @@ class SplashScreen : AppCompatActivity() {
     private fun prepareAds() {
         mPrepareAdsDone = false
 
-        MobileAds.initialize(
-            this
-        ) { initializationStatus: InitializationStatus? -> }
-
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd!!.adUnitId = Constants.ADMOB_Interstitial
+        mInterstitialAd!!.adUnitId = Constants.ADMOB_Interstitial_Splash
         mInterstitialAd!!.adListener = mDefaultListener
         val adRequest = AdRequest.Builder().build()
         mInterstitialAd!!.loadAd(adRequest)
@@ -106,7 +110,7 @@ class SplashScreen : AppCompatActivity() {
 
                 mCountDownTimer.start()
             } else {
-                if (mAnimationDone){
+                if (mAnimationDone) {
                     gotoMain()
                 }
 

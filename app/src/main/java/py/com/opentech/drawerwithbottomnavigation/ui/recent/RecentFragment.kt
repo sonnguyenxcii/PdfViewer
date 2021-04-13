@@ -32,6 +32,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import java.io.File
 
 
@@ -55,6 +56,8 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
                 requireContext(),
                 2
             )
+        Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Recently, root)
+
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
         application = PdfApplication.create(activity)
@@ -103,17 +106,18 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
         params.putString("button_click", "Open File")
         application?.firebaseAnalytics?.logEvent("Recently_Layout", params)
 
-        Admod.getInstance().forceShowInterstitial(
-            context,
-            application?.mInterstitialAd,
-            object : AdCallback() {
-                override fun onAdClosed() {
+//        Admod.getInstance().forceShowInterstitial(
+//            context,
+//            application?.mInterstitialAd,
+//            object : AdCallback() {
+//                override fun onAdClosed() {
+//
+//                    gotoViewPdf(listData[pos].path!!)
+//                }
+//            }
+//        )
+        onPrepareOpenAds(listData[pos].path!!)
 
-                    gotoViewPdf(listData[pos].path!!)
-                }
-            }
-        )
-//        gotoViewPdf(listData[pos].path!!)
     }
 
     override fun onMoreClick(pos: Int, view: View) {
@@ -136,7 +140,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
                     params.putString("more_action_click", "Open File")
                     application?.firebaseAnalytics?.logEvent("Recently_Layout", params)
 
-                    gotoViewPdf(listData[pos].path!!)
+                    onPrepareOpenAds(listData[pos].path!!)
                 } else if (item?.itemId == R.id.delete) {
                     deleteFromRecent(listData[pos].path!!)
 
@@ -160,17 +164,29 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
 
     }
 
+    fun onPrepareOpenAds(path: String) {
+        Admod.getInstance().forceShowInterstitial(
+            context,
+            application?.mInterstitialClickOpenAd,
+            object : AdCallback() {
+                override fun onAdClosed() {
+                    gotoViewPdf(path)
+                }
+            }
+        )
+    }
+
     override fun onBookmarkClick(pos: Int) {
         var data = listData[pos]
         var bookmarkStatus = data.isBookmark!!
         val params = Bundle()
 
-        if (bookmarkStatus){
+        if (bookmarkStatus) {
             params.putString("bookmark_file", "0")
 
             deleteFromBookmark(data.path!!)
 
-        }else{
+        } else {
             params.putString("bookmark_file", "1")
 
             addToBookmark(data.path!!)
@@ -190,6 +206,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
             result.deleteAllFromRealm()
         }
     }
+
     private fun createShortcut(path: String) {
         val filename: String = path.substring(path.lastIndexOf("/") + 1)
 

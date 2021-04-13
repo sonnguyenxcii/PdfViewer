@@ -383,7 +383,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         ) { initializationStatus: InitializationStatus? -> }
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd!!.adUnitId = Constants.ADMOB_Interstitial
+        mInterstitialAd!!.adUnitId = Constants.ADMOB_Interstitial_Click_Open_Item
         mInterstitialAd!!.adListener = mDefaultListener
         val adRequest = AdRequest.Builder().build()
         mInterstitialAd!!.loadAd(adRequest)

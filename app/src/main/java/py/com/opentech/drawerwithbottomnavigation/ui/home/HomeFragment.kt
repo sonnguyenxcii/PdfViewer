@@ -103,6 +103,11 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
             params.putString("button_click", "Button Search")
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
+            if (application?.mInterstitialSearchAd == null) {
+                application?.mInterstitialSearchAd = Admod.getInstance()
+                    .getInterstitalAds(context, Constants.ADMOB_Interstitial_Search)
+            }
+
             var intent = Intent(context, SearchActivity::class.java)
             startActivity(intent)
         }
@@ -122,15 +127,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         params.putString("button_click", "Open File")
         application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
-        Admod.getInstance().forceShowInterstitial(
-            context,
-            application?.mInterstitialAd,
-            object : AdCallback() {
-                override fun onAdClosed() {
-                    gotoViewPdf(listData[pos].path!!)
-                }
-            }
-        )
+        onPrepareOpenAds(listData[pos].path!!)
 
     }
 
@@ -150,7 +147,8 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                     params.putString("more_action_click", "Open File")
                     application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
-                    gotoViewPdf(listData[pos].path!!)
+                    onPrepareOpenAds(listData[pos].path!!)
+
                 } else if (item?.itemId == R.id.delete) {
                     onConfirmDelete(listData[pos].path!!)
                 } else if (item?.itemId == R.id.bookmark) {
@@ -167,6 +165,18 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
         popup.show() //showing popup menu
 
+    }
+
+    fun onPrepareOpenAds(path: String) {
+        Admod.getInstance().forceShowInterstitial(
+            context,
+            application?.mInterstitialClickOpenAd,
+            object : AdCallback() {
+                override fun onAdClosed() {
+                    gotoViewPdf(path)
+                }
+            }
+        )
     }
 
     override fun onBookmarkClick(pos: Int) {
