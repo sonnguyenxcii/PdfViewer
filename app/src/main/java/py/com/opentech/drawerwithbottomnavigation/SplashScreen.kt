@@ -29,10 +29,10 @@ class SplashScreen : AppCompatActivity() {
         }
 
         progressBar.progress = i
-        val mCountDownTimer = object : CountDownTimer(3000, 100) {
+        val mCountDownTimer = object : CountDownTimer(15000, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 i++
-                progressBar.progress = i as Int * 100 / (3000 / 100)
+                progressBar.progress = i as Int * 100 / (15000 / 100)
             }
 
             override fun onFinish() {
@@ -105,6 +105,8 @@ class SplashScreen : AppCompatActivity() {
 
                     override fun onFinish() {
                         mInterstitialAd!!.show()
+                        preloadAdsLayout.visibility = View.GONE
+
                     }
                 }
 
