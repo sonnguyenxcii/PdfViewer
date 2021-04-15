@@ -18,24 +18,24 @@ android {
         applicationId "com.pdfreader.scanner.pdfviewer"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-//            firebaseCrashlytics {
-//                mappingFileUploadEnabled false
-//            }
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug{
-//            firebaseCrashlytics {
-//                mappingFileUploadEnabled false
-//            }
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
