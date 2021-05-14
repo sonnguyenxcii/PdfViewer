@@ -52,6 +52,8 @@ class SplashScreen : AppCompatActivity() {
 
         mCountDownTimer.start()
 
+
+
     }
 
     fun gotoMain() {
@@ -96,6 +98,7 @@ class SplashScreen : AppCompatActivity() {
     private fun checkDoneLoading() {
         if (mPrepareAdsDone) {
             if (mInterstitialAd != null && mInterstitialAd!!.isLoaded) {
+
                 preloadAdsLayout.visibility = View.VISIBLE
 
                 val mCountDownTimer = object : CountDownTimer(1000, 100) {
