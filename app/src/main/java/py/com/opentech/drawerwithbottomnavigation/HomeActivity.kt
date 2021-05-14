@@ -506,28 +506,32 @@ class HomeActivity : AppCompatActivity(),
     private fun getExternalPDFFileList(): ArrayList<PdfModel> {
         val uriList: ArrayList<PdfModel> = ArrayList()
 
-        val ROOT_DIR = Environment.getExternalStorageDirectory().absolutePath
-        val ANDROID_DIR = File("$ROOT_DIR/Android")
-        val DATA_DIR = File("$ROOT_DIR/data")
-        File(ROOT_DIR).walk()
-            // befor entering this dir check if
-            .onEnter {
-                !it.isHidden // it is not hidden
-                        && it != ANDROID_DIR // it is not Android directory
-                        && it != DATA_DIR // it is not data directory
-                        && !File(it, ".nomedia").exists() //there is no .nomedia file inside
-            }.filter { it.extension == "pdf" }
-            .toList().forEach {
-                val lastModDate = Date(it.lastModified())
-                uriList.add(
-                    PdfModel(
-                        it.name, it.absolutePath, it.length(), Utils.formatDate(
-                            lastModDate
+        try {
+            val ROOT_DIR = Environment.getExternalStorageDirectory().absolutePath
+//            val ANDROID_DIR = File("$ROOT_DIR/Android")
+//            val DATA_DIR = File("$ROOT_DIR/data")
+            File(ROOT_DIR).walk()
+                // befor entering this dir check if
+//            .onEnter {
+//                !it.isHidden // it is not hidden
+//                        && it != ANDROID_DIR // it is not Android directory
+//                        && it != DATA_DIR // it is not data directory
+//                        && !File(it, ".nomedia").exists() //there is no .nomedia file inside
+//            }
+                .filter { it.extension == "pdf" }
+                .toList().forEach {
+                    val lastModDate = Date(it.lastModified())
+                    uriList.add(
+                        PdfModel(
+                            it.name, it.absolutePath, it.length(), Utils.formatDate(
+                                lastModDate
+                            )
                         )
                     )
-                )
-            }
+                }
+        } catch (e: Exception) {
 
+        }
         return uriList
     }
 

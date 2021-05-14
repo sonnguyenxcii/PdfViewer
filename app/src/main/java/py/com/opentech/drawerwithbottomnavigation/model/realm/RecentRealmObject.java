@@ -8,4 +8,5 @@ public class RecentRealmObject extends RealmObject {
     public long id;
     public String path;
     public Long time;
+    public int page;
 }

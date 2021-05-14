@@ -119,6 +119,7 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
     }
 
     var fileName = ""
+
     fun showInputName() {
 
         val view = layoutInflater.inflate(R.layout.dialog_input_name, null)

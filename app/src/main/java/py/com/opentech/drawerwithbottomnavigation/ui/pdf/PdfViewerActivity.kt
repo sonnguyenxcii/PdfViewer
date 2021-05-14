@@ -1,18 +1,21 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
+import android.view.MotionEvent
 import android.view.View
+import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
-import com.ads.control.Admod
-import com.ads.control.funtion.AdCallback
 import com.github.barteksc.pdfviewer.PDFView
+import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.android.play.core.review.ReviewInfo
@@ -20,6 +23,7 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.tasks.Task
 import com.hosseiniseyro.apprating.AppRatingDialog
 import com.hosseiniseyro.apprating.listener.RatingDialogListener
+import com.shockwave.pdfium.PdfPasswordException
 import io.realm.Realm
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
@@ -32,54 +36,80 @@ import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
 import java.io.File
 import java.util.*
 
+
 class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     var isSwipeHorizontal = false
-    var pdfView: PDFView? = null
-    var seekBar: SeekBar? = null
+    lateinit var pdfView: PDFView
+    lateinit var seekBar: AppCompatSeekBar
     var url: String? = null
     var currentPage = 0
     var viewType = 0 // 0: file, 1: content
     var fileUri: Uri? = null
     protected var application: PdfApplication? = null
+    var password: String = ""
+    lateinit var toolbar: Toolbar
+    lateinit var rootView: View
+    lateinit var bottom: View
+    lateinit var more: View
+
+    var isFullscreen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdf_viewer)
-        pdfView = findViewById<PDFView>(R.id.pdfView)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        pdfView = findViewById(R.id.pdfView)
+        toolbar = findViewById(R.id.toolbar)
         val rotate = findViewById<View>(R.id.rotate)
         val share = findViewById<View>(R.id.share)
-        seekBar = findViewById<SeekBar>(R.id.seekBar)
+        seekBar = findViewById(R.id.seekBar)
+        rootView = findViewById(R.id.rootView)
+        bottom = findViewById(R.id.bottom)
+        more = findViewById(R.id.more)
 
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.title = ""
+        try {
+            setSupportActionBar(toolbar)
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            supportActionBar!!.setDisplayShowHomeEnabled(true)
+            supportActionBar!!.title = ""
 
-        val action = intent.action
-        val type = intent.type
-        application = PdfApplication.create(this)
+            val action = intent.action
+            val type = intent.type
+            application = PdfApplication.create(this)
 
-        if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
-            val file_uri = intent.data
-            viewType = 1
-            prepareAds()
+            if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
+                val file_uri = intent.data
+                viewType = 1
+                prepareAds()
 
-            if (file_uri != null) {
-                fileUri = file_uri
-                viewFileFromStream()
+                if (file_uri != null) {
+                    fileUri = file_uri
+                    viewFileFromStream()
 
+                }
+
+            } else {
+                url = intent.extras!!.getString("url")
+                viewType = 0
+                url?.let {
+                    addToRecent(it)
+                    var temp = getRecentByPath(it)
+                    if (!temp.isNullOrEmpty()) {
+                        if (temp[0]?.page != null) {
+                            try {
+                                currentPage = temp[0]?.page!!
+                            } catch (e: Exception) {
+
+                            }
+                        }
+                    }
+                    viewFile()
+                }
             }
+        } catch (e: Exception) {
 
-        } else {
-            url = intent.extras!!.getString("url")
-            viewType = 0
-            url?.let {
-                viewFile()
-                addToRecent(it)
-            }
         }
+
 
         rotate.setOnClickListener {
             isSwipeHorizontal = !isSwipeHorizontal
@@ -100,10 +130,19 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             }
         })
 
-        seekBar!!.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+        more.setOnClickListener(object : OnSingleClickListener() {
+            override fun onSingleClick(v: View?) {
+                url?.let { it1 -> shareFile(it1) }
+                fileUri?.let {
+                    shareFileUri(it)
+                }
+            }
+        })
+
+        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    pdfView!!.jumpTo(progress)
+                    pdfView.jumpTo(progress)
                 }
             }
 
@@ -119,7 +158,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     fun viewFile() {
         val thread = Thread {
             try {
-                pdfView!!.fromFile(File(url))
+                pdfView.fromFile(File(url))
                     .enableSwipe(true) // allows to block changing pages using swipe
                     .swipeHorizontal(isSwipeHorizontal)
                     .enableDoubletap(true)
@@ -129,21 +168,32 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                         currentPage = page
                         println("----onPageChange-----------------------" + page)
 
-                        seekBar?.progress = page
+                        seekBar.progress = page
 
                     } // allows to draw something on the current page, usually visible in the middle of the screen
                     // allows to draw something on all pages, separately for every page. Called only for visible pages
                     .onLoad {
-                        seekBar!!.max = it - 1
+                        seekBar.max = it - 1
 
-                    } // called after document is loaded and starts to be rendered
-                    //                            .nightMode(true)
+                    }
                     .enableAnnotationRendering(true) // render annotations (such as comments, colors or forms)
-                    .password(null)
+                    .password(password)
                     .scrollHandle(null)
                     .enableAntialiasing(true) // improve rendering a little bit on low-res screens
                     .spacing(10)
+                    .onError {
+                        if (it is PdfPasswordException) {
+                            showInputPassword()
+                        }
+                    }
+                    .onTap(object : OnTapListener {
+                        override fun onTap(e: MotionEvent?): Boolean {
+                            isFullscreen = !isFullscreen
+                            showFullscreen()
+                            return false
+                        }
 
+                    })
                     .load()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -216,10 +266,24 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         }
     }
 
+    fun savePageToRecent(path: String, page: Int) {
+        var model = getRecentByPath(path)
+        if (!model.isNullOrEmpty()) {
+            model[0]?.let { updatePage(it, page) }
+        }
+    }
+
     fun updateRecent(model: RecentRealmObject) {
         var realm = Realm.getDefaultInstance()
         realm.beginTransaction()
         model.time = System.currentTimeMillis()
+        realm.commitTransaction()
+    }
+
+    fun updatePage(model: RecentRealmObject, page: Int) {
+        var realm = Realm.getDefaultInstance()
+        realm.beginTransaction()
+        model.page = page
         realm.commitTransaction()
     }
 
@@ -279,7 +343,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
         val thread = Thread {
             try {
-                pdfView!!.fromUri(fileUri)
+                pdfView.fromUri(fileUri)
                     .enableSwipe(true) // allows to block changing pages using swipe
                     .swipeHorizontal(isSwipeHorizontal)
                     .enableDoubletap(true)
@@ -288,21 +352,31 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                     .onPageChange { page: Int, pageCount: Int ->
                         currentPage = page
 
-                        seekBar?.progress = page
+                        seekBar.progress = page
 
-                    } // allows to draw something on the current page, usually visible in the middle of the screen
-                    // allows to draw something on all pages, separately for every page. Called only for visible pages
+                    }
                     .onLoad {
-                        seekBar!!.max = it - 1
+                        seekBar.max = it - 1
 
-                    } // called after document is loaded and starts to be rendered
-                    //                            .nightMode(true)
+                    }
                     .enableAnnotationRendering(true) // render annotations (such as comments, colors or forms)
-                    .password(null)
+                    .password(password)
                     .scrollHandle(null)
                     .enableAntialiasing(true) // improve rendering a little bit on low-res screens
                     .spacing(10)
+                    .onError {
+                        if (it is PdfPasswordException) {
+                            showInputPassword()
+                        }
+                    }
+                    .onTap(object : OnTapListener {
+                        override fun onTap(e: MotionEvent?): Boolean {
+                            isFullscreen = !isFullscreen
+                            showFullscreen()
+                            return false
+                        }
 
+                    })
                     .load()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -410,4 +484,45 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        if (viewType == 0) {
+            url?.let { savePageToRecent(it, currentPage) }
+        }
+    }
+
+    fun showInputPassword() {
+
+        val view = layoutInflater.inflate(R.layout.dialog_input_password, null)
+        val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
+        val dialog: AlertDialog = AlertDialog.Builder(this)
+            .setTitle("Password protect")
+            .setMessage("Input password to view file")
+            .setView(view)
+            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                val text = categoryEditText.text.toString()
+                password = text
+                if (viewType == 0) {
+                    viewFile()
+                } else {
+                    viewFileFromStream()
+                }
+            })
+            .setNegativeButton("Cancel", null)
+            .create()
+        dialog.show()
+    }
+
+    fun showFullscreen() {
+        if (isFullscreen) {
+            toolbar.visibility = View.GONE
+            bottom.visibility = View.GONE
+        } else {
+            toolbar.visibility = View.VISIBLE
+            bottom.visibility = View.VISIBLE
+
+        }
+    }
+
 }

@@ -35,15 +35,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/cancel"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/background_button_radius_white_32"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/_12sdp"
-                android:background="@drawable/background_button_radius_white_32"
                 android:paddingTop="@dimen/_10sdp"
                 android:paddingRight="@dimen/_12sdp"
                 android:paddingBottom="@dimen/_10sdp">
@@ -63,8 +62,8 @@
                     android:id="@+id/edtSearch"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/transparent"
                     android:layout_marginLeft="@dimen/_8sdp"
+                    android:background="@color/transparent"
                     android:fontFamily="@font/segoe_normal"
                     android:hint="Search"
                     android:imeOptions="actionSearch"
@@ -97,51 +96,87 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/content"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:id="@+id/searchResult"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/searchResultTittle"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:id="@+id/searchResult"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/searchResultTittle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:fontFamily="@font/seguisb"
+                        android:gravity="center"
+                        android:text="@string/search_result_tittle"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="@dimen/_150sdp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:background="#707070" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/resultCount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_12sdp"
+                        android:layout_marginTop="@dimen/_24sdp"
+                        android:layout_marginRight="@dimen/_12sdp"
+                        android:fontFamily="@font/segoe_normal"
+                        android:text="@string/search_result_count"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11ssp" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/searchResultEmpty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_12sdp"
-                    android:fontFamily="@font/seguisb"
-                    android:gravity="center"
-                    android:text="@string/search_result_tittle"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_13ssp"
-                    android:textStyle="bold" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <View
-                    android:layout_width="@dimen/_150sdp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:background="#707070" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="@dimen/_150sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_70sdp"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_search_empty" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/resultCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_12sdp"
-                    android:layout_marginTop="@dimen/_24sdp"
-                    android:layout_marginRight="@dimen/_12sdp"
-                    android:fontFamily="@font/segoe_normal"
-                    android:text="@string/search_result_count"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_11ssp" />
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/searchResultEmptyTittle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:fontFamily="@font/seguisb"
+                        android:gravity="center"
+                        android:text="@string/search_result_empty_tittle"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <include
                     layout="@layout/layout_small_native_control"
@@ -155,38 +190,10 @@
                     android:layout_marginLeft="@dimen/_8sdp"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:layout_marginRight="@dimen/_8sdp" />
-
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.core.widget.NestedScrollView>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchResultEmpty"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:gravity="center_horizontal">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/_150sdp"
-                android:layout_marginTop="@dimen/_70sdp"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:src="@drawable/ic_search_empty" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/searchResultEmptyTittle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_12sdp"
-                android:fontFamily="@font/seguisb"
-                android:gravity="center"
-                android:text="@string/search_result_empty_tittle"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_13ssp"
-                android:textStyle="bold" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>
