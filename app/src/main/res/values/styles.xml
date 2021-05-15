@@ -49,7 +49,7 @@
     </style>
 
     <style name="SplashTheme" parent="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
-        <item name="android:background">@drawable/bg_splash_new</item>
+        <item name="android:windowBackground">@drawable/bg_splash_new</item>
     </style>
 
     <!-- Base application theme. -->

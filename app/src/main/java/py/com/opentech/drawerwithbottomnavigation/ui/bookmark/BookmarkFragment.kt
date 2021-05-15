@@ -27,6 +27,7 @@ import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
+import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
@@ -40,6 +41,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
     lateinit var adapter: HomeAdapter
     protected var application: PdfApplication? = null
     var isListMode: Boolean = false
+    var sort: SortModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,6 +72,14 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
                 adapter.notifyDataSetChanged()
             }
         })
+        application?.global?.sortData?.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                sort = it
+                processData()
+                adapter.notifyDataSetChanged()
+
+            }
+        })
         return root
     }
 
@@ -83,6 +93,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
               if (bm?.path?.equals(data.path)!!){
                   data.isBookmark = true
                   listData.add(data)
+                  processData()
               }
             }
         }
@@ -259,4 +270,39 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
         startActivity(intent)
     }
 
+    fun processData() {
+        if (sort == null) {
+            sort = SortModel(type = "0", order = "0")
+        }
+
+        if (sort!!.order.equals("0")){
+            if (sort!!.type.equals("0")) {
+                listData.sortBy {
+                    it.name
+                }
+            }else if (sort!!.type.equals("1")){
+                listData.sortBy {
+                    it.size
+                }
+            }else{
+                listData.sortBy {
+                    it.lastModifier
+                }
+            }
+        }else{
+            if (sort!!.type.equals("0")) {
+                listData.sortByDescending {
+                    it.name
+                }
+            }else if (sort!!.type.equals("1")){
+                listData.sortByDescending {
+                    it.size
+                }
+            }else{
+                listData.sortByDescending {
+                    it.lastModifier
+                }
+            }
+        }
+    }
 }

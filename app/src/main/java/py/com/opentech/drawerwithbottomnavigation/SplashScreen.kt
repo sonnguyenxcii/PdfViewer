@@ -5,8 +5,9 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.initialization.InitializationStatus
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
@@ -16,7 +17,9 @@ import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 class SplashScreen : AppCompatActivity() {
 
     var i: Int = 0
+    var time = 15000
 
+    var count = 0
     private var mInterstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,25 +29,25 @@ class SplashScreen : AppCompatActivity() {
 
         if (InternetConnection.checkConnection(this)) {
             prepareAds()
+        } else {
+            time = 3000
         }
 
         progressBar.progress = i
-        val mCountDownTimer = object : CountDownTimer(15000, 100) {
+        val mCountDownTimer = object : CountDownTimer(time.toLong(), 100) {
             override fun onTick(millisUntilFinished: Long) {
                 i++
-                progressBar.progress = i as Int * 100 / (15000 / 100)
+                progressBar.progress = i * 100 / (time / 100)
             }
 
             override fun onFinish() {
+                println("--onFinish-------------count--"+count)
+                println("--onFinish-------------mPrepareAdsDone--"+mPrepareAdsDone)
+
                 i++
                 progressBar.progress = 100
                 mAnimationDone = true
                 if (!mPrepareAdsDone) {
-
-                    if (mInterstitialAd != null) {
-                        mInterstitialAd!!.adListener = AdListener()
-                    }
-
                     gotoMain()
                 }
             }
@@ -53,73 +56,66 @@ class SplashScreen : AppCompatActivity() {
         mCountDownTimer.start()
 
 
-
     }
 
     fun gotoMain() {
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-        finish()
+        println("--gotoMain-------------count--"+count)
+
+        if (count == 0) {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+            count++
+        }
+        println("--gotoMain-------------count-2-"+count)
+
     }
 
     private var mPrepareAdsDone = false
     private var mAnimationDone = false
 
     private fun prepareAds() {
-        mPrepareAdsDone = false
 
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd!!.adUnitId = Constants.ADMOB_Interstitial_Splash
-        mInterstitialAd!!.adListener = mDefaultListener
-        val adRequest = AdRequest.Builder().build()
-        mInterstitialAd!!.loadAd(adRequest)
-    }
+        Admod.getInstance().loadSplashInterstitalAds(this,
+            Constants.ADMOB_Interstitial_Splash,
+            time.toLong(),
+            object : AdCallback() {
+                override fun onAdImpression() {
+                    super.onAdImpression()
+                    println("--onAdImpression---------------"+mPrepareAdsDone)
 
-    private val mDefaultListener: AdListener = object : AdListener() {
-        override fun onAdLoaded() {
-            mPrepareAdsDone = true
-            super.onAdLoaded()
-            checkDoneLoading()
+                }
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    mPrepareAdsDone = true
 
-        }
-
-        override fun onAdClosed() {
-            gotoMain()
-        }
-
-        override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-            mPrepareAdsDone = true
-            super.onAdFailedToLoad(loadAdError)
-            checkDoneLoading()
-
-        }
-    }
-
-    private fun checkDoneLoading() {
-        if (mPrepareAdsDone) {
-            if (mInterstitialAd != null && mInterstitialAd!!.isLoaded) {
-
-                preloadAdsLayout.visibility = View.VISIBLE
-
-                val mCountDownTimer = object : CountDownTimer(1000, 100) {
-                    override fun onTick(millisUntilFinished: Long) {
-
-                    }
-
-                    override fun onFinish() {
-                        mInterstitialAd!!.show()
-                        preloadAdsLayout.visibility = View.GONE
-
-                    }
+                    println("--onAdLoaded---------------"+mPrepareAdsDone)
                 }
 
-                mCountDownTimer.start()
-            } else {
-                if (mAnimationDone) {
+                override fun onAdClosed() {
+                    mPrepareAdsDone = true
+
+//                    if (mAnimationDone) {
                     gotoMain()
+//                    }
+
                 }
 
-            }
-        }
+                override fun onAdFailedToLoad(i: Int) {
+                    mPrepareAdsDone = true
+
+//                    if (mAnimationDone) {
+                    gotoMain()
+//                    }
+                }
+            })
+
     }
+
+    override fun onPause() {
+        super.onPause()
+        mPrepareAdsDone = true
+
+    }
+
 }

@@ -1,6 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation
 
 import android.Manifest
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -9,6 +10,8 @@ import android.os.Environment
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.widget.RadioButton
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -38,6 +41,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
+import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.ui.fileexplorer.FileExplorerActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
@@ -151,6 +155,10 @@ class HomeActivity : AppCompatActivity(),
         mode.setOnClickListener {
             var temp = this.application?.global?.isListMode?.value
             this.application?.global?.isListMode?.postValue(!temp!!)
+        }
+
+        sort.setOnClickListener {
+            showInputSort()
         }
 
         application?.global?.isListMode?.observe(this, Observer {
@@ -523,9 +531,7 @@ class HomeActivity : AppCompatActivity(),
                     val lastModDate = Date(it.lastModified())
                     uriList.add(
                         PdfModel(
-                            it.name, it.absolutePath, it.length(), Utils.formatDate(
-                                lastModDate
-                            )
+                            it.name, it.absolutePath, it.length(), Utils.formatDate(lastModDate),it.lastModified()
                         )
                     )
                 }
@@ -677,5 +683,59 @@ class HomeActivity : AppCompatActivity(),
                 // There was some problem, continue regardless of the result.
             }
         }
+    }
+
+    fun showInputSort() {
+        var mSortModel = application?.global?.sortData?.value
+        val view = layoutInflater.inflate(R.layout.dialog_input_sort, null)
+
+        val rbName = view.findViewById(R.id.rbName) as RadioButton
+        val rbSize = view.findViewById(R.id.rbSize) as RadioButton
+        val rbDate = view.findViewById(R.id.rbDate) as RadioButton
+
+
+        val rbInc = view.findViewById(R.id.rbInc) as RadioButton
+        val rbDesc = view.findViewById(R.id.rbDesc) as RadioButton
+
+        if (mSortModel != null) {
+            if (mSortModel.type.equals("1")){
+                rbSize.isChecked = true
+            }else if(mSortModel.type.equals("2")){
+                rbDate.isChecked = true
+            }
+            if (mSortModel.order.equals("0")){
+                rbInc.isChecked = true
+            }else {
+                rbDesc.isChecked = true
+            }
+        }
+        val dialog: AlertDialog = AlertDialog.Builder(this)
+
+            .setView(view)
+            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                var type = "0"
+                var order = "0"
+                if (rbName.isChecked) {
+                    type = "0"
+                }
+                if (rbSize.isChecked) {
+                    type = "1"
+                }
+                if (rbDate.isChecked) {
+                    type = "2"
+                }
+
+                if (rbInc.isChecked) {
+                    order = "0"
+                }
+                if (rbDesc.isChecked) {
+                    order = "1"
+                }
+
+                application?.global?.sortData?.postValue(SortModel(type = type, order = order))
+            })
+            .setNegativeButton("Cancel", null)
+            .create()
+        dialog.show()
     }
 }

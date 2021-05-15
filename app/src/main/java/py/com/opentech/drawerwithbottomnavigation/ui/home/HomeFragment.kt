@@ -1,6 +1,8 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.home
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -8,13 +10,13 @@ import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -32,9 +34,11 @@ import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.SearchActivity
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
+import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -47,6 +51,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     protected var application: PdfApplication? = null
 
     var isListMode: Boolean = false
+    var sort: SortModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,7 +85,9 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                     it.isBookmark = !model.isNullOrEmpty()
 
                 }
+
                 listData.addAll(list)
+                processData()
                 adapter.notifyDataSetChanged()
             }
         })
@@ -95,6 +102,15 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                     )
                 adapter.isSwitchView = isListMode
                 adapter.notifyDataSetChanged()
+            }
+        })
+
+        application?.global?.sortData?.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                sort = it
+                processData()
+                adapter.notifyDataSetChanged()
+
             }
         })
 
@@ -131,17 +147,22 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onMoreClick(pos: Int, view: View) {
         //Creating the instance of PopupMenu
-        val popup = PopupMenu(requireContext(), view)
+//        val popup = PopupMenu(requireContext(), view)
+        val menuBuilder = MenuBuilder(context)
+        val inflater = MenuInflater(context)
+        inflater.inflate(R.menu.poupup_menu, menuBuilder)
+        val optionsMenu = MenuPopupHelper(requireContext(), menuBuilder, view)
+        optionsMenu.setForceShowIcon(true)
         //Inflating the Popup using xml file
-        popup.menuInflater
-            .inflate(R.menu.poupup_menu, popup.menu)
+//        popup.menuInflater
+//            .inflate(R.menu.poupup_menu, popup.menu)
 
-        popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-            override fun onMenuItemClick(item: MenuItem?): Boolean {
-
-                if (item?.itemId == R.id.open) {
+        menuBuilder.setCallback(object : MenuBuilder.Callback {
+            override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
+                if (item.itemId == R.id.open) {
 
                     val params = Bundle()
                     params.putString("more_action_click", "Open File")
@@ -149,21 +170,33 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
                     onPrepareOpenAds(listData[pos].path!!)
 
-                } else if (item?.itemId == R.id.delete) {
+                } else if (item.itemId == R.id.delete) {
                     onConfirmDelete(listData[pos].path!!)
-                } else if (item?.itemId == R.id.bookmark) {
+                } else if (item.itemId == R.id.bookmark) {
                     addToBookmark(listData[pos].path!!)
-                } else if (item?.itemId == R.id.share) {
+                } else if (item.itemId == R.id.share) {
                     share(listData[pos].path!!)
-                } else if (item?.itemId == R.id.shortcut) {
+                } else if (item.itemId == R.id.shortcut) {
                     createShortcut(listData[pos].path!!)
+                } else if (item.itemId == R.id.rename) {
+                    onConfirmRename(listData[pos].path!!)
                 }
                 return true
             }
 
-        })
+            override fun onMenuModeChange(menu: MenuBuilder) {
+            }
 
-        popup.show() //showing popup menu
+        })
+//        menuBuilder.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+//            override fun onMenuItemClick(item: MenuItem?): Boolean {
+//
+
+//            }
+//
+//        })
+
+        optionsMenu.show() //showing popup menu
 
     }
 
@@ -302,6 +335,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
     }
 
+
     fun gotoViewPdf(path: String) {
         var intent = Intent(context, PdfViewerActivity::class.java)
         intent.putExtra("url", path)
@@ -330,5 +364,83 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
     }
 
+    fun processData() {
+        if (sort == null) {
+            sort = SortModel(type = "0", order = "0")
+        }
 
+        if (sort!!.order.equals("0")) {
+            if (sort!!.type.equals("0")) {
+                listData.sortBy {
+                    it.name
+                }
+            } else if (sort!!.type.equals("1")) {
+                listData.sortBy {
+                    it.size
+                }
+            } else {
+                listData.sortBy {
+                    it.lastModifier
+                }
+            }
+        } else {
+            if (sort!!.type.equals("0")) {
+                listData.sortByDescending {
+                    it.name
+                }
+            } else if (sort!!.type.equals("1")) {
+                listData.sortByDescending {
+                    it.size
+                }
+            } else {
+                listData.sortByDescending {
+                    it.lastModifier
+                }
+            }
+        }
+    }
+
+
+    fun onConfirmRename(path: String) {
+        val view = layoutInflater.inflate(R.layout.dialog_input_name, null)
+        val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
+        val currentFile = File(path)
+        var fileName = currentFile.nameWithoutExtension
+        categoryEditText.setText(fileName)
+        val dialog: AlertDialog =
+            AlertDialog.Builder(context)
+                .setTitle("Rename file")
+                .setMessage("Input name of file")
+                .setView(view)
+                .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                    val text = categoryEditText.text.toString()
+                    renameFile(path, text)
+
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+        dialog.show()
+    }
+
+
+    fun renameFile(path: String, newName: String) {
+        val currentFile = File(path)
+        var oldName = currentFile.nameWithoutExtension
+        val newFile = File(path.replace(oldName, newName).trim())
+        println("-path--------------------"+path)
+        println("-replace--------------------"+path.replace(oldName, newName))
+        if (rename(currentFile, newFile)) {
+            //Success
+            Log.i("HomeFragment", "Success")
+        } else {
+            //Fail
+            Log.i("HomeFragment", "Fail")
+        }
+        EventBus.getDefault().postSticky(FileChangeEvent())
+
+    }
+
+    private fun rename(from: File, to: File): Boolean {
+        return from.parentFile.exists() && from.exists() && from.renameTo(to)
+    }
 }

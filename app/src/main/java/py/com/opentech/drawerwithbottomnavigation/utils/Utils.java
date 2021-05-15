@@ -1,5 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation.utils;
 
+import android.net.Uri;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,5 +43,17 @@ public class Utils {
 
         String result = format.format(date);
         return result;
+    }
+
+    public static String getFileName(Uri uri) {
+        try {
+            String path = uri.getLastPathSegment();
+            return path != null ? path.substring(path.lastIndexOf("/") + 1) : "unknown";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "unknown";
     }
 }

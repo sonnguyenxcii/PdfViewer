@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
-        android:id="@+id/open"
-        android:title="Open"/>
+        android:id="@+id/rename"
+        android:icon="@drawable/ic_edit"
+        android:iconTint="@color/black"
+        android:title="Rename"/>
 
     <item
         android:id="@+id/delete"
+        android:iconTint="@color/black"
+        android:icon="@drawable/ic_baseline_delete"
         android:title="Delete"/>
 
 <!--    <item-->
@@ -14,10 +19,12 @@
 
     <item
         android:id="@+id/share"
+        android:iconTint="@color/black"
+        android:icon="@drawable/ic_baseline_share_24"
         android:title="Share"/>
 
-    <item
-        android:id="@+id/shortcut"
-        android:title="Shortcut"/>
+<!--    <item-->
+<!--        android:id="@+id/shortcut"-->
+<!--        android:title="Shortcut"/>-->
 
 </menu>

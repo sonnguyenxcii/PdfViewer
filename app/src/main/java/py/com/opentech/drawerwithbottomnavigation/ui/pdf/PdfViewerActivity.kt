@@ -1,17 +1,23 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.View
+import android.print.PrintAttributes
+import android.print.PrintManager
+import android.text.InputType
+import android.text.TextUtils
+import android.view.*
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import com.github.barteksc.pdfviewer.PDFView
@@ -132,10 +138,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
         more.setOnClickListener(object : OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
-                url?.let { it1 -> shareFile(it1) }
-                fileUri?.let {
-                    shareFileUri(it)
-                }
+                v?.let { onMoreClick(it) }
             }
         })
 
@@ -396,17 +399,28 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
         setRatingStatus()
-
         if (rate >= 4) {
             askRatings()
 
         } else {
             finish()
         }
+
+
+        application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
+        val params = Bundle()
+        params.putString("content", comment)
+        application?.firebaseAnalytics?.logEvent("Content_Comment", params)
+
+        application?.firebaseAnalytics?.logEvent("Click_submit", null)
+
     }
 
     override fun onPositiveButtonClickedWithoutComment(rate: Int) {
         setRatingStatus()
+
+        application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
+        application?.firebaseAnalytics?.logEvent("Click_submit", null)
 
         if (rate >= 4) {
             askRatings()
@@ -516,13 +530,186 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     fun showFullscreen() {
         if (isFullscreen) {
+            hideStatus()
             toolbar.visibility = View.GONE
             bottom.visibility = View.GONE
         } else {
+            showStatus()
             toolbar.visibility = View.VISIBLE
             bottom.visibility = View.VISIBLE
 
         }
     }
+
+    fun hideStatus() {
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        }
+    }
+
+    fun showStatus() {
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.show(WindowInsets.Type.statusBars())
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        }
+    }
+
+    fun onMoreClick(view: View) {
+        //Creating the instance of PopupMenu
+        val popup = PopupMenu(this, view)
+
+        popup.menuInflater
+            .inflate(R.menu.poupup_reader, popup.menu)
+
+        popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                when (item?.itemId) {
+                    R.id.printer -> {
+                        var printManager: PrintManager =
+                            getSystemService(Context.PRINT_SERVICE) as PrintManager
+                        try {
+                            var printAdapter =
+                                PdfDocumentAdapter(this@PdfViewerActivity, url)
+
+                            printManager.print(
+                                "Document",
+                                printAdapter,
+                                PrintAttributes.Builder().build()
+                            );
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+
+                    R.id.favorite -> {
+
+                    }
+
+                    R.id.gotoPage -> {
+                        showInputPage()
+                    }
+
+                    R.id.upload -> {
+
+                    }
+                }
+
+                return true
+
+            }
+
+        })
+
+        popup.show() //showing popup menu
+
+    }
+
+    fun showInputPage() {
+        val view = layoutInflater.inflate(R.layout.dialog_input_name, null)
+        val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
+
+        categoryEditText.inputType = InputType.TYPE_CLASS_NUMBER
+
+        val dialog: android.app.AlertDialog =
+            android.app.AlertDialog.Builder(this)
+                .setTitle("")
+                .setMessage("Input page number")
+                .setView(view)
+                .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                    onChangePage(categoryEditText.text.toString())
+
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+        dialog.show()
+    }
+
+    fun onChangePage(page: String) {
+        if (!TextUtils.isEmpty(page)) {
+            pdfView.jumpTo(page.toInt(), true)
+        }
+    }
+
+//    private fun saveFiletoDrive(file: File, mime: String) {
+//        // Start by creating a new contents, and setting a callback.
+//        Drive.DriveApi.newDriveContents(mDriveClient).setResultCallback(
+//            object : ResultCallback<DriveContentsResult?>() {
+//                fun onResult(result: DriveContentsResult) {
+//                    // If the operation was not successful, we cannot do
+//                    // anything
+//                    // and must
+//                    // fail.
+//                    if (!result.getStatus().isSuccess()) {
+//                        Log.i(TAG, "Failed to create new contents.")
+//                        return
+//                    }
+//                    Log.i(TAG, "Connection successful, creating new contents...")
+//                    // Otherwise, we can write our data to the new contents.
+//                    // Get an output stream for the contents.
+//                    var outputStream: OutputStream? = result.getDriveContents()
+//                        .getOutputStream()
+//                    var fis: FileInputStream?
+//                    try {
+//                        fis = FileInputStream(file.path)
+//                        val baos = ByteArrayOutputStream()
+//                        val buf = ByteArray(1024)
+//                        var n: Int
+//                        while (-1 != fis.read(buf).also { n = it }) baos.write(buf, 0, n)
+//                        val photoBytes: ByteArray = baos.toByteArray()
+//                        outputStream.write(photoBytes)
+//                        outputStream.close()
+//                        outputStream = null
+//                        fis.close()
+//                        fis = null
+//                    } catch (e: FileNotFoundException) {
+//                        Log.w(TAG, "FileNotFoundException: " + e.getMessage())
+//                    } catch (e1: IOException) {
+//                        Log.w(TAG, "Unable to write file contents." + e1.getMessage())
+//                    }
+//                    val title = file.name
+//                    val metadataChangeSet: MetadataChangeSet = Builder()
+//                        .setMimeType(mime).setTitle(title).build()
+//                    if (mime == MIME_PHOTO) {
+//                        if (VERBOSE) Log.i(
+//                            TAG, "Creating new photo on Drive (" + title
+//                                    + ")"
+//                        )
+//                        Drive.DriveApi.getFolder(
+//                            mDriveClient,
+//                            mPicFolderDriveId
+//                        ).createFile(
+//                            mDriveClient,
+//                            metadataChangeSet,
+//                            result.getDriveContents()
+//                        )
+//                    } else if (mime == MIME_VIDEO) {
+//                        Log.i(
+//                            TAG, "Creating new video on Drive (" + title
+//                                    + ")"
+//                        )
+//                        Drive.DriveApi.getFolder(
+//                            mDriveClient,
+//                            mVidFolderDriveId
+//                        ).createFile(
+//                            mDriveClient,
+//                            metadataChangeSet,
+//                            result.getDriveContents()
+//                        )
+//                    }
+//                    if (file.delete()) {
+//                        if (VERBOSE) Log.d(TAG, "Deleted " + file.name + " from sdcard")
+//                    } else {
+//                        Log.w(TAG, "Failed to delete " + file.name + " from sdcard")
+//                    }
+//                }
+//            })
+//    }
 
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/printer"
+        android:title="Printer"/>
+
+    <item
+        android:id="@+id/favorite"
+        android:title="Favorite"/>
+
+    <item
+        android:id="@+id/gotoPage"
+        android:title="Go to Page"/>
+
+    <item
+        android:id="@+id/upload"
+        android:title="Upload to Drive"/>
+
+</menu>
