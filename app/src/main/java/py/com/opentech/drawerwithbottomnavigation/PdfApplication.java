@@ -2,6 +2,8 @@ package py.com.opentech.drawerwithbottomnavigation;
 
 import android.content.Context;
 
+import androidx.multidex.MultiDex;
+
 import com.ads.control.Admod;
 import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
@@ -35,6 +37,11 @@ public class PdfApplication extends AdsApplication {
     public InterstitialAd mInterstitialAd,mInterstitialClickOpenAd,mInterstitialClickTabAd,mInterstitialSearchAd,mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
     @Override
     public void onCreate() {
         super.onCreate();

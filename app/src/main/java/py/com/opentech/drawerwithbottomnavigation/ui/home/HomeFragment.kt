@@ -188,13 +188,6 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
             }
 
         })
-//        menuBuilder.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-//            override fun onMenuItemClick(item: MenuItem?): Boolean {
-//
-
-//            }
-//
-//        })
 
         optionsMenu.show() //showing popup menu
 

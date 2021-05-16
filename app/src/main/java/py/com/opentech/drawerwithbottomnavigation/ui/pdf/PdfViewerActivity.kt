@@ -3,6 +3,7 @@ package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.print.PrintAttributes
 import android.print.PrintManager
 import android.text.InputType
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.SeekBar
@@ -24,6 +26,10 @@ import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.initialization.InitializationStatus
+import com.google.android.gms.drive.DriveClient
+import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.tasks.Task
@@ -31,10 +37,12 @@ import com.hosseiniseyro.apprating.AppRatingDialog
 import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import com.shockwave.pdfium.PdfPasswordException
 import io.realm.Realm
+import io.realm.RealmResults
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
+import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
@@ -60,6 +68,10 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     lateinit var more: View
 
     var isFullscreen = false
+    var isBookmark = false
+
+    private val mDriveClient: DriveClient? = null
+    private val mDriveResourceClient: DriveResourceClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +103,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                 if (file_uri != null) {
                     fileUri = file_uri
                     viewFileFromStream()
-
+                    url = file_uri.path
                 }
 
             } else {
@@ -155,6 +167,13 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
             }
         })
+
+        var model = url?.let { getBookmarkByPath(it) }
+
+        if (!model.isNullOrEmpty()) {
+            isBookmark = true
+            invalidateOptionsMenu()
+        }
     }
 
 
@@ -567,7 +586,14 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
         popup.menuInflater
             .inflate(R.menu.poupup_reader, popup.menu)
+        var menuItem = popup.menu.getItem(1)
 
+        if (isBookmark) {
+            menuItem.title = "Remove from bookmark"
+        } else {
+            menuItem.title = "Bookmark"
+
+        }
         popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
             override fun onMenuItemClick(item: MenuItem?): Boolean {
                 when (item?.itemId) {
@@ -589,7 +615,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                     }
 
                     R.id.favorite -> {
-
+                        onBookmarkClick()
                     }
 
                     R.id.gotoPage -> {
@@ -597,7 +623,14 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                     }
 
                     R.id.upload -> {
-
+//                        val fileMetadata: File = File()
+//                        fileMetadata.setName("photo.jpg")
+//                        val filePath = File("files/photo.jpg")
+//                        val mediaContent = FileContent("image/jpeg", filePath)
+//                        val file: File = driveService.files().create(fileMetadata, mediaContent)
+//                            .setFields("id")
+//                            .execute()
+//                        System.out.println("File ID: " + file.getId())
                     }
                 }
 
@@ -637,79 +670,74 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         }
     }
 
-//    private fun saveFiletoDrive(file: File, mime: String) {
-//        // Start by creating a new contents, and setting a callback.
-//        Drive.DriveApi.newDriveContents(mDriveClient).setResultCallback(
-//            object : ResultCallback<DriveContentsResult?>() {
-//                fun onResult(result: DriveContentsResult) {
-//                    // If the operation was not successful, we cannot do
-//                    // anything
-//                    // and must
-//                    // fail.
-//                    if (!result.getStatus().isSuccess()) {
-//                        Log.i(TAG, "Failed to create new contents.")
-//                        return
-//                    }
-//                    Log.i(TAG, "Connection successful, creating new contents...")
-//                    // Otherwise, we can write our data to the new contents.
-//                    // Get an output stream for the contents.
-//                    var outputStream: OutputStream? = result.getDriveContents()
-//                        .getOutputStream()
-//                    var fis: FileInputStream?
-//                    try {
-//                        fis = FileInputStream(file.path)
-//                        val baos = ByteArrayOutputStream()
-//                        val buf = ByteArray(1024)
-//                        var n: Int
-//                        while (-1 != fis.read(buf).also { n = it }) baos.write(buf, 0, n)
-//                        val photoBytes: ByteArray = baos.toByteArray()
-//                        outputStream.write(photoBytes)
-//                        outputStream.close()
-//                        outputStream = null
-//                        fis.close()
-//                        fis = null
-//                    } catch (e: FileNotFoundException) {
-//                        Log.w(TAG, "FileNotFoundException: " + e.getMessage())
-//                    } catch (e1: IOException) {
-//                        Log.w(TAG, "Unable to write file contents." + e1.getMessage())
-//                    }
-//                    val title = file.name
-//                    val metadataChangeSet: MetadataChangeSet = Builder()
-//                        .setMimeType(mime).setTitle(title).build()
-//                    if (mime == MIME_PHOTO) {
-//                        if (VERBOSE) Log.i(
-//                            TAG, "Creating new photo on Drive (" + title
-//                                    + ")"
-//                        )
-//                        Drive.DriveApi.getFolder(
-//                            mDriveClient,
-//                            mPicFolderDriveId
-//                        ).createFile(
-//                            mDriveClient,
-//                            metadataChangeSet,
-//                            result.getDriveContents()
-//                        )
-//                    } else if (mime == MIME_VIDEO) {
-//                        Log.i(
-//                            TAG, "Creating new video on Drive (" + title
-//                                    + ")"
-//                        )
-//                        Drive.DriveApi.getFolder(
-//                            mDriveClient,
-//                            mVidFolderDriveId
-//                        ).createFile(
-//                            mDriveClient,
-//                            metadataChangeSet,
-//                            result.getDriveContents()
-//                        )
-//                    }
-//                    if (file.delete()) {
-//                        if (VERBOSE) Log.d(TAG, "Deleted " + file.name + " from sdcard")
-//                    } else {
-//                        Log.w(TAG, "Failed to delete " + file.name + " from sdcard")
-//                    }
-//                }
-//            })
-//    }
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
 
+        // set your desired icon here based on a flag if you like
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val settingsItem = menu?.findItem(R.id.favorite)
+        if (isBookmark) {
+            settingsItem?.title = "Remove from Bookmark"
+        } else {
+            settingsItem?.title = "Bookmark"
+
+        }
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    fun getBookmarkByPath(path: String): List<BookmarkRealmObject?>? {
+        var realm = Realm.getDefaultInstance()
+        return realm.where(BookmarkRealmObject::class.java).equalTo("path", path).findAll()
+    }
+
+    fun onBookmarkClick() {
+
+//        var bookmarkStatus = data.isBookmark!!
+        val params = Bundle()
+
+        if (isBookmark) {
+            params.putString("bookmark_file", "0")
+
+            url?.let { deleteFromBookmark(it) }
+        } else {
+            params.putString("bookmark_file", "1")
+
+            url?.let { addToBookmark(it) }
+        }
+
+        application?.firebaseAnalytics?.logEvent("View_Layout", params)
+
+        isBookmark = !isBookmark
+        invalidateOptionsMenu()
+    }
+
+    fun deleteFromBookmark(path: String) {
+        var realm = Realm.getDefaultInstance()
+
+        realm.executeTransaction { realm ->
+            val result: RealmResults<BookmarkRealmObject> =
+                realm.where(BookmarkRealmObject::class.java).equalTo("path", path).findAll()
+            result.deleteAllFromRealm()
+        }
+    }
+
+    fun addToBookmark(path: String) {
+        var model = getBookmarkByPath(path)
+        if (model.isNullOrEmpty()) {
+            saveBookmark(path)
+        }
+    }
+
+    fun saveBookmark(path: String) {
+        var realm = Realm.getDefaultInstance()
+        var id = PdfApplication.bookmarkPrimaryKey.getAndIncrement();
+
+        realm.executeTransactionAsync { realm ->
+            val model: BookmarkRealmObject =
+                realm?.createObject(BookmarkRealmObject::class.java, id)!!
+            model.path = path
+        }
+    }
 }
