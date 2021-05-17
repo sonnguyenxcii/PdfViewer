@@ -633,8 +633,9 @@ class HomeActivity : AppCompatActivity(),
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults!=null && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFile()
             } else {
 

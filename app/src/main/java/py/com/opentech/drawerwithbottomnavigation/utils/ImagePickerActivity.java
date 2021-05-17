@@ -151,37 +151,42 @@ public class ImagePickerActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
-        switch (requestCode) {
-            case REQUEST_IMAGE_CAPTURE:
-                if (resultCode == RESULT_OK) {
-                    cropImage(getCacheImagePath(fileName));
-                } else {
+        try {
+            switch (requestCode) {
+                case REQUEST_IMAGE_CAPTURE:
+                    if (resultCode == RESULT_OK) {
+                        cropImage(getCacheImagePath(fileName));
+                    } else {
+                        setResultCancelled();
+                    }
+                    break;
+                case REQUEST_GALLERY_IMAGE:
+                    if (resultCode == RESULT_OK) {
+                        Uri imageUri = data.getData();
+                        cropImage(imageUri);
+                    } else {
+                        setResultCancelled();
+                    }
+                    break;
+                case UCrop.REQUEST_CROP:
+                    if (resultCode == RESULT_OK) {
+                        handleUCropResult(data);
+                    } else {
+                        setResultCancelled();
+                    }
+                    break;
+                case UCrop.RESULT_ERROR:
+                    final Throwable cropError = UCrop.getError(data);
+                    Log.e(TAG, "Crop error: " + cropError);
                     setResultCancelled();
-                }
-                break;
-            case REQUEST_GALLERY_IMAGE:
-                if (resultCode == RESULT_OK) {
-                    Uri imageUri = data.getData();
-                    cropImage(imageUri);
-                } else {
+                    break;
+                default:
                     setResultCancelled();
-                }
-                break;
-            case UCrop.REQUEST_CROP:
-                if (resultCode == RESULT_OK) {
-                    handleUCropResult(data);
-                } else {
-                    setResultCancelled();
-                }
-                break;
-            case UCrop.RESULT_ERROR:
-                final Throwable cropError = UCrop.getError(data);
-                Log.e(TAG, "Crop error: " + cropError);
-                setResultCancelled();
-                break;
-            default:
-                setResultCancelled();
+            }
+        }catch (Exception e){
+
         }
+
     }
 
     private void cropImage(Uri sourceUri) {

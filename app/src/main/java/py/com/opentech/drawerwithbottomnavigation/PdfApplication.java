@@ -54,9 +54,9 @@ public class PdfApplication extends AdsApplication {
         AppOpenManager.getInstance().disableAppResumeWithActivity(UCropActivity.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ImagePickerActivity.class);
 
-        initRealm();
-        applicationContext = getApplicationContext();
 
+        applicationContext = getApplicationContext();
+        initRealm();
 //        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
         mInterstitialClickOpenAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Open_Item);
         mInterstitialClickTabAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Tab_Menu);
