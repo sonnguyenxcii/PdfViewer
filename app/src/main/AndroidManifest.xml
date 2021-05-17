@@ -15,7 +15,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.BROADCAST_PACKAGE_REPLACED" />
-
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+    </queries>
     <application
         android:name=".PdfApplication"
         android:allowBackup="true"
@@ -89,6 +93,7 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3617606523175567~4786225920"/>
+
     </application>
 
 </manifest>
