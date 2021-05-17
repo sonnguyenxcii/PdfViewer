@@ -15,14 +15,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.tom_roush.pdfbox.io.MemoryUsageSetting
 import com.tom_roush.pdfbox.multipdf.PDFMergerUtility
 import dmax.dialog.SpotsDialog
+import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 import java.io.File
 import java.io.FileOutputStream
@@ -42,6 +50,9 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.title = "Select the file"
+
+        adRequest = AdRequest.Builder().build()
+
         val recyclerView: RecyclerView = findViewById(R.id.recycleView)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -133,16 +144,18 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
                 val params = Bundle()
                 params.putString("button_click", "OK")
                 application?.firebaseAnalytics?.logEvent("Merge_PDF_Layout", params)
+
                 if (InternetConnection.checkConnection(this)) {
-                    Admod.getInstance().forceShowInterstitial(
-                        this,
-                        application?.mInterstitialClickTabAd,
-                        object : AdCallback() {
-                            override fun onAdClosed() {
-                                doMergeTask(text)
-                            }
-                        }
-                    )
+                    processToMerge(text)
+//                    Admod.getInstance().forceShowInterstitial(
+//                        this,
+//                        application?.mInterstitialClickTabAd,
+//                        object : AdCallback() {
+//                            override fun onAdClosed() {
+//                                doMergeTask(text)
+//                            }
+//                        }
+//                    )
                 } else {
                     doMergeTask(text)
                 }
@@ -227,6 +240,64 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
             dialogBuilder.show()
         } catch (e: java.lang.Exception) {
 //            Debug.e("---  Exception BaseActivity " + e.message)
+        }
+    }
+
+    private var adRequest: AdRequest? = null
+    private var mInterstitialMergeAd: InterstitialAd? = null
+
+    fun processToMerge(text: kotlin.String) {
+
+        if (!InternetConnection.checkConnection(this)) {
+            doMergeTask(text)
+
+        } else {
+            preloadAdsLayout.visibility = View.VISIBLE
+
+            InterstitialAd.load(this, Constants.ADMOB_Interstitial_Merge_PDF,
+                adRequest!!, object : InterstitialAdLoadCallback() {
+                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialMergeAd = interstitialAd
+
+                        mInterstitialMergeAd?.fullScreenContentCallback =
+                            object : FullScreenContentCallback() {
+                                override fun onAdDismissedFullScreenContent() {
+                                    println("----onAdDismissedFullScreenContent---------------")
+                                    // Called when fullscreen content is dismissed.
+                                    preloadAdsLayout.visibility = View.GONE
+                                    mInterstitialMergeAd = null
+                                    doMergeTask(text)
+
+                                }
+
+                                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                                    // Called when fullscreen content failed to show.
+                                    println("----onAdFailedToShowFullScreenContent---------------")
+                                    preloadAdsLayout.visibility = View.GONE
+                                    doMergeTask(text)
+
+                                }
+
+                                override fun onAdShowedFullScreenContent() {
+                                    preloadAdsLayout.visibility = View.GONE
+                                    mInterstitialMergeAd = null
+
+                                }
+                            }
+
+                        mInterstitialMergeAd!!.show(this@MultiFileSelectActivity)
+
+                    }
+
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        mInterstitialMergeAd = null
+                        preloadAdsLayout.visibility = View.GONE
+                        doMergeTask(text)
+
+                    }
+                })
         }
     }
 }

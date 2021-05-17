@@ -1,16 +1,25 @@
 package py.com.opentech.drawerwithbottomnavigation
 
-import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
+import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.webkit.MimeTypeMap
 import android.widget.RadioButton
+import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -28,9 +37,6 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationView
-import com.google.android.play.core.review.ReviewInfo
-import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.android.play.core.tasks.Task
 import com.hosseiniseyro.apprating.AppRatingDialog
 import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import com.infideap.drawerbehavior.AdvanceDrawerLayout
@@ -71,6 +77,8 @@ class HomeActivity : AppCompatActivity(),
         application = PdfApplication.create(this)
 
         adRequest = AdRequest.Builder().build()
+        var sortData = getSortStatus()
+        application?.global?.sortData?.postValue(sortData)
 
         this.application?.global?.isListMode?.postValue(true)
 
@@ -516,6 +524,7 @@ class HomeActivity : AppCompatActivity(),
 
         try {
             val ROOT_DIR = Environment.getExternalStorageDirectory().absolutePath
+            println("--ROOT_DIR------"+ROOT_DIR)
 //            val ANDROID_DIR = File("$ROOT_DIR/Android")
 //            val DATA_DIR = File("$ROOT_DIR/data")
             File(ROOT_DIR).walk()
@@ -526,14 +535,24 @@ class HomeActivity : AppCompatActivity(),
 //                        && it != DATA_DIR // it is not data directory
 //                        && !File(it, ".nomedia").exists() //there is no .nomedia file inside
 //            }
-                .filter { it.extension == "pdf" }
+//                .filter { it.extension == "pdf" }
                 .toList().forEach {
-                    val lastModDate = Date(it.lastModified())
-                    uriList.add(
-                        PdfModel(
-                            it.name, it.absolutePath, it.length(), Utils.formatDate(lastModDate),it.lastModified()
+                    println("--name------------------"+it.name)
+                    if (it.name.contains("pdf")){
+                        println("--name----contains--------------"+it.name)
+
+                        val lastModDate = Date(it.lastModified())
+                        uriList.add(
+                            PdfModel(
+                                it.name,
+                                it.absolutePath,
+                                it.length(),
+                                Utils.formatDate(lastModDate),
+                                it.lastModified()
+                            )
                         )
-                    )
+                    }
+
                 }
         } catch (e: Exception) {
 
@@ -542,21 +561,73 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun requestRead() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-            )
-        } else {
+
+        if (checkPermission()){
             readFile()
+
+        }else{
+            if (SDK_INT >= Build.VERSION_CODES.R) {
+                try {
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    intent.addCategory("android.intent.category.DEFAULT")
+                    intent.data = Uri.parse(String.format("package:%s", applicationContext.packageName))
+                    startActivityForResult(intent, 2296)
+                } catch (e: java.lang.Exception) {
+                    val intent = Intent()
+                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                    startActivityForResult(intent, 2296)
+                }
+            } else {
+                //below android 11
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(WRITE_EXTERNAL_STORAGE),
+                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+                )
+            }
         }
+
+
+//        if (ContextCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            )
+//            != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            ActivityCompat.requestPermissions(
+//                this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+//                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+//            )
+//        } else {
+//            readFile()
+//        }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 2296) {
+            if (SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    readFile()
+                    // perform action when allow permission success
+                } else {
+                    Toast.makeText(this, "Allow permission for storage access!", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+    }
+    private fun checkPermission(): Boolean {
+        return if (SDK_INT >= Build.VERSION_CODES.R) {
+            Environment.isExternalStorageManager()
+        } else {
+            val result =
+                ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE)
+            val result1 =
+                ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
+            result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
+        }
+    }
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -650,15 +721,26 @@ class HomeActivity : AppCompatActivity(),
     }
 
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
+        setRatingStatus()
+
         if (rate >= 4) {
             askRatings()
 
         } else {
 //            finish()
         }
+        application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
+        val params = Bundle()
+        params.putString("content", comment)
+        application?.firebaseAnalytics?.logEvent("Content_Comment", params)
+
+        application?.firebaseAnalytics?.logEvent("Click_submit", null)
     }
 
     override fun onPositiveButtonClickedWithoutComment(rate: Int) {
+        setRatingStatus()
+        application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
+        application?.firebaseAnalytics?.logEvent("Click_submit", null)
         if (rate >= 4) {
             askRatings()
 
@@ -668,23 +750,22 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun askRatings() {
-        val manager = ReviewManagerFactory.create(this)
-        val request: Task<ReviewInfo> = manager.requestReviewFlow()
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful()) {
-                // We can get the ReviewInfo object
-                val reviewInfo: ReviewInfo = task.getResult()
-                val flow: Task<Void> = manager.launchReviewFlow(this, reviewInfo)
-                flow.addOnCompleteListener { task2 ->
-//                    finish()
-                }
-            } else {
-//                finish()
-                // There was some problem, continue regardless of the result.
-            }
+
+        try {
+            val url = "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }catch (e:Exception){
+
         }
     }
+    fun setRatingStatus() {
 
+        var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putBoolean("isRating", true)
+        editor.apply()
+    }
     fun showInputSort() {
         var mSortModel = application?.global?.sortData?.value
         val view = layoutInflater.inflate(R.layout.dialog_input_sort, null)
@@ -698,14 +779,14 @@ class HomeActivity : AppCompatActivity(),
         val rbDesc = view.findViewById(R.id.rbDesc) as RadioButton
 
         if (mSortModel != null) {
-            if (mSortModel.type.equals("1")){
+            if (mSortModel.type.equals("1")) {
                 rbSize.isChecked = true
-            }else if(mSortModel.type.equals("2")){
+            } else if (mSortModel.type.equals("2")) {
                 rbDate.isChecked = true
             }
-            if (mSortModel.order.equals("0")){
+            if (mSortModel.order.equals("0")) {
                 rbInc.isChecked = true
-            }else {
+            } else {
                 rbDesc.isChecked = true
             }
         }
@@ -731,11 +812,47 @@ class HomeActivity : AppCompatActivity(),
                 if (rbDesc.isChecked) {
                     order = "1"
                 }
-
-                application?.global?.sortData?.postValue(SortModel(type = type, order = order))
+                var model = SortModel(type = type, order = order)
+                saveSortStatus(model)
+                application?.global?.sortData?.postValue(model)
             })
             .setNegativeButton("Cancel", null)
             .create()
         dialog.show()
+    }
+
+    fun saveSortStatus(model: SortModel) {
+        var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putString("type", model.type)
+        editor.putString("order", model.order)
+        editor.apply()
+    }
+
+    fun getSortStatus(): SortModel {
+        val prefs = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE)
+        val type = prefs.getString("type", "0")
+        val order = prefs.getString("order", "0")
+        return SortModel(type = type, order = order)
+    }
+
+    fun loadPdfFile(){
+        val pdf = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")
+
+        val table = MediaStore.Files.getContentUri("external")
+
+        val column = arrayOf(MediaStore.Files.FileColumns.DATA)
+
+        val where = (MediaStore.Files.FileColumns.MIME_TYPE + "=?")
+
+        val args = arrayOf(pdf)
+
+        val fileCursor: Cursor? =
+            getContentResolver().query(table, column, where, args, null)
+
+        while (fileCursor?.moveToNext()!!) {
+
+            //your code
+        }
+
     }
 }

@@ -3,7 +3,6 @@ package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,11 +10,11 @@ import android.print.PrintAttributes
 import android.print.PrintManager
 import android.text.InputType
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSeekBar
@@ -26,13 +25,6 @@ import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.initialization.InitializationStatus
-import com.google.android.gms.drive.DriveClient
-import com.google.android.gms.drive.DriveResourceClient
-import com.google.android.gms.tasks.Continuation
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.play.core.review.ReviewInfo
-import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.android.play.core.tasks.Task
 import com.hosseiniseyro.apprating.AppRatingDialog
 import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import com.shockwave.pdfium.PdfPasswordException
@@ -69,9 +61,6 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     var isFullscreen = false
     var isBookmark = false
-
-    private val mDriveClient: DriveClient? = null
-    private val mDriveResourceClient: DriveResourceClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -450,20 +439,13 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     }
 
     fun askRatings() {
-        val manager = ReviewManagerFactory.create(this)
-        val request: Task<ReviewInfo> = manager.requestReviewFlow()
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful()) {
-                // We can get the ReviewInfo object
-                val reviewInfo: ReviewInfo = task.getResult()
-                val flow: Task<Void> = manager.launchReviewFlow(this, reviewInfo)
-                flow.addOnCompleteListener { task2 ->
-                    finish()
-                }
-            } else {
-                finish()
-                // There was some problem, continue regardless of the result.
-            }
+        try {
+            val url = "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(url)
+            startActivity(i)
+        }catch (e:Exception){
+
         }
     }
 
@@ -533,7 +515,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             .setTitle("Password protect")
             .setMessage("Input password to view file")
             .setView(view)
-            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+            .setPositiveButton("OK") { dialog, which ->
                 val text = categoryEditText.text.toString()
                 password = text
                 if (viewType == 0) {
@@ -541,8 +523,10 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                 } else {
                     viewFileFromStream()
                 }
-            })
-            .setNegativeButton("Cancel", null)
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                finish()
+            }
             .create()
         dialog.show()
     }
@@ -623,14 +607,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                     }
 
                     R.id.upload -> {
-//                        val fileMetadata: File = File()
-//                        fileMetadata.setName("photo.jpg")
-//                        val filePath = File("files/photo.jpg")
-//                        val mediaContent = FileContent("image/jpeg", filePath)
-//                        val file: File = driveService.files().create(fileMetadata, mediaContent)
-//                            .setFields("id")
-//                            .execute()
-//                        System.out.println("File ID: " + file.getId())
+                        url?.let { onFileClick(it) }
                     }
                 }
 
@@ -739,5 +716,36 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                 realm?.createObject(BookmarkRealmObject::class.java, id)!!
             model.path = path
         }
+    }
+
+    private fun onFileClick(path: String) {
+        try {
+            val AUTHORITY_APP = "com.pdfreader.scanner.pdfviewer.provider"
+            val uri = FileProvider.getUriForFile(this, AUTHORITY_APP, File(path))
+            val uris: ArrayList<Uri> = ArrayList()
+            uris.add(uri)
+            val intent = Intent()
+            intent.action = Intent.ACTION_SEND_MULTIPLE
+            intent.putExtra(Intent.EXTRA_TEXT, "Upload PDF file")
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            intent.type = "application/pdf"
+            intent.setPackage("com.google.android.apps.docs")
+
+
+            try {
+                startActivity(
+                    Intent.createChooser(
+                        intent,
+                       "Select app"
+                    )
+                )
+            } catch (e: java.lang.Exception) {
+                Toast.makeText(this,"Can not share file now.",Toast.LENGTH_SHORT).show()
+            }
+        }catch (e:Exception){
+
+        }
+
     }
 }
