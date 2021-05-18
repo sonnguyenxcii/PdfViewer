@@ -524,7 +524,7 @@ class HomeActivity : AppCompatActivity(),
 
         try {
             val ROOT_DIR = Environment.getExternalStorageDirectory().absolutePath
-            println("--ROOT_DIR------"+ROOT_DIR)
+            println("--ROOT_DIR------" + ROOT_DIR)
 //            val ANDROID_DIR = File("$ROOT_DIR/Android")
 //            val DATA_DIR = File("$ROOT_DIR/data")
             File(ROOT_DIR).walk()
@@ -537,9 +537,9 @@ class HomeActivity : AppCompatActivity(),
 //            }
 //                .filter { it.extension == "pdf" }
                 .toList().forEach {
-                    println("--name------------------"+it.name)
-                    if (it.name.contains("pdf")){
-                        println("--name----contains--------------"+it.name)
+                    println("--name------------------" + it.name)
+                    if (it.name.contains("pdf")) {
+                        println("--name----contains--------------" + it.name)
 
                         val lastModDate = Date(it.lastModified())
                         uriList.add(
@@ -562,15 +562,16 @@ class HomeActivity : AppCompatActivity(),
 
     fun requestRead() {
 
-        if (checkPermission()){
+        if (checkPermission()) {
             readFile()
 
-        }else{
+        } else {
             if (SDK_INT >= Build.VERSION_CODES.R) {
                 try {
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                     intent.addCategory("android.intent.category.DEFAULT")
-                    intent.data = Uri.parse(String.format("package:%s", applicationContext.packageName))
+                    intent.data =
+                        Uri.parse(String.format("package:%s", applicationContext.packageName))
                     startActivityForResult(intent, 2296)
                 } catch (e: java.lang.Exception) {
                     val intent = Intent()
@@ -617,6 +618,7 @@ class HomeActivity : AppCompatActivity(),
             }
         }
     }
+
     private fun checkPermission(): Boolean {
         return if (SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
@@ -628,6 +630,7 @@ class HomeActivity : AppCompatActivity(),
             result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
         }
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -635,7 +638,7 @@ class HomeActivity : AppCompatActivity(),
     ) {
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults!=null && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults != null && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFile()
             } else {
 
@@ -655,14 +658,17 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun composeEmail() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data =
-            Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, "chongdaquan@gmail.com")
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback about PDF Reader")
-        if (intent.resolveActivity(packageManager) != null) {
+        try {
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data =
+                Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
+            intent.putExtra(Intent.EXTRA_EMAIL, "chongdaquan@gmail.com")
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback about PDF Reader")
             startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
     fun shareApp() {
@@ -753,20 +759,23 @@ class HomeActivity : AppCompatActivity(),
     fun askRatings() {
 
         try {
-            val url = "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
+            val url =
+                "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }
+
     fun setRatingStatus() {
 
         var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
         editor.putBoolean("isRating", true)
         editor.apply()
     }
+
     fun showInputSort() {
         var mSortModel = application?.global?.sortData?.value
         val view = layoutInflater.inflate(R.layout.dialog_input_sort, null)
@@ -836,7 +845,7 @@ class HomeActivity : AppCompatActivity(),
         return SortModel(type = type, order = order)
     }
 
-    fun loadPdfFile(){
+    fun loadPdfFile() {
         val pdf = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")
 
         val table = MediaStore.Files.getContentUri("external")
