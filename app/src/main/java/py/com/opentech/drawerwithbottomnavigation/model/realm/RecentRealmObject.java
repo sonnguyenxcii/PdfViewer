@@ -9,4 +9,5 @@ public class RecentRealmObject extends RealmObject {
     public String path;
     public Long time;
     public int page;
+    public int totalPage;
 }

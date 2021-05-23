@@ -40,7 +40,7 @@ import java.io.File
 class RecentFragment : Fragment(), RecycleViewOnClickListener {
 
     var listData: ArrayList<PdfModel> = ArrayList()
-    lateinit var adapter: HomeAdapter
+    lateinit var adapter: RecentAdapter
     protected var application: PdfApplication? = null
     var isListMode: Boolean = false
     var sort: SortModel? = null
@@ -60,7 +60,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
             )
         Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Recently, root)
 
-        adapter = HomeAdapter(requireContext(), listData, this)
+        adapter = RecentAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
         application = PdfApplication.create(activity)
         application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
@@ -97,6 +97,13 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
                 if (bm?.path?.equals(data.path)!!) {
                     var model = getBookmarkByPath(data.path!!)
                     data.isBookmark = !model.isNullOrEmpty()
+
+                    try {
+                        data.percent = (bm.page * 100 / bm.totalPage)
+                    } catch (e: Exception) {
+                        data.percent = 0
+                    }
+
                     listData.add(data)
                     processData()
                 }
@@ -319,30 +326,30 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
             sort = SortModel(type = "0", order = "0")
         }
 
-        if (sort!!.order.equals("0")){
+        if (sort!!.order.equals("0")) {
             if (sort!!.type.equals("0")) {
                 listData.sortBy {
                     it.name
                 }
-            }else if (sort!!.type.equals("1")){
+            } else if (sort!!.type.equals("1")) {
                 listData.sortBy {
                     it.size
                 }
-            }else{
+            } else {
                 listData.sortBy {
                     it.lastModifier
                 }
             }
-        }else{
+        } else {
             if (sort!!.type.equals("0")) {
                 listData.sortByDescending {
                     it.name
                 }
-            }else if (sort!!.type.equals("1")){
+            } else if (sort!!.type.equals("1")) {
                 listData.sortByDescending {
                     it.size
                 }
-            }else{
+            } else {
                 listData.sortByDescending {
                     it.lastModifier
                 }

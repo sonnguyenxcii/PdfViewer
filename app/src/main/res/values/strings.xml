@@ -17,4 +17,9 @@
     <string name="search_result_tittle">Search results for: \"%s\"</string>
     <string name="search_result_empty_tittle">No results for: \"%s\"</string>
     <string name="search_result_count">Show %s items</string>
+    <string name="select_convert_to_pdf">Convert to PDF</string>
+
+    <string name="page_size">Page size</string>
+    <string name="page_number">Page number</string>
+
 </resources>

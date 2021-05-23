@@ -54,7 +54,7 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         application = PdfApplication.create(this)
 
         Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Search)
-
+        application?.global?.listData?.value?.let { listData.addAll(it) }
         val recyclerView: RecyclerView = findViewById(R.id.recycleView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = HomeAdapter(this, listData, this)
@@ -74,36 +74,37 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if (TextUtils.isEmpty(s.toString())) {
-                    clear.visibility = View.GONE
-                    content.visibility = View.GONE
-                    listData.clear()
-                    adapter.notifyDataSetChanged()
-                } else {
-                    clear.visibility = View.VISIBLE
-
-                }
+                processData()
+//                if (TextUtils.isEmpty(s.toString())) {
+//                    clear.visibility = View.GONE
+//                    content.visibility = View.GONE
+//                    listData.clear()
+//                    adapter.notifyDataSetChanged()
+//                } else {
+//                    clear.visibility = View.VISIBLE
+//
+//                }
             }
 
         })
 
         edtSearch.setOnEditorActionListener(OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                if (application?.mInterstitialSearchAd != null) {
-                    // Your action on done
-                    Admod.getInstance().forceShowInterstitial(
-                        this,
-                        application?.mInterstitialSearchAd,
-                        object : AdCallback() {
-                            override fun onAdClosed() {
-                                processData()
-                            }
-                        }
-                    )
-                } else {
+//                if (application?.mInterstitialSearchAd != null) {
+//                    // Your action on done
+//                    Admod.getInstance().forceShowInterstitial(
+//                        this,
+//                        application?.mInterstitialSearchAd,
+//                        object : AdCallback() {
+//                            override fun onAdClosed() {
+//                                processData()
+//                            }
+//                        }
+//                    )
+//                } else {
                     processData()
 
-                }
+//                }
 
                 false
             } else false
@@ -124,39 +125,39 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         var temp = application?.global?.listData?.value?.filter {
             it.name!!.toLowerCase().contains(edtSearch.text.toString().toLowerCase())
         }
-        if (temp.isNullOrEmpty()) {
-            searchResultEmpty.visibility = View.VISIBLE
-            searchResult.visibility = View.GONE
+//        if (temp.isNullOrEmpty()) {
+////            searchResultEmpty.visibility = View.VISIBLE
+////            searchResult.visibility = View.GONE
+//
+////            searchResultEmptyTittle.setText(
+////                getString(
+////                    R.string.search_result_empty_tittle,
+////                    edtSearch.text.toString()
+////                )
+////            )
+//        } else {
 
-            searchResultEmptyTittle.setText(
-                getString(
-                    R.string.search_result_empty_tittle,
-                    edtSearch.text.toString()
-                )
-            )
-        } else {
+//            searchResultEmpty.visibility = View.GONE
+//            searchResult.visibility = View.VISIBLE
 
-            searchResultEmpty.visibility = View.GONE
-            searchResult.visibility = View.VISIBLE
+//            searchResultTittle.setText(
+//                getString(
+//                    R.string.search_result_tittle,
+//                    edtSearch.text.toString()
+//                )
+//            )
 
-            searchResultTittle.setText(
-                getString(
-                    R.string.search_result_tittle,
-                    edtSearch.text.toString()
-                )
-            )
-
-            var count = temp.size.toString()
+            var count = temp?.size.toString()
             resultCount.setText(getString(R.string.search_result_count, count))
 
             listData.clear()
             temp.let {
-                listData.addAll(it)
+                it?.let { it1 -> listData.addAll(it1) }
                 adapter.notifyDataSetChanged()
             }
-        }
+//        }
 
-        content.visibility = View.VISIBLE
+//        content.visibility = View.VISIBLE
 
     }
 

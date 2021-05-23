@@ -150,15 +150,12 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     @SuppressLint("RestrictedApi")
     override fun onMoreClick(pos: Int, view: View) {
         //Creating the instance of PopupMenu
-//        val popup = PopupMenu(requireContext(), view)
+
         val menuBuilder = MenuBuilder(context)
         val inflater = MenuInflater(context)
         inflater.inflate(R.menu.poupup_menu, menuBuilder)
         val optionsMenu = MenuPopupHelper(requireContext(), menuBuilder, view)
         optionsMenu.setForceShowIcon(true)
-        //Inflating the Popup using xml file
-//        popup.menuInflater
-//            .inflate(R.menu.poupup_menu, popup.menu)
 
         menuBuilder.setCallback(object : MenuBuilder.Callback {
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {

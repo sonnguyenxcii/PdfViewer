@@ -20,4 +20,9 @@
     <color name="titleTextColor">#D9141627</color>
     <color name="descriptionTextColor">#80141627</color>
     <color name="commentTextColor">#D9141627</color>
+
+    <color name="button_background_primary">#F45656</color>
+    <color name="button_background_secondary">#7A7A9D</color>
+    <color name="border_button_dialog">#E4E4EB</color>
+
 </resources>

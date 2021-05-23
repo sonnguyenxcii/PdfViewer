@@ -48,11 +48,12 @@ import org.greenrobot.eventbus.ThreadMode
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
-import py.com.opentech.drawerwithbottomnavigation.ui.fileexplorer.FileExplorerActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
+import py.com.opentech.drawerwithbottomnavigation.utils.RealPathUtil
 import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 import java.io.File
 import java.util.*
@@ -72,6 +73,7 @@ class HomeActivity : AppCompatActivity(),
     private var adRequest: AdRequest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
@@ -167,6 +169,20 @@ class HomeActivity : AppCompatActivity(),
 
         sort.setOnClickListener {
             showInputSort()
+        }
+
+        search.setOnClickListener {
+            val params = Bundle()
+            params.putString("button_click", "Button Search")
+            application?.firebaseAnalytics?.logEvent("Home_Layout", params)
+
+            if (application?.mInterstitialSearchAd == null) {
+                application?.mInterstitialSearchAd = Admod.getInstance()
+                    .getInterstitalAds(this, Constants.ADMOB_Interstitial_Search)
+            }
+
+            var intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
         }
 
         application?.global?.isListMode?.observe(this, Observer {
@@ -513,10 +529,21 @@ class HomeActivity : AppCompatActivity(),
         startActivity(intent)
     }
 
-    private fun navigateToFile() {
+    private val INTENT_REQUEST_PICK_FILE_CODE = 10
 
-        var intent = Intent(this, FileExplorerActivity::class.java)
-        startActivity(intent)
+    private fun navigateToFile() {
+        val folderPath = Environment.getExternalStorageDirectory().toString() + "/"
+        val intent = Intent()
+        intent.action = Intent.ACTION_GET_CONTENT
+        val myUri = Uri.parse(folderPath)
+        intent.setDataAndType(myUri, "application/pdf")
+
+
+//        var intent = Intent(this, FileExplorerActivity::class.java)
+//        startActivity(intent)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select a file"), INTENT_REQUEST_PICK_FILE_CODE
+        )
     }
 
     private fun getExternalPDFFileList(): ArrayList<PdfModel> {
@@ -524,7 +551,7 @@ class HomeActivity : AppCompatActivity(),
 
         try {
             val ROOT_DIR = Environment.getExternalStorageDirectory().absolutePath
-            println("--ROOT_DIR------"+ROOT_DIR)
+            println("--ROOT_DIR------" + ROOT_DIR)
 //            val ANDROID_DIR = File("$ROOT_DIR/Android")
 //            val DATA_DIR = File("$ROOT_DIR/data")
             File(ROOT_DIR).walk()
@@ -537,9 +564,9 @@ class HomeActivity : AppCompatActivity(),
 //            }
 //                .filter { it.extension == "pdf" }
                 .toList().forEach {
-                    println("--name------------------"+it.name)
-                    if (it.name.contains("pdf")){
-                        println("--name----contains--------------"+it.name)
+                    println("--name------------------" + it.name)
+                    if (it.name.contains("pdf")) {
+                        println("--name----contains--------------" + it.name)
 
                         val lastModDate = Date(it.lastModified())
                         uriList.add(
@@ -562,15 +589,16 @@ class HomeActivity : AppCompatActivity(),
 
     fun requestRead() {
 
-        if (checkPermission()){
+        if (checkPermission()) {
             readFile()
 
-        }else{
+        } else {
             if (SDK_INT >= Build.VERSION_CODES.R) {
                 try {
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                     intent.addCategory("android.intent.category.DEFAULT")
-                    intent.data = Uri.parse(String.format("package:%s", applicationContext.packageName))
+                    intent.data =
+                        Uri.parse(String.format("package:%s", applicationContext.packageName))
                     startActivityForResult(intent, 2296)
                 } catch (e: java.lang.Exception) {
                     val intent = Intent()
@@ -605,6 +633,8 @@ class HomeActivity : AppCompatActivity(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (data == null || resultCode != RESULT_OK || data.data == null)
+            return
         if (requestCode == 2296) {
             if (SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
@@ -615,8 +645,19 @@ class HomeActivity : AppCompatActivity(),
                         .show()
                 }
             }
+        } else if (requestCode == INTENT_REQUEST_PICK_FILE_CODE) {
+            //Getting Absolute Path
+            val path: String = RealPathUtil.getInstance().getRealPath(this, data.data)
+            gotoViewPdf(path)
         }
     }
+
+    fun gotoViewPdf(path: String) {
+        var intent = Intent(this, PdfViewerActivity::class.java)
+        intent.putExtra("url", path)
+        startActivity(intent)
+    }
+
     private fun checkPermission(): Boolean {
         return if (SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
@@ -628,6 +669,7 @@ class HomeActivity : AppCompatActivity(),
             result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
         }
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -635,7 +677,7 @@ class HomeActivity : AppCompatActivity(),
     ) {
 
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
-            if (grantResults!=null && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults != null && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 readFile()
             } else {
 
@@ -722,6 +764,11 @@ class HomeActivity : AppCompatActivity(),
     }
 
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
+        if (rate < 1) {
+            showRateInvalidDialog()
+            return
+        }
+
         setRatingStatus()
 
         if (rate >= 4) {
@@ -739,6 +786,12 @@ class HomeActivity : AppCompatActivity(),
     }
 
     override fun onPositiveButtonClickedWithoutComment(rate: Int) {
+
+        if (rate < 1) {
+            showRateInvalidDialog()
+            return
+        }
+
         setRatingStatus()
         application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
         application?.firebaseAnalytics?.logEvent("Click_submit", null)
@@ -750,23 +803,36 @@ class HomeActivity : AppCompatActivity(),
         }
     }
 
+    fun showRateInvalidDialog() {
+        if (isFinishing) {
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle("")
+            .setMessage("You need to make a rate")
+            .setPositiveButton("OK", null).show()
+    }
+
     fun askRatings() {
 
         try {
-            val url = "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
+            val url =
+                "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }
+
     fun setRatingStatus() {
 
         var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
         editor.putBoolean("isRating", true)
         editor.apply()
     }
+
     fun showInputSort() {
         var mSortModel = application?.global?.sortData?.value
         val view = layoutInflater.inflate(R.layout.dialog_input_sort, null)
@@ -831,12 +897,12 @@ class HomeActivity : AppCompatActivity(),
 
     fun getSortStatus(): SortModel {
         val prefs = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE)
-        val type = prefs.getString("type", "0")
-        val order = prefs.getString("order", "0")
+        val type = prefs.getString("type", "2")
+        val order = prefs.getString("order", "1")
         return SortModel(type = type, order = order)
     }
 
-    fun loadPdfFile(){
+    fun loadPdfFile() {
         val pdf = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")
 
         val table = MediaStore.Files.getContentUri("external")

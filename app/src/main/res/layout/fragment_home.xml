@@ -12,17 +12,11 @@
         android:paddingRight="@dimen/_12sdp"
         android:paddingBottom="@dimen/_12sdp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/seguisb"
-            android:text="PDF Read"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_17ssp"
-            android:textStyle="bold" />
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_marginBottom="@dimen/_8sdp"
             android:layout_height="wrap_content">
 
