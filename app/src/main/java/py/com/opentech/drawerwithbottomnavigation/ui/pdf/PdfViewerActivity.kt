@@ -746,7 +746,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             url?.let { addToBookmark(it) }
         }
 
-        application?.firebaseAnalytics?.logEvent("View_Layout", params)
+        application?.firebaseAnalytics?.logEvent("PDF_Viewer_Layout", params)
 
         isBookmark = !isBookmark
         invalidateOptionsMenu()

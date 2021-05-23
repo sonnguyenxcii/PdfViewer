@@ -73,7 +73,6 @@ class HomeActivity : AppCompatActivity(),
     private var adRequest: AdRequest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
@@ -658,6 +657,7 @@ class HomeActivity : AppCompatActivity(),
         startActivity(intent)
     }
 
+
     private fun checkPermission(): Boolean {
         return if (SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
@@ -697,14 +697,17 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun composeEmail() {
-        val intent = Intent(Intent.ACTION_SENDTO)
-        intent.data =
-            Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, "chongdaquan@gmail.com")
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback about PDF Reader")
-        if (intent.resolveActivity(packageManager) != null) {
+        try {
+            val intent = Intent(Intent.ACTION_SENDTO)
+            intent.data =
+                Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
+            intent.putExtra(Intent.EXTRA_EMAIL, "chongdaquan@gmail.com")
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback about PDF Reader")
             startActivity(intent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
     fun shareApp() {
