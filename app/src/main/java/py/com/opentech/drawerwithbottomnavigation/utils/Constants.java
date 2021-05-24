@@ -31,5 +31,6 @@ public class Constants {
 //    public static final String ADMOB_Interstitial = "ca-app-pub-3940256099942544/1033173712";
 //    public static final String ADMOB_Reward = "ca-app-pub-3940256099942544/5224354917";
     public static final String MY_PREFS_NAME = "MyPrefsFile";
+    public static final String APP_PASSWORD = "pdf_tool_18012021";
 
 }

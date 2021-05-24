@@ -3,18 +3,26 @@
 
     <item
         android:id="@+id/printer"
+        android:icon="@drawable/ic_baseline_print"
+        android:iconTint="@color/black"
         android:title="Printer"/>
 
     <item
         android:id="@+id/favorite"
+        android:icon="@drawable/ic_baseline_bookmark_24"
+        android:iconTint="@color/black"
         android:title="Favorite"/>
 
     <item
         android:id="@+id/gotoPage"
+        android:icon="@drawable/ic_baseline_find_in_page_24"
+        android:iconTint="@color/black"
         android:title="Go to Page"/>
 
     <item
         android:id="@+id/upload"
+        android:icon="@drawable/ic_baseline_cloud_upload_24"
+        android:iconTint="@color/black"
         android:title="Upload to Drive"/>
 
 </menu>

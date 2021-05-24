@@ -143,22 +143,24 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         params.putString("button_click", "Open File")
         application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
-        onPrepareOpenAds(listData[pos].path!!)
+        try {
+            onPrepareOpenAds(listData[pos].path!!)
+
+        }catch (e:Exception){
+
+        }
 
     }
 
     @SuppressLint("RestrictedApi")
     override fun onMoreClick(pos: Int, view: View) {
         //Creating the instance of PopupMenu
-//        val popup = PopupMenu(requireContext(), view)
+
         val menuBuilder = MenuBuilder(context)
         val inflater = MenuInflater(context)
         inflater.inflate(R.menu.poupup_menu, menuBuilder)
         val optionsMenu = MenuPopupHelper(requireContext(), menuBuilder, view)
         optionsMenu.setForceShowIcon(true)
-        //Inflating the Popup using xml file
-//        popup.menuInflater
-//            .inflate(R.menu.poupup_menu, popup.menu)
 
         menuBuilder.setCallback(object : MenuBuilder.Callback {
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
@@ -168,18 +170,43 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                     params.putString("more_action_click", "Open File")
                     application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
-                    onPrepareOpenAds(listData[pos].path!!)
+                    try {
+                        onPrepareOpenAds(listData[pos].path!!)
+
+                    }catch (e:Exception){
+
+                    }
 
                 } else if (item.itemId == R.id.delete) {
-                    onConfirmDelete(listData[pos].path!!)
+                    try {
+                        onConfirmDelete(listData[pos].path!!)
+                    }catch (e:Exception){
+
+                    }
                 } else if (item.itemId == R.id.bookmark) {
-                    addToBookmark(listData[pos].path!!)
+                    try {
+                        addToBookmark(listData[pos].path!!)
+                    }catch (e:Exception){
+
+                    }
                 } else if (item.itemId == R.id.share) {
-                    share(listData[pos].path!!)
+                    try {
+                        share(listData[pos].path!!)
+                    }catch (e:Exception){
+
+                    }
                 } else if (item.itemId == R.id.shortcut) {
-                    createShortcut(listData[pos].path!!)
+                    try {
+                        createShortcut(listData[pos].path!!)
+                    }catch (e:Exception){
+
+                    }
                 } else if (item.itemId == R.id.rename) {
-                    onConfirmRename(listData[pos].path!!)
+                    try {
+                        onConfirmRename(listData[pos].path!!)
+                    }catch (e:Exception){
+
+                    }
                 }
                 return true
             }
@@ -206,24 +233,29 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     }
 
     override fun onBookmarkClick(pos: Int) {
-        var data = listData[pos]
-        var bookmarkStatus = data.isBookmark!!
-        val params = Bundle()
+        try {
+            var data = listData[pos]
+            var bookmarkStatus = data.isBookmark!!
+            val params = Bundle()
 
-        if (bookmarkStatus) {
-            params.putString("bookmark_file", "0")
+            if (bookmarkStatus) {
+                params.putString("bookmark_file", "0")
 
-            deleteFromBookmark(data.path!!)
-        } else {
-            params.putString("bookmark_file", "1")
+                deleteFromBookmark(data.path!!)
+            } else {
+                params.putString("bookmark_file", "1")
 
-            addToBookmark(data.path!!)
+                addToBookmark(data.path!!)
+            }
+
+            application?.firebaseAnalytics?.logEvent("Home_Layout", params)
+
+            data.isBookmark = !bookmarkStatus
+            adapter.notifyItemChanged(pos)
+        }catch (e:Exception){
+
         }
 
-        application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-
-        data.isBookmark = !bookmarkStatus
-        adapter.notifyItemChanged(pos)
     }
 
     fun deleteFromBookmark(path: String) {

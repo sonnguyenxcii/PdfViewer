@@ -1,5 +1,6 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -17,8 +18,9 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.AppCompatSeekBar
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import com.github.barteksc.pdfviewer.PDFView
@@ -32,6 +34,7 @@ import io.realm.Realm
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
+import py.com.opentech.drawerwithbottomnavigation.HomeActivity
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
@@ -163,6 +166,8 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             isBookmark = true
             invalidateOptionsMenu()
         }
+
+
     }
 
 
@@ -218,7 +223,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         if (!isRating()) {
             showRate()
         } else {
-            finish()
+            onFinishing()
         }
 
         return true
@@ -230,7 +235,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         if (!isRating()) {
             showRate()
         } else {
-            finish()
+            onFinishing()
         }
     }
 
@@ -280,7 +285,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     fun savePageToRecent(path: String, page: Int) {
         var model = getRecentByPath(path)
         if (!model.isNullOrEmpty()) {
-            model[0]?.let { updatePage(it, page) }
+            model[0]?.let { updatePage(it, page, pdfView.pageCount) }
         }
     }
 
@@ -291,10 +296,11 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         realm.commitTransaction()
     }
 
-    fun updatePage(model: RecentRealmObject, page: Int) {
+    fun updatePage(model: RecentRealmObject, page: Int, totalPage: Int) {
         var realm = Realm.getDefaultInstance()
         realm.beginTransaction()
         model.page = page
+        model.totalPage = totalPage
         realm.commitTransaction()
     }
 
@@ -397,21 +403,26 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     }
 
     override fun onNegativeButtonClicked() {
-        finish()
+        onFinishing()
     }
 
     override fun onNeutralButtonClicked() {
-        finish()
+        onFinishing()
 
     }
 
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
+
+        if (rate < 1) {
+            showRateInvalidDialog()
+            return
+        }
         setRatingStatus()
         if (rate >= 4) {
             askRatings()
 
         } else {
-            finish()
+            onFinishing()
         }
 
 
@@ -425,6 +436,12 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     }
 
     override fun onPositiveButtonClickedWithoutComment(rate: Int) {
+
+        if (rate < 1) {
+            showRateInvalidDialog()
+            return
+        }
+
         setRatingStatus()
 
         application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
@@ -434,17 +451,36 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             askRatings()
 
         } else {
-            finish()
+            onFinishing()
         }
+    }
+
+    fun onFinishing(){
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.flags =
+            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        finish()
+    }
+
+    fun showRateInvalidDialog() {
+        if (isFinishing) {
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle("")
+            .setMessage("You need to make a rate")
+            .setPositiveButton("OK", null).show()
     }
 
     fun askRatings() {
         try {
-            val url = "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
+            val url =
+                "https://play.google.com/store/apps/details?id=com.pdfreader.scanner.pdfviewer"
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(url)
             startActivity(i)
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }
@@ -505,6 +541,18 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         if (viewType == 0) {
             url?.let { savePageToRecent(it, currentPage) }
         }
+
+        try {
+            val currentFile = File(url)
+            var fileName = currentFile.nameWithoutExtension
+            val params = Bundle()
+            params.putString("file_name", fileName)
+            params.putString("file_page_count", "" + pdfView.pageCount)
+            application?.firebaseAnalytics?.logEvent("File_View_Info", params)
+        } catch (e: Exception) {
+
+        }
+
     }
 
     fun showInputPassword() {
@@ -525,7 +573,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                 }
             }
             .setNegativeButton("Cancel") { dialog, which ->
-                finish()
+                onFinishing()
             }
             .create()
         dialog.show()
@@ -564,13 +612,21 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     fun onMoreClick(view: View) {
         //Creating the instance of PopupMenu
-        val popup = PopupMenu(this, view)
+//        val popup = PopupMenu(this, view)
+//
+//        popup.menuInflater
+//            .inflate(R.menu.poupup_reader, popup.menu)
 
-        popup.menuInflater
-            .inflate(R.menu.poupup_reader, popup.menu)
-        var menuItem = popup.menu.getItem(1)
+        val menuBuilder = MenuBuilder(this)
+        val inflater = MenuInflater(this)
+        inflater.inflate(R.menu.poupup_reader, menuBuilder)
+        val optionsMenu = MenuPopupHelper(this, menuBuilder, view)
+        optionsMenu.setForceShowIcon(true)
+
+        var menuItem = menuBuilder.getItem(1)
 
         if (isBookmark) {
             menuItem.title = "Remove from bookmark"
@@ -578,13 +634,15 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             menuItem.title = "Bookmark"
 
         }
-        popup.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-            override fun onMenuItemClick(item: MenuItem?): Boolean {
+
+        menuBuilder.setCallback(object : MenuBuilder.Callback {
+            override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
                 when (item?.itemId) {
                     R.id.printer -> {
-                        var printManager: PrintManager =
-                            getSystemService(Context.PRINT_SERVICE) as PrintManager
+
                         try {
+                            var printManager: PrintManager =
+                                getSystemService(Context.PRINT_SERVICE) as PrintManager
                             var printAdapter =
                                 PdfDocumentAdapter(this@PdfViewerActivity, url)
 
@@ -615,9 +673,14 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
             }
 
+            override fun onMenuModeChange(menu: MenuBuilder) {
+            }
+
         })
 
-        popup.show() //showing popup menu
+        optionsMenu.show() //showing popup menu
+
+
 
     }
 
@@ -737,13 +800,13 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
                 startActivity(
                     Intent.createChooser(
                         intent,
-                       "Select app"
+                        "Select app"
                     )
                 )
             } catch (e: java.lang.Exception) {
-                Toast.makeText(this,"Can not share file now.",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Can not share file now.", Toast.LENGTH_SHORT).show()
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
 

@@ -3,11 +3,14 @@ package py.com.opentech.drawerwithbottomnavigation
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import com.google.android.gms.ads.*
+import com.google.firebase.FirebaseApp
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
@@ -18,48 +21,47 @@ class SplashScreen : AppCompatActivity() {
 
     var i: Int = 0
     var time = 15000
-
     var count = 0
-    private var mInterstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.SplashTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-        if (InternetConnection.checkConnection(this)) {
-            prepareAds()
-        } else {
-            time = 3000
-        }
-
-        progressBar.progress = i
-        val mCountDownTimer = object : CountDownTimer(time.toLong(), 100) {
-            override fun onTick(millisUntilFinished: Long) {
-                i++
-                progressBar.progress = i * 100 / (time / 100)
+//        Thread{
+            if (InternetConnection.checkConnection(this)) {
+                prepareAds()
+            } else {
+                time = 3000
             }
 
-            override fun onFinish() {
-                println("--onFinish-------------count--"+count)
-                println("--onFinish-------------mPrepareAdsDone--"+mPrepareAdsDone)
+//        progressBar.progress = i
+            val mCountDownTimer = object : CountDownTimer(time.toLong(), 100) {
+                override fun onTick(millisUntilFinished: Long) {
+                    i++
+//                progressBar.progress = i * 100 / (time / 100)
+                }
 
-                i++
-                progressBar.progress = 100
-                mAnimationDone = true
-                if (!mPrepareAdsDone) {
-                    gotoMain()
+                override fun onFinish() {
+
+                    i++
+//                progressBar.progress = 100
+                    mAnimationDone = true
+                    if (!mPrepareAdsDone) {
+                        gotoMain()
+                    }
                 }
             }
-        }
 
-        mCountDownTimer.start()
+            mCountDownTimer.start()
+//        }.start()
 
 
     }
 
+
+
     fun gotoMain() {
-        println("--gotoMain-------------count--"+count)
+        println("--gotoMain-------------count--" + count)
 
         if (count == 0) {
             val intent = Intent(this, HomeActivity::class.java)
@@ -67,7 +69,7 @@ class SplashScreen : AppCompatActivity() {
             finish()
             count++
         }
-        println("--gotoMain-------------count-2-"+count)
+        println("--gotoMain-------------count-2-" + count)
 
     }
 
@@ -82,14 +84,15 @@ class SplashScreen : AppCompatActivity() {
             object : AdCallback() {
                 override fun onAdImpression() {
                     super.onAdImpression()
-                    println("--onAdImpression---------------"+mPrepareAdsDone)
+                    println("--onAdImpression---------------" + mPrepareAdsDone)
 
                 }
+
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     mPrepareAdsDone = true
 
-                    println("--onAdLoaded---------------"+mPrepareAdsDone)
+                    println("--onAdLoaded---------------" + mPrepareAdsDone)
                 }
 
                 override fun onAdClosed() {

@@ -6,10 +6,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-<!--        <item name="android:actionBarStyle">@style/MyActionBar</item>-->
-<!--        <item name="actionBarStyle">@style/MyActionBar</item>-->
-<!--        <item name="android:windowActionBarOverlay">true</item>-->
-<!--        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_left_gray</item>-->
+        <!--        <item name="android:actionBarStyle">@style/MyActionBar</item>-->
+        <!--        <item name="actionBarStyle">@style/MyActionBar</item>-->
+        <!--        <item name="android:windowActionBarOverlay">true</item>-->
+        <!--        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_left_gray</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -32,15 +32,17 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@drawable/selector_bottom_navigation_view_text_color</item>
     </style>
+
     <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
         <item name="android:background">@drawable/background_toolbar</item>
         <item name="background">@drawable/background_toolbar</item>
         <!--<item name="titleTextStyle" >@style/MyActionBar.TitleTextStyle</item>-->
-<!--        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-<!--        <item name="android:subtitleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-<!--        <item name="titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-<!--        <item name="subtitleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
+        <!--        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
+        <!--        <item name="android:subtitleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
+        <!--        <item name="titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
+        <!--        <item name="subtitleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
     </style>
+
     <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
@@ -49,6 +51,7 @@
     </style>
 
     <style name="SplashTheme" parent="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+        <!--        <item name="android:windowBackground">@drawable/bg_splash_screen</item>-->
         <item name="android:windowBackground">@drawable/bg_splash_new</item>
     </style>
 
@@ -58,24 +61,74 @@
         <item name="colorPrimaryVariant">#0F9D58</item>
         <item name="colorOnPrimary">#000</item>
     </style>
+
     <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:progressBackgroundTint">@color/white</item>
         <item name="android:progressTint">@color/colorPrimary</item>
     </style>
 
-<!--    <style name="ApBaseDrawerNavigationMenuStyle" parent="Theme.AppCompat.DayNight.DarkActionBar">-->
-<!--        <item name="colorControlNormal">@null</item>-->
-<!--        <item name="android:color">@color/text_color</item>-->
-<!--        <item name="android:textColor">@color/text_color</item>-->
-<!--        <item name="android:textColorHint">@color/text_color</item>-->
-<!--        <item name="android:textColorPrimary">@color/text_color</item>-->
-<!--        <item name="android:textColorSecondary">@color/gray_shade_555555</item>-->
-<!--        <item name="android:background">#548893</item>-->
-<!--        <item name="android:colorPrimary">@color/text_color</item>-->
-<!--        <item name="android:colorControlHighlight">@color/text_color</item>-->
-<!--    </style>-->
-    <style name="NavigationView"  parent="Base.Theme.AppCompat">
+    <!--    <style name="ApBaseDrawerNavigationMenuStyle" parent="Theme.AppCompat.DayNight.DarkActionBar">-->
+    <!--        <item name="colorControlNormal">@null</item>-->
+    <!--        <item name="android:color">@color/text_color</item>-->
+    <!--        <item name="android:textColor">@color/text_color</item>-->
+    <!--        <item name="android:textColorHint">@color/text_color</item>-->
+    <!--        <item name="android:textColorPrimary">@color/text_color</item>-->
+    <!--        <item name="android:textColorSecondary">@color/gray_shade_555555</item>-->
+    <!--        <item name="android:background">#548893</item>-->
+    <!--        <item name="android:colorPrimary">@color/text_color</item>-->
+    <!--        <item name="android:colorControlHighlight">@color/text_color</item>-->
+    <!--    </style>-->
+    <style name="NavigationView" parent="Base.Theme.AppCompat">
         <item name="android:listDivider">@color/navBgColor</item>
-<!--        <item name="android:textColorSecondary">@color/white</item>-->
+        <!--        <item name="android:textColorSecondary">@color/white</item>-->
+    </style>
+
+    <style name="HuyCommonTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="HuyCommonTextStyleImportProperties" parent="HuyCommonTextStyle">
+        <item name="android:textColor">#7A7A9D</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="HuyCommonButtonStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@drawable/bg_button_common_primary</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="sheet_dialog_style" parent="Theme.Design.Light.BottomSheetDialog">
+        <!--<item name="android:windowCloseOnTouchOutside">false</item>-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+
+    <style name="HuyCommonButtonDialogLeftStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:background">@drawable/bg_button_common_dialog_left</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="HuyCommonButtonDialogRightStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:background">@drawable/bg_button_common_dialog_right</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 </resources>
