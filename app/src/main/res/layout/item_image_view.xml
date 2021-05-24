@@ -36,7 +36,7 @@
 
             <ImageView
                 android:id="@+id/thumbnail"
-                android:src="@drawable/ic_background_splash"
+                android:src="@drawable/ic_pdf_splash"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 bind:imageUrl="@{imageData.imagePath}"
@@ -105,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/title_second_component_text_size"
-                android:textColor="@color/black_totally"
+                android:textColor="@color/black"
                 android:text="Add image"
                 android:textStyle="bold"
                 android:layout_marginTop="@dimen/common_padding_big"/>

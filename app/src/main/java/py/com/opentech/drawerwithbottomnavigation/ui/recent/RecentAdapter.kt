@@ -33,7 +33,7 @@ class RecentAdapter(
 
             itemView =
                 LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_home, parent, false)
+                    .inflate(R.layout.item_list_recent, parent, false)
         } else {
             itemView =
                 LayoutInflater.from(parent.getContext())
@@ -51,12 +51,12 @@ class RecentAdapter(
             holder.size.text = Utils.convertToStringRepresentation(data.size!!)
             holder.date.text = data.date
 
-//            if (data.percent != 0) {
-//                holder.percent.text = "Read: " + data.percent + "%"
-//                holder.percent.visibility = View.VISIBLE
-//            } else {
-//                holder.percent.visibility = View.GONE
-//            }
+            if (data.currentPage != 0 && data.totalPage != 0) {
+                holder.percent.text = "Read: " + data.currentPage + "/" + data.totalPage + " page"
+                holder.percent.visibility = View.VISIBLE
+            } else {
+                holder.percent.visibility = View.GONE
+            }
 
             if (data.isBookmark!!) {
                 holder.bookmarkIcon.setImageDrawable(
@@ -111,6 +111,6 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
     val date = itemView.findViewById<AppCompatTextView>(R.id.date)
     val bookmark = itemView.findViewById<View>(R.id.bookmark)
     val bookmarkIcon = itemView.findViewById<AppCompatImageView>(R.id.bookmarkIcon)
-//    val percent = itemView.findViewById<AppCompatTextView>(R.id.percent)
+    val percent = itemView.findViewById<AppCompatTextView>(R.id.percent)
 
 }

@@ -31,13 +31,18 @@ public class PdfDocumentAdapter extends PrintDocumentAdapter {
         if (cancellationSignal.isCanceled()) {
             layoutResultCallback.onLayoutCancelled();
         } else {
-            PrintDocumentInfo.Builder builder =
-                    new PrintDocumentInfo.Builder(" file name");
-            builder.setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
-                    .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
-                    .build();
-            layoutResultCallback.onLayoutFinished(builder.build(),
-                    !printAttributes1.equals(printAttributes));
+            try{
+                PrintDocumentInfo.Builder builder =
+                        new PrintDocumentInfo.Builder(" file name");
+                builder.setContentType(PrintDocumentInfo.CONTENT_TYPE_DOCUMENT)
+                        .setPageCount(PrintDocumentInfo.PAGE_COUNT_UNKNOWN)
+                        .build();
+                layoutResultCallback.onLayoutFinished(builder.build(),
+                        !printAttributes1.equals(printAttributes));
+            }catch (Exception e){
+
+            }
+
         }
     }
 
@@ -64,7 +69,7 @@ public class PdfDocumentAdapter extends PrintDocumentAdapter {
                 writeResultCallback.onWriteFinished(new PageRange[]{PageRange.ALL_PAGES});
             }
         } catch (Exception e) {
-            writeResultCallback.onWriteFailed(e.getMessage());
+//            writeResultCallback.onWriteFailed(e.getMessage());
 //            Logger.logError( e);
         } finally {
             try {

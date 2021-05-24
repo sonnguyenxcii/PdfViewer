@@ -10,7 +10,7 @@ import androidx.databinding.BindingAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.pdfconverterapp.imagetopdf.photostopdf.R;
+import py.com.opentech.drawerwithbottomnavigation.R;
 
 public class BindingAdapterItemView {
 

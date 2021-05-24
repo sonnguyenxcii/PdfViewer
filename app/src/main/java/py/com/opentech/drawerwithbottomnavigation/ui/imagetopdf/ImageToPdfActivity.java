@@ -1,29 +1,33 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.databinding.library.baseAdapters.BR;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 
-import com.ads.control.Admod;
-import com.nhaarman.supertooltips.ToolTip;
+import com.google.gson.Gson;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nhaarman.supertooltips.ToolTipRelativeLayout;
 import com.nhaarman.supertooltips.ToolTipView;
 
@@ -32,7 +36,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import py.com.opentech.drawerwithbottomnavigation.BuildConfig;
+import py.com.opentech.drawerwithbottomnavigation.R;
+import py.com.opentech.drawerwithbottomnavigation.databinding.ActivityImageToPdfBinding;
+import py.com.opentech.drawerwithbottomnavigation.ui.base.BaseBindingActivity;
+import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.done.ImageToPdfDoneActivity;
 import py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPDFOptions;
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPdfConstants;
+import py.com.opentech.drawerwithbottomnavigation.utils.DeminUtils;
+import py.com.opentech.drawerwithbottomnavigation.utils.DialogFactory;
+import py.com.opentech.drawerwithbottomnavigation.utils.FileUtils;
 
 public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBinding, ImageToPdfViewModel> implements SettingImageToPdfDialog.OnDialogSubmit, OnFileItemClickListener {
 
@@ -43,7 +57,7 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
     private ImageAdapter mImageAdapter;
     private ImageToPDFOptions mImageToPDFOptions = new ImageToPDFOptions();
     public static int CROP_IMAGE_CODE = 26783;
-    
+
     private final int REQUEST_EXTERNAL_PERMISSION_FOR_CREATE_FILE = 1;
     private final int REQUEST_EXTERNAL_PERMISSION_FOR_FILE_SELECTOR = 2;
 
@@ -56,7 +70,7 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
 
     private List<ImageData> mListFileSelector = new ArrayList<>();
     private ImageListSelectAdapter mFileListSelectorAdapter;
-    
+
     private boolean mIsNeedScan;
 
     private ToolTipView myToolTipView;
@@ -89,8 +103,8 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
 
     @Override
     protected void initView() {
-        preloadDoneAdsIfInit();
-        Admod.getInstance().loadBanner(this, BuildConfig.banner_id);
+//        preloadDoneAdsIfInit();
+//        Admod.getInstance().loadBanner(this, BuildConfig.banner_id);
 
         setForSelectLayout();
         setForListLayout();
@@ -104,41 +118,41 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
 
         toolTipRelativeLayout = mActivityBinding.mainImageToPdfDefaultLayout.tooltipView;
 
-        if (!DataManager.getInstance(this).getShowGuideConvert()) {
-            if (!notHaveStoragePermission()) {
-                ToolTip toolTip = new ToolTip()
-                        .withContentView(LayoutInflater.from(this).inflate(R.layout.custom_tooltip, null))
-                        .withColor(Color.WHITE)
-                        .withTextColor(Color.BLACK)
-                        .withShadow()
-                        .withAnimationType(ToolTip.AnimationType.NONE);
-                myToolTipView = toolTipRelativeLayout.showToolTipForView(toolTip, mActivityBinding.mainImageToPdfDefaultLayout.toolbar.toolbarNameOption);
-                if (myToolTipView != null) {
-                    myToolTipView.setOnToolTipViewClickedListener(toolTipView -> {
-                        toolTipView.remove();
-                        toolTipRelativeLayout.setVisibility(View.GONE);
-                    });
-
-                    toolTipRelativeLayout.setOnClickListener(v -> {
-                        myToolTipView.remove();
-                        toolTipRelativeLayout.setVisibility(View.GONE);
-                    });
-
-                    mActivityBinding.mainImageToPdfDefaultLayout.toolbar.layoutToolbar.setOnClickListener(v -> {
-                        myToolTipView.remove();
-                        toolTipRelativeLayout.setVisibility(View.GONE);
-                    });
-
-                } else {
-                    toolTipRelativeLayout.setVisibility(View.GONE);
-                }
-            } else {
-                toolTipRelativeLayout.setVisibility(View.GONE);
-            }
-            DataManager.getInstance(this).setShowGuideConvertDone();
-        } else {
-            toolTipRelativeLayout.setVisibility(View.GONE);
-        }
+//        if (!DataManager.getInstance(this).getShowGuideConvert()) {
+//            if (!notHaveStoragePermission()) {
+//                ToolTip toolTip = new ToolTip()
+//                        .withContentView(LayoutInflater.from(this).inflate(R.layout.custom_tooltip, null))
+//                        .withColor(Color.WHITE)
+//                        .withTextColor(Color.BLACK)
+//                        .withShadow()
+//                        .withAnimationType(ToolTip.AnimationType.NONE);
+//                myToolTipView = toolTipRelativeLayout.showToolTipForView(toolTip, mActivityBinding.mainImageToPdfDefaultLayout.toolbar.toolbarNameOption);
+//                if (myToolTipView != null) {
+//                    myToolTipView.setOnToolTipViewClickedListener(toolTipView -> {
+//                        toolTipView.remove();
+//                        toolTipRelativeLayout.setVisibility(View.GONE);
+//                    });
+//
+//                    toolTipRelativeLayout.setOnClickListener(v -> {
+//                        myToolTipView.remove();
+//                        toolTipRelativeLayout.setVisibility(View.GONE);
+//                    });
+//
+//                    mActivityBinding.mainImageToPdfDefaultLayout.toolbar.layoutToolbar.setOnClickListener(v -> {
+//                        myToolTipView.remove();
+//                        toolTipRelativeLayout.setVisibility(View.GONE);
+//                    });
+//
+//                } else {
+//                    toolTipRelativeLayout.setVisibility(View.GONE);
+//                }
+//            } else {
+//                toolTipRelativeLayout.setVisibility(View.GONE);
+//            }
+//            DataManager.getInstance(this).setShowGuideConvertDone();
+//        } else {
+        toolTipRelativeLayout.setVisibility(View.GONE);
+//        }
     }
 
     private void setForSelectLayout() {
@@ -147,20 +161,20 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
 
         mFileListSelectorAdapter = new ImageListSelectAdapter(this);
 
-        mActivityBinding.mainImageToPdfDefaultLayout.toolbar.toolbarNameOption.setOnClickListener(view -> {
-            if (myToolTipView != null) {
-                myToolTipView.remove();
-            }
-            toolTipRelativeLayout.setVisibility(View.GONE);
-            showConverterPopup(0);
-        });
-        mActivityBinding.mainImageToPdfDefaultLayout.toolbar.toolbarNameTv.setOnClickListener(view -> {
-            if (myToolTipView != null) {
-                myToolTipView.remove();
-            }
-            toolTipRelativeLayout.setVisibility(View.GONE);
-            showConverterPopup(0);
-        });
+//        mActivityBinding.mainImageToPdfDefaultLayout.toolbar.toolbarNameOption.setOnClickListener(view -> {
+//            if (myToolTipView != null) {
+//                myToolTipView.remove();
+//            }
+//            toolTipRelativeLayout.setVisibility(View.GONE);
+//            showConverterPopup(0);
+//        });
+//        mActivityBinding.mainImageToPdfDefaultLayout.toolbar.toolbarNameTv.setOnClickListener(view -> {
+//            if (myToolTipView != null) {
+//                myToolTipView.remove();
+//            }
+//            toolTipRelativeLayout.setVisibility(View.GONE);
+//            showConverterPopup(0);
+//        });
 
         mActivityBinding.mainImageToPdfDefaultLayout.importFileBtnImport.setOnClickListener(view -> {
             List<Integer> selectedIndex = mFileListSelectorAdapter.getSelectedList();
@@ -184,7 +198,7 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
                 mImageToPdfViewModel.addNewListImage(this, selectedList);
                 addNewImagesToListView();
             } else {
-                ToastUtils.showMessageShort(this, getString(R.string.image_to_pdf_nothing_to_clear));
+//                ToastUtils.showMessageShort(this, getString(R.string.image_to_pdf_nothing_to_clear));
             }
         });
 
@@ -262,12 +276,28 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
     @Override
     public void onClickItem(int position) {
         if (position == 0) {
-            startCameraActivity(false);
+            Dexter.withContext(this)
+                    .withPermissions(
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+                            startCameraActivity(false);
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+
+                        }
+                    }).check();
         } else {
             mFileListSelectorAdapter.revertData(position);
             updateNumberSelected();
         }
     }
+
 
     private void setForListLayout() {
         fetchDefaultOption();
@@ -339,34 +369,34 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
         }
     }
 
-    public void startFileExplorerActivity() {
-        if (DataManager.getInstance(this).getShowGuideSelectMulti()) {
-            DataManager.getInstance(this).setShowGuideSelectMultiDone();
-
-            SweetAlertDialog dialogNotice = DialogFactory.getDialogNotice(this, getString(R.string.guide_to_select_multiple));
-            dialogNotice.setCanceledOnTouchOutside(false);
-            dialogNotice.setCancelable(false);
-            dialogNotice.setConfirmClickListener(sweetAlertDialog -> {
-                dialogNotice.dismiss();
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-            });
-            dialogNotice.show();
-
-        } else {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-        }
-    }
+//    public void startFileExplorerActivity() {
+//        if (DataManager.getInstance(this).getShowGuideSelectMulti()) {
+//            DataManager.getInstance(this).setShowGuideSelectMultiDone();
+//
+//            SweetAlertDialog dialogNotice = DialogFactory.getDialogNotice(this, getString(R.string.guide_to_select_multiple));
+//            dialogNotice.setCanceledOnTouchOutside(false);
+//            dialogNotice.setCancelable(false);
+//            dialogNotice.setConfirmClickListener(sweetAlertDialog -> {
+//                dialogNotice.dismiss();
+//                Intent intent = new Intent();
+//                intent.setType("image/*");
+//                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+//                intent.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+//            });
+//            dialogNotice.show();
+//
+//        } else {
+//            Intent intent = new Intent();
+//            intent.setType("image/*");
+//            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+//        }
+//    }
 
     public void startGalleryActivity() {
-        
+
     }
 
     public void startCameraActivity(boolean isFromScanButton) {
@@ -392,12 +422,12 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
     public ResolveInfo getCameraPackage() {
         try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            ResolveInfo cameraInfo  = null;
+            ResolveInfo cameraInfo = null;
             PackageManager pm = getPackageManager();
 
             List<ResolveInfo> pkgList = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
-            if(pkgList.size() > 0) {
+            if (pkgList.size() > 0) {
                 cameraInfo = pkgList.get(0);
             }
             return cameraInfo;

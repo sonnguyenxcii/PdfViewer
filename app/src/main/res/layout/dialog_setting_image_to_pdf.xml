@@ -48,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Add watermark"
+                android:visibility="gone"
                 android:layout_marginTop="15sp"/>
 
             <EditText
@@ -55,6 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter watermark"
+                android:visibility="gone"
                 android:textSize="14sp"/>
 
 
@@ -149,13 +151,13 @@
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:orientation="horizontal">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
-            style="@style/HuyCommonButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/cancel"
+            android:textAllCaps="false"
             android:textStyle="bold"
             android:textColor="@color/button_background_secondary"
             android:background="@drawable/bg_button_common_secondary"
@@ -163,15 +165,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_convert"
-            style="@style/HuyCommonButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Convert"
+            android:textAllCaps="false"
             android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_marginStart="12dp"
+            android:background="@drawable/background_button_radius_primary_8"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

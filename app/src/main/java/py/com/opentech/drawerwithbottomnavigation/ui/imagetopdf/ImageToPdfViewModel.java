@@ -25,7 +25,6 @@ import py.com.opentech.drawerwithbottomnavigation.ui.base.BaseViewModel;
 public class ImageToPdfViewModel extends BaseViewModel {
 
     private static final String TAG = "ImageToPdfViewModel";
-    private static final String PREFIX_URI = "content://com.pdfconverterapp.imagetopdf.photostopdf.provider/images";
     private MutableLiveData<ArrayList<ImageData>> mListImage = new MutableLiveData<>();
     public MutableLiveData<ArrayList<ImageData>> getListImage() {
         return mListImage;

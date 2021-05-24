@@ -99,9 +99,12 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
                     data.isBookmark = !model.isNullOrEmpty()
 
                     try {
-                        data.percent = (bm.page * 100 / bm.totalPage)
+                        data.currentPage = bm.page
+                        data.totalPage = bm.totalPage
                     } catch (e: Exception) {
-                        data.percent = 0
+                        data.currentPage = 0
+                        data.totalPage = 0
+
                     }
 
                     listData.add(data)

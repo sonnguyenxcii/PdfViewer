@@ -48,6 +48,7 @@ import org.greenrobot.eventbus.ThreadMode
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
+import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.ImageToPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
@@ -518,7 +519,7 @@ class HomeActivity : AppCompatActivity(),
 
     private fun navigateToScan() {
 
-        var intent = Intent(this, ScanPdfActivity::class.java)
+        var intent = Intent(this, ImageToPdfActivity::class.java)
         startActivity(intent)
     }
 
@@ -563,9 +564,7 @@ class HomeActivity : AppCompatActivity(),
 //            }
 //                .filter { it.extension == "pdf" }
                 .toList().forEach {
-                    println("--name------------------" + it.name)
                     if (it.name.contains("pdf")) {
-                        println("--name----contains--------------" + it.name)
 
                         val lastModDate = Date(it.lastModified())
                         uriList.add(

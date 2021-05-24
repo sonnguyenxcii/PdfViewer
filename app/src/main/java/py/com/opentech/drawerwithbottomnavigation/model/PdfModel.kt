@@ -15,6 +15,7 @@ data class PdfModel(
     var lastModifier: Long? = 0,
     var isCheck: Boolean? = false,
     var isBookmark: Boolean? = false,
-    var percent: Int? = 0
+    var currentPage: Int? = 0,
+    var totalPage: Int? = 0
 
 ) : Parcelable

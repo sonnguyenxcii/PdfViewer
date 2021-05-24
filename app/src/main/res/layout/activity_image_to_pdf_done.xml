@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content_view"
         android:layout_width="match_parent"
@@ -24,9 +24,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@drawable/bg_border_line_common"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_toolbar"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_toolbar" />
 
             <TextView
                 android:id="@+id/create_status_text"
@@ -34,9 +34,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:textStyle="bold"
                 android:gravity="center"
-                android:textSize="@dimen/title_first_component_text_size" />
+                android:textSize="@dimen/title_first_component_text_size"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtProgress"
@@ -45,31 +45,32 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_padding"
                 android:gravity="center"
-                android:textStyle="bold"
                 android:text="0%"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/create_error"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:visibility="gone"
-                android:layout_marginTop="40dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_error_create" />
 
             <LinearLayout
                 android:id="@+id/create_status_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="40dp"
+                android:orientation="vertical">
+
                 <ImageView
                     android:id="@+id/create_success"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:visibility="gone"
                     android:layout_gravity="center_horizontal"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/ic_success" />
 
                 <TextView
@@ -77,12 +78,12 @@
                     style="@style/HuyCommonTextStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="42dp"
-                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginStart="@dimen/common_margin_top"
+                    android:layout_marginTop="42dp"
                     android:layout_marginEnd="@dimen/common_margin_top"
                     android:drawablePadding="16dp"
-                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
                     app:drawableEndCompat="@drawable/ic_success_pencil"
                     tools:text="Text to PDF 12-Apr-2021.pdf" />
 
@@ -92,10 +93,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="18dp"
-                    android:drawablePadding="8dp"
                     android:layout_marginStart="@dimen/common_margin_top"
+                    android:layout_marginTop="18dp"
                     android:layout_marginEnd="@dimen/common_margin_top"
+                    android:drawablePadding="8dp"
                     android:gravity="center"
                     android:textColor="@color/text_black_50"
                     android:textSize="14sp"
@@ -113,9 +114,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/bg_button_common_secondary"
             android:text="@string/share"
-            android:textColor="@color/button_background_secondary"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/banner_ads"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -140,11 +139,11 @@
             layout="@layout/layout_banner_control"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
 
-            android:layout_marginTop="10dp" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

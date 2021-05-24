@@ -12,7 +12,7 @@ public class ImageToPdfConstants {
     public static final String PG_NUM_STYLE_PAGE_X_OF_N = "pg_num_style_page_x_of_n";
     public static final String PG_NUM_STYLE_X_OF_N = "pg_num_style_x_of_n";
     public static final String PG_NUM_STYLE_X = "pg_num_style_x";
-    public static final String AUTHORITY_APP = "com.pdfconverterapp.imagetopdf.photostopdf.provider";
+    public static final String AUTHORITY_APP = "com.pdfreader.scanner.pdfviewer.provider";
 
     public static final String[] PAGE_SIZE_TYPE = {"A4", "A0", "A1", "A2", "A3", "B0", "B1", "B2", "LETTER", "LEGAL", "TABLOID"};
     public static final String[] PAGE_NUMBER_TYPE = {"None", "Page X of N", "X of N", "X"};

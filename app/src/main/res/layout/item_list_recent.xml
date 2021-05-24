@@ -4,23 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="@dimen/_5sdp"
-    card_view:cardElevation="@dimen/_5sdp"
     card_view:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingStart="@dimen/_12sdp"
-        android:paddingBottom="@dimen/_12sdp"
+        android:paddingStart="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
         tools:ignore="RtlSymmetry">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image"
             android:layout_width="@dimen/_55sdp"
             android:layout_height="@dimen/_74sdp"
-            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_pdf_with_bg"
             app:layout_constraintLeft_toLeftOf="parent"

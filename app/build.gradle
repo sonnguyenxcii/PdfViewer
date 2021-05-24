@@ -44,15 +44,15 @@ android {
             firebaseCrashlytics {
                 mappingFileUploadEnabled false
             }
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug{
             firebaseCrashlytics {
                 mappingFileUploadEnabled false
             }
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -61,6 +61,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    dataBinding {
+        enabled = true
     }
     packagingOptions {
 
@@ -131,6 +134,10 @@ dependencies {
     implementation 'com.itextpdf:itextg:5.5.10'
 
     implementation 'com.nhaarman.supertooltips:library:3.0.+'
+    implementation 'com.airbnb.android:lottie:3.5.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
+    implementation 'com.github.f0ris.sweetalert:library:1.5.1'
+    implementation "com.google.code.gson:gson:2.8.6"
 
 }
 

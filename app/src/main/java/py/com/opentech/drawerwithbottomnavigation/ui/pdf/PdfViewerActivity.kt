@@ -639,9 +639,10 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
                 when (item?.itemId) {
                     R.id.printer -> {
-                        var printManager: PrintManager =
-                            getSystemService(Context.PRINT_SERVICE) as PrintManager
+
                         try {
+                            var printManager: PrintManager =
+                                getSystemService(Context.PRINT_SERVICE) as PrintManager
                             var printAdapter =
                                 PdfDocumentAdapter(this@PdfViewerActivity, url)
 

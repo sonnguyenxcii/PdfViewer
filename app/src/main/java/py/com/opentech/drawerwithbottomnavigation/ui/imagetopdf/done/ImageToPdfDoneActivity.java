@@ -8,23 +8,18 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.ads.control.Admod;
 import com.google.gson.Gson;
-import com.pdfconverterapp.imagetopdf.photostopdf.BuildConfig;
-import com.pdfconverterapp.imagetopdf.photostopdf.R;
-import com.pdfconverterapp.imagetopdf.photostopdf.constants.DataConstants;
-import com.pdfconverterapp.imagetopdf.photostopdf.data.model.FileData;
-import com.pdfconverterapp.imagetopdf.photostopdf.data.model.ImageToPDFOptions;
-import com.pdfconverterapp.imagetopdf.photostopdf.databinding.ActivityImageToPdfDoneBinding;
-import com.pdfconverterapp.imagetopdf.photostopdf.ui.base.BaseBindingActivity;
-import com.pdfconverterapp.imagetopdf.photostopdf.ui.base.BaseViewModel;
-import com.pdfconverterapp.imagetopdf.photostopdf.ui.component.RenameFileDialog;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.ColorUtils;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.SnackBarUtils;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.ToastUtils;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.file.FileUtils;
 
 import java.io.File;
+
+import py.com.opentech.drawerwithbottomnavigation.R;
+import py.com.opentech.drawerwithbottomnavigation.databinding.ActivityImageToPdfDoneBinding;
+import py.com.opentech.drawerwithbottomnavigation.ui.base.BaseBindingActivity;
+import py.com.opentech.drawerwithbottomnavigation.ui.base.BaseViewModel;
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity;
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPDFOptions;
+import py.com.opentech.drawerwithbottomnavigation.utils.ColorUtils;
+import py.com.opentech.drawerwithbottomnavigation.utils.FileUtils;
 
 public class ImageToPdfDoneActivity extends BaseBindingActivity {
 
@@ -75,13 +70,13 @@ public class ImageToPdfDoneActivity extends BaseBindingActivity {
         mActivityImageToPdfDoneBinding.toolbar.toolbarBtnBack.setOnClickListener(view -> onBackPressed());
         mActivityImageToPdfDoneBinding.toolbar.toolbarNameTv.setText(getString(R.string.done_create_pdf_title));
 
-        Admod.getInstance().loadBanner(this, BuildConfig.banner_id);
+//        Admod.getInstance().loadBanner(this, BuildConfig.banner_id);
 
-        preloadViewPdfAdsIfInit();
+//        preloadViewPdfAdsIfInit();
 
         mImageToPdfDoneViewModel.getStatusCreatePDF().setValue(0);
         mImageToPdfDoneViewModel.createPdf();
-        
+
         setForLiveData();
     }
 
@@ -102,7 +97,7 @@ public class ImageToPdfDoneActivity extends BaseBindingActivity {
     public void onFragmentDetached(String tag) {
 
     }
-    
+
     private void setForLiveData() {
         mImageToPdfDoneViewModel.getStatusCreatePDF().observe(this, this::updateStatusCreatePdf);
         mImageToPdfDoneViewModel.getStatusPercent().observe(this, this::updatePercent);
@@ -148,7 +143,9 @@ public class ImageToPdfDoneActivity extends BaseBindingActivity {
                 mActivityImageToPdfDoneBinding.btnOpen.setOnClickListener(view -> {
                     if (mOutputPath != null) {
                         showViewPdfAdsBeforeAction(() -> {
-                            gotoPdfFilePreviewActivity(mOutputPath);
+                            Intent intent = new Intent(this, PdfViewerActivity.class);
+                            intent.putExtra("url", mOutputPath);
+                            startActivity(intent);
                             onBackPressed();
                         });
                     }
@@ -188,44 +185,45 @@ public class ImageToPdfDoneActivity extends BaseBindingActivity {
     }
 
     private void showRenameDialog() {
-        String fullName = FileUtils.getFileName(mOutputPath);
-        String displayName = fullName;
-        try {
-            displayName = fullName.substring(0, fullName.lastIndexOf("."));
-        } catch (Exception ignored) {
-        }
-
-        RenameFileDialog renameFileDialog = new RenameFileDialog(this, displayName, new RenameFileDialog.RenameFileListener() {
-            @Override
-            public void onSubmitName(String name) {
-                String newName = name + ".pdf";
-                FileData fileData = new FileData(fullName, mOutputPath, null, 0, 0, DataConstants.FILE_TYPE_PDF);
-                int result = FileUtils.renameFile(fileData, newName);
-
-                if (result == -2 || result == 0) {
-                    ToastUtils.showMessageShort(getApplicationContext(), getString(R.string.can_not_edit_video_name));
-                } else if (result == -1) {
-                    SnackBarUtils.getSnackbar(ImageToPdfDoneActivity.this, getString(R.string.duplicate_video_name) + ": " + name).show();
-                } else {
-                    SnackBarUtils.getSnackbar(ImageToPdfDoneActivity.this, getString(R.string.rename_file_success)).show();
-                    mActivityImageToPdfDoneBinding.convertSuccessEditName.setText(newName);
-
-                    String tempOldDir = mOutputPath;
-                    mOutputPath = FileUtils.getLastReplacePath(mOutputPath, fullName, newName);
-
-                    mImageToPdfDoneViewModel.updateSavedData(tempOldDir, mOutputPath);
-                }
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
-
-        renameFileDialog.show();
+//        String fullName = FileUtils.getFileName(mOutputPath);
+//        String displayName = fullName;
+//        try {
+//            displayName = fullName.substring(0, fullName.lastIndexOf("."));
+//        } catch (Exception ignored) {
+//        }
+//
+//        RenameFileDialog renameFileDialog = new RenameFileDialog(this, displayName, new RenameFileDialog.RenameFileListener() {
+//            @Override
+//            public void onSubmitName(String name) {
+//                String newName = name + ".pdf";
+//                FileData fileData = new FileData(fullName, mOutputPath, null, 0, 0, DataConstants.FILE_TYPE_PDF);
+//                int result = FileUtils.renameFile(fileData, newName);
+//
+//                if (result == -2 || result == 0) {
+//                    ToastUtils.showMessageShort(getApplicationContext(), getString(R.string.can_not_edit_video_name));
+//                } else if (result == -1) {
+//                    SnackBarUtils.getSnackbar(ImageToPdfDoneActivity.this, getString(R.string.duplicate_video_name) + ": " + name).show();
+//                } else {
+//                    SnackBarUtils.getSnackbar(ImageToPdfDoneActivity.this, getString(R.string.rename_file_success)).show();
+//                    mActivityImageToPdfDoneBinding.convertSuccessEditName.setText(newName);
+//
+//                    String tempOldDir = mOutputPath;
+//                    mOutputPath = FileUtils.getLastReplacePath(mOutputPath, fullName, newName);
+//
+//                    mImageToPdfDoneViewModel.updateSavedData(tempOldDir, mOutputPath);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancel() {
+//
+//            }
+//        });
+//
+//        renameFileDialog.show();
     }
-    
+
+
     @SuppressLint("SetTextI18n")
     private void updatePercent(int percent) {
         mActivityImageToPdfDoneBinding.txtProgress.setText(percent + " %");

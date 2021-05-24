@@ -112,4 +112,23 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
+
+    <style name="HuyCommonButtonDialogLeftStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:background">@drawable/bg_button_common_dialog_left</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="HuyCommonButtonDialogRightStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:background">@drawable/bg_button_common_dialog_right</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
 </resources>

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -16,6 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import py.com.opentech.drawerwithbottomnavigation.R;
+import py.com.opentech.drawerwithbottomnavigation.databinding.ItemImageViewBinding;
+import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.cropimage.CropImageActivity;
+import py.com.opentech.drawerwithbottomnavigation.utils.DeminUtils;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
 
@@ -117,6 +121,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             holder.mItemImageViewBinding.setImageData(imageData);
             holder.itemView.setClickable(false);
             holder.mItemImageViewBinding.itemCropView.setOnClickListener((v) -> {
+
                 Intent intent = new Intent(v.getContext(), CropImageActivity.class);
                 intent.putExtra(ADAPTER_POSITION, holder.getAdapterPosition());
                 intent.putExtra(INTENT_DATA_IMAGE, mListData.get(holder.getAdapterPosition()).getImagePath());

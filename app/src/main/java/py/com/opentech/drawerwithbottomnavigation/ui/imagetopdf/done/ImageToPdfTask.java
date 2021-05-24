@@ -19,13 +19,14 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.pdfconverterapp.imagetopdf.photostopdf.constants.AppConstants;
-import com.pdfconverterapp.imagetopdf.photostopdf.data.model.ImageToPDFOptions;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.pdf.ImageToPdfConstants;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.pdf.WatermarkPageEvent;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
+
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPDFOptions;
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPdfConstants;
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants;
 
 public class ImageToPdfTask extends AsyncTask<String, Integer, String> {
 
@@ -81,15 +82,15 @@ public class ImageToPdfTask extends AsyncTask<String, Integer, String> {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(mFilePdf.getAbsolutePath()));
             if (mImageToPDFOptions.isPasswordProtected()) {
                 writer.setEncryption(mImageToPDFOptions.getMasterPwd().getBytes(),
-                        AppConstants.APP_PASSWORD.getBytes(),
+                        Constants.APP_PASSWORD.getBytes(),
                         PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,
                         PdfWriter.ENCRYPTION_AES_128);
             }
-            if (mImageToPDFOptions.isWatermarkAdded()) {
-                WatermarkPageEvent watermarkPageEvent = new WatermarkPageEvent();
-                watermarkPageEvent.setWatermark(mImageToPDFOptions.getWatermark());
-                writer.setPageEvent(watermarkPageEvent);
-            }
+//            if (mImageToPDFOptions.isWatermarkAdded()) {
+//                WatermarkPageEvent watermarkPageEvent = new WatermarkPageEvent();
+//                watermarkPageEvent.setWatermark(mImageToPDFOptions.getWatermark());
+//                writer.setPageEvent(watermarkPageEvent);
+//            }
             publishProgress(10);
             document.open();
 

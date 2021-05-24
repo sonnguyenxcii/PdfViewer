@@ -19,13 +19,8 @@ import android.webkit.MimeTypeMap;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 
-import com.pdfconverterapp.imagetopdf.photostopdf.R;
-import com.pdfconverterapp.imagetopdf.photostopdf.constants.DataConstants;
-import com.pdfconverterapp.imagetopdf.photostopdf.data.model.FileData;
-import com.pdfconverterapp.imagetopdf.photostopdf.data.model.SavedData;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.DateTimeUtils;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.ToastUtils;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.image.ImageUtils;
+import py.com.opentech.drawerwithbottomnavigation.R;
+import py.com.opentech.drawerwithbottomnavigation.model.FileData;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.os.ParcelFileDescriptor.MODE_READ_ONLY;
-import static com.pdfconverterapp.imagetopdf.photostopdf.utils.pdf.ImageToPdfConstants.AUTHORITY_APP;
+import static py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPdfConstants.AUTHORITY_APP;
 
 public class FileUtils {
 
@@ -282,103 +277,50 @@ public class FileUtils {
         }
     }
 
-    public static ArrayList<FileData> getAllExternalFileList(Context context, String fileType, int order) {
-        DirectoryUtils directoryUtils = new DirectoryUtils(context);
-        ArrayList<String> fileList = new ArrayList<>();
-
-        switch (fileType) {
-            case DataConstants.FILE_TYPE_WORD:
-                fileList = directoryUtils.getAllWordsOnDevice();
-                break;
-            case DataConstants.FILE_TYPE_TEXT:
-                fileList = directoryUtils.getAllTextsOnDevice();
-                break;
-            case DataConstants.FILE_TYPE_TXT:
-                fileList = directoryUtils.getAllTxtsOnDevice();
-                break;
-            case DataConstants.FILE_TYPE_PDF:
-                fileList = directoryUtils.getAllPDFsOnDevice();
-                break;
-            case DataConstants.FILE_TYPE_EXCEL:
-                fileList = directoryUtils.getAllExcelsOnDevice();
-                break;
-        }
-
-        ArrayList<FileData> resultList = new ArrayList<>();
-        for (String filePath: fileList) {
-            File file = new File(filePath);
-            Uri uri = Uri.fromFile(file);
-            int size = Integer.parseInt(String.valueOf(file.length()/1024));
-
-            FileData fileData = new FileData(getFileName(filePath), filePath, uri, (int) (file.lastModified() / 1000), size, fileType);
-            resultList.add(fileData);
-        }
-
-        FileSortUtils.performSortOperation(order, resultList);
-
-        return resultList;
-    }
-
-    public static ArrayList<FileData> getAllLockedFileList(Context context) {
-        DirectoryUtils directoryUtils = new DirectoryUtils(context);
-        ArrayList<String> fileList = new ArrayList<>();
-
-        fileList = directoryUtils.getAllLockedPDFsOnDevice();
-
-        ArrayList<FileData> resultList = new ArrayList<>();
-        for (String filePath: fileList) {
-            File file = new File(filePath);
-            Uri uri = Uri.fromFile(file);
-            int size = Integer.parseInt(String.valueOf(file.length()/1024));
-
-            FileData fileData = new FileData(getFileName(filePath), filePath, uri, (int) (file.lastModified() / 1000), size, DataConstants.FILE_TYPE_PDF);
-            resultList.add(fileData);
-        }
-
-        FileSortUtils.performSortOperation(FileUtils.SORT_BY_DATE_DESC, resultList);
-
-        return resultList;
-    }
-
-    public static ArrayList<FileData> getAllUnlockedFileList(Context context) {
-        DirectoryUtils directoryUtils = new DirectoryUtils(context);
-        ArrayList<String> fileList;
-
-        fileList = directoryUtils.getAllUnlockedPDFsOnDevice();
-
-        ArrayList<FileData> resultList = new ArrayList<>();
-        for (String filePath: fileList) {
-            File file = new File(filePath);
-            Uri uri = Uri.fromFile(file);
-            int size = Integer.parseInt(String.valueOf(file.length()/1024));
-
-            FileData fileData = new FileData(getFileName(filePath), filePath, uri, (int) (file.lastModified() / 1000), size, DataConstants.FILE_TYPE_PDF);
-            resultList.add(fileData);
-        }
-
-        FileSortUtils.performSortOperation(FileUtils.SORT_BY_DATE_DESC, resultList);
-
-        return resultList;
-    }
+//    public static ArrayList<FileData> getAllExternalFileList(Context context, String fileType, int order) {
+//        DirectoryUtils directoryUtils = new DirectoryUtils(context);
+//        ArrayList<String> fileList = new ArrayList<>();
+//
+//        switch (fileType) {
+//            case DataConstants.FILE_TYPE_WORD:
+//                fileList = directoryUtils.getAllWordsOnDevice();
+//                break;
+//            case DataConstants.FILE_TYPE_TEXT:
+//                fileList = directoryUtils.getAllTextsOnDevice();
+//                break;
+//            case DataConstants.FILE_TYPE_TXT:
+//                fileList = directoryUtils.getAllTxtsOnDevice();
+//                break;
+//            case DataConstants.FILE_TYPE_PDF:
+//                fileList = directoryUtils.getAllPDFsOnDevice();
+//                break;
+//            case DataConstants.FILE_TYPE_EXCEL:
+//                fileList = directoryUtils.getAllExcelsOnDevice();
+//                break;
+//        }
+//
+//        ArrayList<FileData> resultList = new ArrayList<>();
+//        for (String filePath: fileList) {
+//            File file = new File(filePath);
+//            Uri uri = Uri.fromFile(file);
+//            int size = Integer.parseInt(String.valueOf(file.length()/1024));
+//
+//            FileData fileData = new FileData(getFileName(filePath), filePath, uri, (int) (file.lastModified() / 1000), size, fileType);
+//            resultList.add(fileData);
+//        }
+//
+//        FileSortUtils.performSortOperation(order, resultList);
+//
+//        return resultList;
+//    }
 
 
 
-    public static void printFile(Context context, final File file) {
-        final PrintDocumentAdapter mPrintDocumentAdapter = new PrintDocumentAdapterHelper(file);
 
-        PrintManager printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
-        String jobName = context.getString(R.string.app_name) + " Print Document";
 
-        try {
-            if (printManager != null) {
-                printManager.print(jobName, mPrintDocumentAdapter, null);
-            } else {
-                ToastUtils.showMessageShort(context, "Can not print file now.");
-            }
-        } catch (Exception e) {
-            ToastUtils.showMessageShort(context, "Can not print file now.");
-        }
-    }
+
+
+
 
     public static void shareFile(Context context, File file) {
         if (file.getAbsolutePath().toLowerCase().endsWith(".pdf")) {
@@ -463,7 +405,7 @@ public class FileUtils {
         try {
             context.startActivity(uploadIntent);
         } catch (Exception e) {
-            ToastUtils.showMessageShort(context, "Can not upload file now.");
+//            ToastUtils.showMessageShort(context, "Can not upload file now.");
         }
     }
 
@@ -703,63 +645,6 @@ public class FileUtils {
         return false;
     }
 
-    public static int renameFile(SavedData fileData, String newName) {
-        try {
-            File currentFile = new File(fileData.getFilePath());
-
-            if (!fileData.getFilePath().contains(fileData.getDisplayName())) {
-                return -2;
-            }
-
-            String newDir = fileData.getFilePath().replace(fileData.getDisplayName(), newName);
-            File newFile = new File(newDir);
-
-            if (newFile.exists()) {
-                return -1;
-            }
-
-            if (!currentFile.exists()) {
-                return -2;
-            }
-
-            if (rename(currentFile, newFile)) {
-                return 1;
-            } else {
-                return 0;
-            }
-        } catch (Exception e) {
-            return -2;
-        }
-    }
-
-    public static int renameFile(FileData fileData, String newName) {
-        try {
-            File currentFile = new File(fileData.getFilePath());
-
-            if (!fileData.getFilePath().contains(fileData.getDisplayName())) {
-                return -2;
-            }
-
-            String newDir = fileData.getFilePath().replace(fileData.getDisplayName(), newName);
-            File newFile = new File(newDir);
-
-            if (newFile.exists()) {
-                return -1;
-            }
-
-            if (!currentFile.exists()) {
-                return -2;
-            }
-
-            if (rename(currentFile, newFile)) {
-                return 1;
-            } else {
-                return 0;
-            }
-        } catch (Exception e) {
-            return -2;
-        }
-    }
 
     private static boolean rename(File from, File to) {
         try {

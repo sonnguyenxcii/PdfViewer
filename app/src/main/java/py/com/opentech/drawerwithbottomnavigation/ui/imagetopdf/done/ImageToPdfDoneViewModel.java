@@ -8,12 +8,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.pdfconverterapp.imagetopdf.photostopdf.R;
-import com.pdfconverterapp.imagetopdf.photostopdf.constants.DataConstants;
-import com.pdfconverterapp.imagetopdf.photostopdf.data.model.ImageToPDFOptions;
-import com.pdfconverterapp.imagetopdf.photostopdf.ui.base.BaseViewModel;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.file.FileUtils;
-import com.pdfconverterapp.imagetopdf.photostopdf.utils.pdf.ImageToPdfConstants;
+import py.com.opentech.drawerwithbottomnavigation.R;
+import py.com.opentech.drawerwithbottomnavigation.ui.base.BaseViewModel;
+import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.DataConstants;
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPDFOptions;
+import py.com.opentech.drawerwithbottomnavigation.ui.scan.ImageToPdfConstants;
+import py.com.opentech.drawerwithbottomnavigation.utils.FileUtils;
+
 
 import java.io.File;
 
@@ -56,7 +57,7 @@ public class ImageToPdfDoneViewModel extends BaseViewModel {
                         mStatusPercent.postValue(percent);
                         if (percent == 100) {
                             mStatusCreatePDF.postValue(CREATE_PDF_SUCCESS);
-                            saveRecent(mFilePdf.getAbsolutePath(), getApplication().getString(R.string.image_to_pdf));
+//                            saveRecent(mFilePdf.getAbsolutePath(), "Scan PDF");
                         }
                     }
                     @Override

@@ -6,13 +6,14 @@
 
         <variable
             name="imageToPdfViewModel"
-            type="com.pdfconverterapp.imagetopdf.photostopdf.ui.imagetopdf.ImageToPdfViewModel" />
+            type="py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.ImageToPdfViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <include
             android:id="@+id/main_image_to_pdf_default_layout"
             layout="@layout/image_to_pdf_default_layout"
@@ -21,7 +22,7 @@
             android:visibility="@{imageToPdfViewModel.listImage.size() > 0 ? View.GONE:View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/banner_ads"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
         <include
@@ -32,19 +33,19 @@
             android:visibility="@{imageToPdfViewModel.listImage.size() > 0 ? View.VISIBLE:View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/banner_ads"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <include
-            android:id="@+id/banner_ads"
-            layout="@layout/layout_banner_control"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+<!--        <include-->
+<!--            android:id="@+id/banner_ads"-->
+<!--            layout="@layout/layout_banner_control"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
 
-            android:layout_marginTop="@dimen/activity_horizontal_margin" />
+<!--            android:layout_marginTop="@dimen/activity_horizontal_margin" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
