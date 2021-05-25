@@ -49,6 +49,8 @@ import org.greenrobot.eventbus.ThreadMode
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
+import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomAppRatingDialog
+import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
 import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.ImageToPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
@@ -62,7 +64,7 @@ import kotlin.collections.ArrayList
 
 
 class HomeActivity : AppCompatActivity(),
-    NavigationView.OnNavigationItemSelectedListener, RatingDialogListener {
+    NavigationView.OnNavigationItemSelectedListener, CustomRatingDialogListener {
 
     private var drawer: AdvanceDrawerLayout? = null
     private lateinit var navController: NavController
@@ -810,10 +812,11 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun showRate() {
-        AppRatingDialog.Builder()
+        CustomAppRatingDialog.Builder()
             .setPositiveButtonText("Submit")
-            .setNegativeButtonText("Cancel")
-            .setNeutralButtonText("Later")
+            .setNegativeButtonText("Later")
+//            .setNegativeButtonText("Cancel")
+//            .setNeutralButtonText("Later")
             .setNoteDescriptions(
                 Arrays.asList(
                     "Very Bad",
@@ -848,6 +851,10 @@ class HomeActivity : AppCompatActivity(),
     }
 
     override fun onNeutralButtonClicked() {
+    }
+
+    override fun onNoneChoose() {
+        showRateInvalidDialog()
     }
 
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
