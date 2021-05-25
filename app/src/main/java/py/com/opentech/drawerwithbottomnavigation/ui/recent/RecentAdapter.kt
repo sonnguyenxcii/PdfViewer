@@ -51,16 +51,21 @@ class RecentAdapter(
             holder.size.text = Utils.convertToStringRepresentation(data.size!!)
             holder.date.text = data.date
 
-            if (data.currentPage != null && data.totalPage != 0) {
-                try {
-                    holder.percent.text = "Read: " + (data.currentPage!! +1) + "/" + data.totalPage + " page"
-                    holder.percent.visibility = View.VISIBLE
-                }catch (e:Exception){
+            if (getItemViewType(position) == LIST_ITEM) {
+                if (data.currentPage != null && data.totalPage != 0) {
+                    try {
+                        holder.percent.text = "Read: " + (data.currentPage!! +1) + "/" + data.totalPage + " page"
+                        holder.percent.visibility = View.VISIBLE
+                    }catch (e:Exception){
 
+                    }
+
+                } else {
+                    holder.percent.visibility = View.GONE
                 }
-
-            } else {
+            }else{
                 holder.percent.visibility = View.GONE
+
             }
 
             if (data.isBookmark!!) {
