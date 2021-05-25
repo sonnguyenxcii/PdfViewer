@@ -2,6 +2,7 @@ package py.com.opentech.drawerwithbottomnavigation
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -12,6 +13,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.provider.Settings
 import android.view.Gravity
 import android.view.MenuItem
@@ -29,7 +31,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.ads.control.Admod
-import com.ads.control.funtion.AdCallback
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -51,12 +52,11 @@ import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.ImageToPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
-import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 import py.com.opentech.drawerwithbottomnavigation.utils.RealPathUtil
 import py.com.opentech.drawerwithbottomnavigation.utils.Utils
-import java.io.File
+import java.io.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -105,20 +105,20 @@ class HomeActivity : AppCompatActivity(),
                 val params = Bundle()
                 params.putString("button_click", "Recently")
                 application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-
-                if (InternetConnection.checkConnection(this)) {
-                    Admod.getInstance().forceShowInterstitial(
-                        this,
-                        application?.mInterstitialClickTabAd,
-                        object : AdCallback() {
-                            override fun onAdClosed() {
-                                navigateTo(item.itemId)
-                            }
-                        }
-                    )
-                } else {
-                    navigateTo(item.itemId)
-                }
+//
+//                if (InternetConnection.checkConnection(this)) {
+//                    Admod.getInstance().forceShowInterstitial(
+//                        this,
+//                        application?.mInterstitialClickTabAd,
+//                        object : AdCallback() {
+//                            override fun onAdClosed() {
+//                                navigateTo(item.itemId)
+//                            }
+//                        }
+//                    )
+//                } else {
+                navigateTo(item.itemId)
+//                }
             } else if (item.itemId == R.id.nav_home) {
 
                 val params = Bundle()
@@ -147,19 +147,19 @@ class HomeActivity : AppCompatActivity(),
             val params = Bundle()
             params.putString("button_click", "Bookmark")
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-            if (InternetConnection.checkConnection(this)) {
-                Admod.getInstance().forceShowInterstitial(
-                    this,
-                    application?.mInterstitialClickTabAd,
-                    object : AdCallback() {
-                        override fun onAdClosed() {
-                            navigateToBookmark()
-                        }
-                    }
-                )
-            } else {
-                navigateToBookmark()
-            }
+//            if (InternetConnection.checkConnection(this)) {
+//                Admod.getInstance().forceShowInterstitial(
+//                    this,
+//                    application?.mInterstitialClickTabAd,
+//                    object : AdCallback() {
+//                        override fun onAdClosed() {
+            navigateToBookmark()
+//                        }
+//                    }
+//                )
+//            } else {
+//                navigateToBookmark()
+//            }
         }
 
         mode.setOnClickListener {
@@ -567,13 +567,20 @@ class HomeActivity : AppCompatActivity(),
                     if (it.name.contains("pdf")) {
 
                         val lastModDate = Date(it.lastModified())
+                        var parentName = ""
+                        try {
+                            parentName = File(it.parent).name
+                        } catch (e: Exception) {
+
+                        }
                         uriList.add(
                             PdfModel(
-                                it.name,
-                                it.absolutePath,
-                                it.length(),
-                                Utils.formatDate(lastModDate),
-                                it.lastModified()
+                                name = it.name,
+                                path = it.absolutePath,
+                                size = it.length(),
+                                date = Utils.formatDate(lastModDate),
+                                folder = parentName,
+                                lastModifier = it.lastModified()
                             )
                         )
                     }
@@ -644,10 +651,88 @@ class HomeActivity : AppCompatActivity(),
                 }
             }
         } else if (requestCode == INTENT_REQUEST_PICK_FILE_CODE) {
-            //Getting Absolute Path
-            val path: String = RealPathUtil.getInstance().getRealPath(this, data.data)
-            gotoViewPdf(path)
+            try {
+                if (isGoogleDrive(data.data!!)) {
+                    var file = getFileFromUri(this, data.data!!)
+                    gotoViewPdf(file?.absolutePath!!)
+
+                } else {
+                    val path: String = RealPathUtil.getInstance().getRealPath(this, data.data)
+                    gotoViewPdf(path)
+                }
+
+            } catch (e: Exception) {
+
+            }
+
         }
+    }
+
+    @Throws(java.lang.Exception::class)
+    fun getFileFromUri(context: Context, uri: Uri): File? {
+        return if (isGoogleDrive(uri)) // check if file selected from google drive
+        {
+            saveFileIntoExternalStorageByUri(context, uri)
+        } else  // do your other calculation for the other files and return that file
+            null
+    }
+
+
+    fun isGoogleDrive(uri: Uri): Boolean {
+        return "com.google.android.apps.docs.storage.legacy" == uri.authority
+    }
+
+    @Throws(java.lang.Exception::class)
+    fun saveFileIntoExternalStorageByUri(context: Context, uri: Uri): File? {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val originalSize: Int? = inputStream?.available()
+        var bis: BufferedInputStream? = null
+        var bos: BufferedOutputStream? = null
+        val fileName = getFileName(context, uri)
+        val file = makeEmptyFileIntoExternalStorageWithTitle(fileName)
+        bis = BufferedInputStream(inputStream)
+        bos = BufferedOutputStream(
+            FileOutputStream(
+                file, false
+            )
+        )
+        val buf = ByteArray(originalSize!!)
+        bis.read(buf)
+        do {
+            bos.write(buf)
+        } while (bis.read(buf) !== -1)
+        bos.flush()
+        bos.close()
+        bis.close()
+        return file
+    }
+
+    fun getFileName(context: Context, uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor: Cursor? = context.getContentResolver().query(uri, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                }
+            } finally {
+                cursor?.close()
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result!!.lastIndexOf('/')
+            if (cut != -1) {
+                result = result.substring(cut + 1)
+            }
+        }
+        return result
+    }
+
+
+    fun makeEmptyFileIntoExternalStorageWithTitle(title: String?): File {
+        val root = Environment.getExternalStorageDirectory().absolutePath
+        return File(root, title)
     }
 
     fun gotoViewPdf(path: String) {

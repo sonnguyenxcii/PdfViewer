@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
@@ -39,6 +40,8 @@ import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
+import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomAppRatingDialog
+import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
 import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
@@ -46,11 +49,12 @@ import java.io.File
 import java.util.*
 
 
-class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
+class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
     var isSwipeHorizontal = false
     lateinit var pdfView: PDFView
     lateinit var seekBar: AppCompatSeekBar
+    lateinit var rotate: AppCompatImageView
     var url: String? = null
     var currentPage = 0
     var viewType = 0 // 0: file, 1: content
@@ -70,7 +74,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         setContentView(R.layout.activity_pdf_viewer)
         pdfView = findViewById(R.id.pdfView)
         toolbar = findViewById(R.id.toolbar)
-        val rotate = findViewById<View>(R.id.rotate)
+        rotate = findViewById(R.id.rotate)
         val share = findViewById<View>(R.id.share)
         seekBar = findViewById(R.id.seekBar)
         rootView = findViewById(R.id.rootView)
@@ -123,6 +127,12 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
         rotate.setOnClickListener {
             isSwipeHorizontal = !isSwipeHorizontal
+            if(!isSwipeHorizontal){
+                rotate.setImageResource(R.drawable.ic_horizontal)
+            }else{
+                rotate.setImageResource(R.drawable.ic_vertical)
+
+            }
             if (viewType == 0) {
                 viewFile()
             } else {
@@ -240,10 +250,11 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
     }
 
     fun showRate() {
-        AppRatingDialog.Builder()
+        CustomAppRatingDialog.Builder()
             .setPositiveButtonText("Submit")
-            .setNegativeButtonText("Cancel")
-            .setNeutralButtonText("Later")
+            .setNegativeButtonText("Later")
+//            .setNegativeButtonText("Cancel")
+//            .setNeutralButtonText("Later")
             .setNoteDescriptions(
                 Arrays.asList(
                     "Very Bad",
@@ -411,6 +422,11 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
 
     }
 
+    override fun onNoneChoose() {
+        showRateInvalidDialog()
+
+    }
+
     override fun onPositiveButtonClickedWithComment(rate: Int, comment: String) {
 
         if (rate < 1) {
@@ -455,7 +471,7 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         }
     }
 
-    fun onFinishing(){
+    fun onFinishing() {
         val intent = Intent(this, HomeActivity::class.java)
         intent.flags =
             Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -679,7 +695,6 @@ class PdfViewerActivity : AppCompatActivity(), RatingDialogListener {
         })
 
         optionsMenu.show() //showing popup menu
-
 
 
     }

@@ -49,6 +49,7 @@ class HomeAdapter(
             holder.name.text = data.name
             holder.size.text = Utils.convertToStringRepresentation(data.size!!)
             holder.date.text = data.date
+            holder.folder.text = data.folder
             if (data.isBookmark!!) {
                 holder.bookmarkIcon.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -100,6 +101,7 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
     val size = itemView.findViewById<AppCompatTextView>(R.id.size)
     val more = itemView.findViewById<AppCompatImageView>(R.id.more)
     val date = itemView.findViewById<AppCompatTextView>(R.id.date)
+    val folder = itemView.findViewById<AppCompatTextView>(R.id.folder)
     val bookmark = itemView.findViewById<View>(R.id.bookmark)
     val bookmarkIcon = itemView.findViewById<AppCompatImageView>(R.id.bookmarkIcon)
 
