@@ -1,4 +1,4 @@
-package py.com.opentech.drawerwithbottomnavigation.ui.recent
+package py.com.opentech.drawerwithbottomnavigation.ui.bookmark
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,7 +15,7 @@ import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickList
 import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 
 
-class RecentAdapter(
+class BookmarkAdapter(
     val context: Context,
     private val list: List<PdfModel>,
     val clickListener: RecycleViewOnClickListener
@@ -33,7 +33,7 @@ class RecentAdapter(
 
             itemView =
                 LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_recent, parent, false)
+                    .inflate(R.layout.item_list_bookmark, parent, false)
         } else {
             itemView =
                 LayoutInflater.from(parent.getContext())
@@ -50,24 +50,6 @@ class RecentAdapter(
             holder.name.text = data.name
             holder.size.text = Utils.convertToStringRepresentation(data.size!!)
             holder.date.text = data.date
-
-            if (getItemViewType(position) == LIST_ITEM) {
-                if (data.currentPage != null && data.totalPage != 0) {
-                    try {
-                        holder.percent.text = "Read: " + (data.currentPage!! +1) + "/" + data.totalPage + " page"
-                        holder.percent.visibility = View.VISIBLE
-                    }catch (e:Exception){
-
-                    }
-
-                } else {
-                    holder.percent.visibility = View.GONE
-                }
-            }else{
-                holder.percent.visibility = View.GONE
-
-            }
-
             if (data.isBookmark!!) {
                 holder.bookmarkIcon.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -121,6 +103,5 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
     val date = itemView.findViewById<AppCompatTextView>(R.id.date)
     val bookmark = itemView.findViewById<View>(R.id.bookmark)
     val bookmarkIcon = itemView.findViewById<AppCompatImageView>(R.id.bookmarkIcon)
-    val percent = itemView.findViewById<AppCompatTextView>(R.id.percent)
 
 }

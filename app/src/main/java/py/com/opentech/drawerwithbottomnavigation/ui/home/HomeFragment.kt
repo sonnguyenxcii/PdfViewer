@@ -89,6 +89,15 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                 listData.addAll(list)
                 processData()
                 adapter.notifyDataSetChanged()
+
+                try {
+
+                    val params = Bundle()
+                    params.putString("total", "" + listData.size)
+                    application?.firebaseAnalytics?.logEvent("Home_Layout_File_Loaded", params)
+                } catch (e: Exception) {
+
+                }
             }
         })
 
@@ -146,7 +155,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         try {
             onPrepareOpenAds(listData[pos].path!!)
 
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
 
@@ -173,38 +182,38 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                     try {
                         onPrepareOpenAds(listData[pos].path!!)
 
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
 
                     }
 
                 } else if (item.itemId == R.id.delete) {
                     try {
                         onConfirmDelete(listData[pos].path!!)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
 
                     }
                 } else if (item.itemId == R.id.bookmark) {
                     try {
                         addToBookmark(listData[pos].path!!)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
 
                     }
                 } else if (item.itemId == R.id.share) {
                     try {
                         share(listData[pos].path!!)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
 
                     }
                 } else if (item.itemId == R.id.shortcut) {
                     try {
                         createShortcut(listData[pos].path!!)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
 
                     }
                 } else if (item.itemId == R.id.rename) {
                     try {
                         onConfirmRename(listData[pos].path!!)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
 
                     }
                 }
@@ -252,7 +261,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
             data.isBookmark = !bookmarkStatus
             adapter.notifyItemChanged(pos)
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
 
@@ -452,8 +461,8 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         val currentFile = File(path)
         var oldName = currentFile.nameWithoutExtension
         val newFile = File(path.replace(oldName, newName).trim())
-        println("-path--------------------"+path)
-        println("-replace--------------------"+path.replace(oldName, newName))
+        println("-path--------------------" + path)
+        println("-replace--------------------" + path.replace(oldName, newName))
         if (rename(currentFile, newFile)) {
             //Success
             Log.i("HomeFragment", "Success")

@@ -168,7 +168,16 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
     }
 
     override fun onItemClick(pos: Int) {
-        gotoViewPdf(listData[pos].path!!)
+        Admod.getInstance().forceShowInterstitial(
+            this,
+            application?.mInterstitialSearchAd,
+            object : AdCallback() {
+                override fun onAdClosed() {
+                    gotoViewPdf(listData[pos].path!!)
+
+                }
+            }
+        )
 
     }
 

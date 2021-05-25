@@ -12,6 +12,7 @@ data class PdfModel(
     var path: String? = "",
     var size: Long? = 0,
     var date: String? = "",
+    var folder: String? = "",
     var lastModifier: Long? = 0,
     var isCheck: Boolean? = false,
     var isBookmark: Boolean? = false,
