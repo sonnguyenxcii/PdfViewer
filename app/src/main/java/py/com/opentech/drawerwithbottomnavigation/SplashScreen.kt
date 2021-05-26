@@ -28,36 +28,35 @@ class SplashScreen : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
 
 //        Thread{
-            if (InternetConnection.checkConnection(this)) {
-                prepareAds()
-            } else {
-                time = 3000
-            }
+        if (InternetConnection.checkConnection(this)) {
+            prepareAds()
+        } else {
+            time = 3000
+        }
 
 //        progressBar.progress = i
-            val mCountDownTimer = object : CountDownTimer(time.toLong(), 100) {
-                override fun onTick(millisUntilFinished: Long) {
-                    i++
+        val mCountDownTimer = object : CountDownTimer(time.toLong(), 100) {
+            override fun onTick(millisUntilFinished: Long) {
+                i++
 //                progressBar.progress = i * 100 / (time / 100)
-                }
-
-                override fun onFinish() {
-
-                    i++
-//                progressBar.progress = 100
-                    mAnimationDone = true
-                    if (!mPrepareAdsDone) {
-                        gotoMain()
-                    }
-                }
             }
 
-            mCountDownTimer.start()
+            override fun onFinish() {
+
+                i++
+//                progressBar.progress = 100
+                mAnimationDone = true
+                if (!mPrepareAdsDone) {
+                    gotoMain()
+                }
+            }
+        }
+
+        mCountDownTimer.start()
 //        }.start()
 
 
     }
-
 
 
     fun gotoMain() {

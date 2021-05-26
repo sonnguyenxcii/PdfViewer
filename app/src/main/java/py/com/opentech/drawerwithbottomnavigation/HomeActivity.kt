@@ -554,19 +554,19 @@ class HomeActivity : AppCompatActivity(),
         try {
             val ROOT_DIR = Environment.getExternalStorageDirectory().absolutePath
             println("--ROOT_DIR------" + ROOT_DIR)
-//            val ANDROID_DIR = File("$ROOT_DIR/Android")
-//            val DATA_DIR = File("$ROOT_DIR/data")
+            val ANDROID_DIR = File("$ROOT_DIR/Android")
+            val DATA_DIR = File("$ROOT_DIR/data")
             File(ROOT_DIR).walk()
                 // befor entering this dir check if
-//            .onEnter {
-//                !it.isHidden // it is not hidden
-//                        && it != ANDROID_DIR // it is not Android directory
-//                        && it != DATA_DIR // it is not data directory
-//                        && !File(it, ".nomedia").exists() //there is no .nomedia file inside
-//            }
-//                .filter { it.extension == "pdf" }
+                .onEnter {
+                    !it.isHidden // it is not hidden
+                    it != ANDROID_DIR // it is not Android directory
+                            && it != DATA_DIR // it is not data directory
+                        && !File(it, ".nomedia").exists() //there is no .nomedia file inside
+                }
+                .filter { it.extension == "pdf" }
                 .toList().forEach {
-                    if (it.name.contains("pdf")) {
+//                    if (it.name.contains("pdf")) {
 
                         val lastModDate = Date(it.lastModified())
                         var parentName = ""
@@ -585,7 +585,7 @@ class HomeActivity : AppCompatActivity(),
                                 lastModifier = it.lastModified()
                             )
                         )
-                    }
+//                    }
 
                 }
         } catch (e: Exception) {

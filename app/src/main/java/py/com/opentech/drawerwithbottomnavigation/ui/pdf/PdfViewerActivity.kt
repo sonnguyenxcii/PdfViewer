@@ -28,8 +28,6 @@ import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.initialization.InitializationStatus
-import com.hosseiniseyro.apprating.AppRatingDialog
-import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import com.shockwave.pdfium.PdfPasswordException
 import io.realm.Realm
 import io.realm.RealmResults
@@ -68,6 +66,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
     var isFullscreen = false
     var isBookmark = false
+    var isFromOtherApp = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,9 +126,9 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
         rotate.setOnClickListener {
             isSwipeHorizontal = !isSwipeHorizontal
-            if(!isSwipeHorizontal){
+            if (!isSwipeHorizontal) {
                 rotate.setImageResource(R.drawable.ic_horizontal)
-            }else{
+            } else {
                 rotate.setImageResource(R.drawable.ic_vertical)
 
             }
@@ -472,11 +471,14 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun onFinishing() {
-        val intent = Intent(this, HomeActivity::class.java)
-        intent.flags =
-            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        startActivity(intent)
-        finish()
+        if (viewType == 1) {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            super.onBackPressed()
+        }
+
     }
 
     fun showRateInvalidDialog() {
