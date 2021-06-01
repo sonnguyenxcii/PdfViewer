@@ -14,6 +14,6 @@
         </shape> -->
     </item>
     <item
-        android:drawable="@drawable/ic_pdf_splash"
+        android:drawable="@drawable/ic_logo_red"
         android:gravity="center"/>
 </layer-list>

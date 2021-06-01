@@ -13,10 +13,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.view.menu.MenuPopupHelper
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.realm.Realm
 import io.realm.RealmResults
 import org.greenrobot.eventbus.EventBus
@@ -37,8 +38,8 @@ import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
-import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -165,68 +166,144 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     override fun onMoreClick(pos: Int, view: View) {
         //Creating the instance of PopupMenu
 
-        val menuBuilder = MenuBuilder(context)
-        val inflater = MenuInflater(context)
-        inflater.inflate(R.menu.poupup_menu, menuBuilder)
-        val optionsMenu = MenuPopupHelper(requireContext(), menuBuilder, view)
-        optionsMenu.setForceShowIcon(true)
+//        val menuBuilder = MenuBuilder(context)
+//        val inflater = MenuInflater(context)
+//        inflater.inflate(R.menu.poupup_menu, menuBuilder)
+//        val optionsMenu = MenuPopupHelper(requireContext(), menuBuilder, view)
+//        optionsMenu.setForceShowIcon(true)
+//
+//        menuBuilder.setCallback(object : MenuBuilder.Callback {
+//            override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
+//                if (item.itemId == R.id.open) {
+//
+//                    val params = Bundle()
+//                    params.putString("more_action_click", "Open File")
+//                    application?.firebaseAnalytics?.logEvent("Home_Layout", params)
+//
+//                    try {
+//                        onPrepareOpenAds(listData[pos].path!!)
+//
+//                    } catch (e: Exception) {
+//
+//                    }
+//
+//                } else if (item.itemId == R.id.delete) {
+//                    try {
+//                        onConfirmDelete(listData[pos].path!!)
+//                    } catch (e: Exception) {
+//
+//                    }
+//                } else if (item.itemId == R.id.bookmark) {
+//                    try {
+//                        addToBookmark(listData[pos].path!!)
+//                    } catch (e: Exception) {
+//
+//                    }
+//                } else if (item.itemId == R.id.share) {
+//                    try {
+//                        share(listData[pos].path!!)
+//                    } catch (e: Exception) {
+//
+//                    }
+//                } else if (item.itemId == R.id.shortcut) {
+//                    try {
+//                        createShortcut(listData[pos].path!!)
+//                    } catch (e: Exception) {
+//
+//                    }
+//                } else if (item.itemId == R.id.rename) {
+//                    try {
+//                        onConfirmRename(listData[pos].path!!)
+//                    } catch (e: Exception) {
+//
+//                    }
+//                }
+//                return true
+//            }
+//
+//            override fun onMenuModeChange(menu: MenuBuilder) {
+//            }
+//
+//        })
+//
+//        optionsMenu.show() //showing popup menu
 
-        menuBuilder.setCallback(object : MenuBuilder.Callback {
-            override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
-                if (item.itemId == R.id.open) {
+        var model = listData[pos]
 
-                    val params = Bundle()
-                    params.putString("more_action_click", "Open File")
-                    application?.firebaseAnalytics?.logEvent("Home_Layout", params)
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout)
 
-                    try {
-                        onPrepareOpenAds(listData[pos].path!!)
+        val name = bottomSheetDialog.findViewById<AppCompatTextView>(R.id.name)
+        val date = bottomSheetDialog.findViewById<AppCompatTextView>(R.id.date)
+        val upload = bottomSheetDialog.findViewById<View>(R.id.upload)
+        val printer = bottomSheetDialog.findViewById<View>(R.id.printer)
+        val lnRename = bottomSheetDialog.findViewById<View>(R.id.lnRename)
+        val lnBookmark = bottomSheetDialog.findViewById<View>(R.id.lnBookmark)
+        val lnShare = bottomSheetDialog.findViewById<View>(R.id.lnShare)
+        val lnMerge = bottomSheetDialog.findViewById<View>(R.id.lnMerge)
+        val lnDelete = bottomSheetDialog.findViewById<View>(R.id.lnDelete)
 
-                    } catch (e: Exception) {
+        name?.text = model.name
+        date?.text = model.date
 
-                    }
+        upload?.setOnClickListener {
+            model.path?.let { it1 -> CommonUtils.onFileClick(requireContext(), it1) }
+            bottomSheetDialog.dismiss()
 
-                } else if (item.itemId == R.id.delete) {
-                    try {
-                        onConfirmDelete(listData[pos].path!!)
-                    } catch (e: Exception) {
+        }
+        printer?.setOnClickListener {
+            model.path?.let { it1 -> CommonUtils.onActionPrint(requireContext(), it1) }
+            bottomSheetDialog.dismiss()
 
-                    }
-                } else if (item.itemId == R.id.bookmark) {
-                    try {
-                        addToBookmark(listData[pos].path!!)
-                    } catch (e: Exception) {
+        }
+        lnRename?.setOnClickListener {
+            try {
+                model.path?.let { it1 -> onConfirmRename(it1) }
+            } catch (e: Exception) {
 
-                    }
-                } else if (item.itemId == R.id.share) {
-                    try {
-                        share(listData[pos].path!!)
-                    } catch (e: Exception) {
-
-                    }
-                } else if (item.itemId == R.id.shortcut) {
-                    try {
-                        createShortcut(listData[pos].path!!)
-                    } catch (e: Exception) {
-
-                    }
-                } else if (item.itemId == R.id.rename) {
-                    try {
-                        onConfirmRename(listData[pos].path!!)
-                    } catch (e: Exception) {
-
-                    }
-                }
-                return true
             }
+            bottomSheetDialog.dismiss()
 
-            override fun onMenuModeChange(menu: MenuBuilder) {
+        }
+
+        lnBookmark?.setOnClickListener {
+            try {
+                model.path?.let { it1 -> addToBookmark(it1) }
+            } catch (e: Exception) {
+
             }
+            bottomSheetDialog.dismiss()
 
-        })
+        }
 
-        optionsMenu.show() //showing popup menu
+        lnShare?.setOnClickListener {
+            try {
+                model.path?.let { it1 -> share(it1) }
+            } catch (e: Exception) {
 
+            }
+            bottomSheetDialog.dismiss()
+
+        }
+        lnDelete?.setOnClickListener {
+            try {
+                model.path?.let { it1 -> onConfirmDelete(it1) }
+            } catch (e: Exception) {
+
+            }
+            bottomSheetDialog.dismiss()
+
+        }
+        lnDelete?.setOnClickListener {
+            try {
+                model.path?.let { it1 -> onConfirmDelete(it1) }
+            } catch (e: Exception) {
+
+            }
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
     }
 
     fun onPrepareOpenAds(path: String) {
@@ -477,4 +554,5 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     private fun rename(from: File, to: File): Boolean {
         return from.parentFile.exists() && from.exists() && from.renameTo(to)
     }
+
 }

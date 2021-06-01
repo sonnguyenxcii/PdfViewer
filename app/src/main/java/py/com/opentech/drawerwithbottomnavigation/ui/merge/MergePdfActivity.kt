@@ -26,7 +26,7 @@ class MergePdfActivity : AppCompatActivity() {
         Admod.getInstance().loadNative(this, Constants.ADMOB_Native_Merge_PDF)
         if (application?.mInterstitialMergeAd == null) {
                 application?.mInterstitialMergeAd = Admod.getInstance()
-                    .getInterstitalAds(this, Constants.ADMOB_Interstitial_Merge_PDF)
+                    .getInterstitalAds(this, Constants.ADMOB_Iterstitial_Merge_PDF)
         }
         addFile.setOnClickListener {
 

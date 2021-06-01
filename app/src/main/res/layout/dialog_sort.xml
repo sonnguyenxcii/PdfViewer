@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:background="@drawable/background_button_radius_white_16"
+            android:orientation="vertical">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/seguisb"
+                android:gravity="center"
+                android:text="Sort by"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_17ssp"
+                android:textStyle="bold" />
+            <View
+                android:layout_width="match_parent"
+                android:background="#979797"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_height="1dp"/>
+            <RadioGroup
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/lnName"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        android:src="@drawable/ic_sort_by_name" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_48sdp"
+                        android:fontFamily="@font/seguisb"
+                        android:text="Name"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rbName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:clickable="false"
+                        android:fontFamily="@font/seguisb" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/lnSize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        android:src="@drawable/ic_sort_by_size" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_48sdp"
+                        android:fontFamily="@font/seguisb"
+                        android:text="File Size"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rbSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:clickable="false"
+                        android:fontFamily="@font/seguisb" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/lnDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        android:src="@drawable/ic_sort_by_date" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_48sdp"
+                        android:fontFamily="@font/seguisb"
+                        android:text="Created Date"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rbDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:clickable="false"
+                        android:fontFamily="@font/seguisb" />
+                </FrameLayout>
+
+            </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:background="#979797"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_height="1dp"/>
+
+            <RadioGroup
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginBottom="@dimen/_12sdp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:id="@+id/lnEsc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        android:src="@drawable/ic_ascending" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_48sdp"
+                        android:fontFamily="@font/seguisb"
+                        android:text="Ascending"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rbInc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:clickable="false"
+                        android:fontFamily="@font/seguisb" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/lnDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        android:src="@drawable/ic_descending" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_48sdp"
+                        android:fontFamily="@font/seguisb"
+                        android:text="Descending"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_13ssp"
+                        android:textStyle="bold" />
+
+                    <RadioButton
+                        android:id="@+id/rbDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:clickable="false"
+                        android:fontFamily="@font/seguisb" />
+                </FrameLayout>
+
+<!--                <RadioButton-->
+<!--                    android:id="@+id/rbInc"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:checked="true"-->
+<!--                    android:fontFamily="@font/seguisb"-->
+<!--                    android:text="A - Z" />-->
+
+<!--                <RadioButton-->
+<!--                    android:id="@+id/rbDesc"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/seguisb"-->
+<!--                    android:text="Z - A" />-->
+
+            </RadioGroup>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:layout_marginBottom="@dimen/_20sdp">
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_button_radius_border_gray"
+                    android:text="Cancel"
+                    android:textColor="#77788E"
+                    android:textSize="14sp"
+                    tools:targetApi="lollipop" />
+
+                <Space
+                    android:layout_width="@dimen/_16sdp"
+                    android:layout_height="match_parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/ok"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_button_radius_primary_8"
+                    android:text="Ok"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    tools:targetApi="lollipop" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="@dimen/_65sdp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/ic_dialog_sort" />
+    </FrameLayout>
+
+
+</LinearLayout>

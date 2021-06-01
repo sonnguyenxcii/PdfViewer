@@ -24,6 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="@dimen/_16sdp"
+        android:indeterminate="true"
         android:indeterminateOnly="true"
+        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTintMode="src_atop"
         android:scaleY="2.5" />
 </FrameLayout>

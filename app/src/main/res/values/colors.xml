@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#63AC9F</color>
+    <color name="colorPrimary">#F35655</color>
+    <color name="colorPrimaryDark">#DB1110</color>
+    <color name="colorAccent">#E2574C</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
     <color name="blue">#50AFB8</color>
     <color name="blue50">#8050AFB8</color>
-    <color name="navBgColor">#63AC9F</color>
+    <color name="navBgColor">#F35655</color>
     <color name="transparent">#00ffffff</color>
     <color name="colorPrimaryText">#999999</color>
 
-    <color name="colorBgItem">#DDF2F4</color>
-    <color name="colorBtnDialog">#61A99C</color>
+    <color name="colorBgItem">#E3E2E2</color>
+    <color name="colorBtnDialog">#F35655</color>
 
     <color name="starColor">#57a6f0</color>
     <color name="noteDescriptionTextColor">#57a6f0</color>
@@ -133,7 +133,7 @@
     <color name="all_pdf_bg_ic_normal">#FFD6D6</color>
     <color name="all_pdf_bg_number">#7A7A9D</color>
     <color name="all_pdf_bg_search_border">#EEF2FE</color>
-    <color name="import_file_add_bg">#EEF2FE</color>
+    <color name="import_file_add_bg">#FFD8D8</color>
     <color name="import_file_selected">#567DF4</color>
     <color name="import_file_word_item_bg">#EEF7FE</color>
     <color name="import_file_excel_item_bg">#E9F8EC</color>

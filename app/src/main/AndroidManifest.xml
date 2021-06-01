@@ -31,7 +31,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity
             android:name=".ui.pdf.PdfViewerActivity"
@@ -44,14 +46,25 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="file" android:host="*" android:pathPattern=".*\\.pdf" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.pdf"
+                    android:scheme="file" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="*" android:pathPattern=".*\\.pdf" />
-                <data android:scheme="https" android:host="*" android:pathPattern=".*\\.pdf" />
+
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.pdf"
+                    android:scheme="http" />
+                <data
+                    android:host="*"
+                    android:pathPattern=".*\\.pdf"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity android:name=".ui.scan.ScanPdfActivity" />
@@ -65,8 +78,7 @@
 
         <activity
             android:name=".SplashScreen"
-            android:theme="@style/SplashTheme"
-            >
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -99,7 +111,10 @@
         </provider>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3617606523175567~4786225920"/>
+        android:value="ca-app-pub-2767013993881421~9845247342" />
+
+<!--        android:value="ca-app-pub-3617606523175567~4786225920"/>-->
+
         <service
             android:name=".firebase.PdfReaderFirebaseMessageService"
             android:exported="false">

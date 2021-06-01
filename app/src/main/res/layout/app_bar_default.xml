@@ -17,6 +17,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
@@ -38,7 +39,7 @@
             android:layout_marginStart="@dimen/_16sdp"
             android:fontFamily="@font/seguisb"
             android:text="PDF Reader"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -49,6 +50,7 @@
             android:id="@+id/mode"
             android:layout_width="@dimen/_21sdp"
             android:layout_height="wrap_content"
+            android:padding="@dimen/_3sdp"
             android:layout_marginEnd="@dimen/_12sdp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_mode_grid"
@@ -58,22 +60,24 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/sort"
-            android:layout_width="@dimen/_25sdp"
+            android:layout_width="@dimen/_23sdp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_7sdp"
             android:adjustViewBounds="true"
-            android:src="@drawable/ic_sort_ascending"
+            android:padding="@dimen/_3sdp"
+            android:src="@drawable/ic_sort"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/mode"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/search"
-            android:layout_width="@dimen/_25sdp"
+            android:layout_width="@dimen/_23sdp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_7sdp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_search_fill"
+            android:padding="@dimen/_1sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toLeftOf="@id/sort"
             app:layout_constraintTop_toTopOf="parent" />
@@ -104,7 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/fab"
-        android:backgroundTint="#F7D449"
+        android:backgroundTint="@color/colorPrimary"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_bookmark_black"
         app:backgroundTint="@color/white"

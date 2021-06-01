@@ -138,6 +138,7 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
     implementation 'com.github.f0ris.sweetalert:library:1.5.1'
     implementation "com.google.code.gson:gson:2.8.6"
+    compile 'com.github.ome450901:SimpleRatingBar:1.5.1'
 
 }
 

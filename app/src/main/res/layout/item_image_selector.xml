@@ -35,21 +35,20 @@
             android:id="@+id/item_selected_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:background="@drawable/bg_select_image_item"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/item_order_view"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardBackgroundColor="@color/image_selected_border_color"
-            android:layout_gravity="end|top"
-            android:layout_marginTop="@dimen/common_padding_big"
-            android:layout_marginEnd="@dimen/common_padding_big">
-            <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="#99000000"
+            android:layout_gravity="center">
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/item_order_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:src="@drawable/ic_choose_image_check"
                 android:textSize="@dimen/title_third_component_text_size"
                 android:text="1"
                 android:textColor="@color/white_totally"

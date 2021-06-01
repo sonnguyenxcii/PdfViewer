@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.view.menu.MenuPopupHelper
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
@@ -29,6 +30,7 @@ import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.shockwave.pdfium.PdfPasswordException
+import com.willy.ratingbar.ScaleRatingBar
 import io.realm.Realm
 import io.realm.RealmResults
 import kotlinx.android.synthetic.main.include_preload_ads.*
@@ -40,11 +42,13 @@ import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObjec
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomAppRatingDialog
 import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
+import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
 import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
 import java.io.File
 import java.util.*
+import kotlin.math.roundToInt
 
 
 class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
@@ -53,6 +57,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     lateinit var pdfView: PDFView
     lateinit var seekBar: AppCompatSeekBar
     lateinit var rotate: AppCompatImageView
+    lateinit var nightMode: AppCompatImageView
     var url: String? = null
     var currentPage = 0
     var viewType = 0 // 0: file, 1: content
@@ -67,6 +72,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     var isFullscreen = false
     var isBookmark = false
     var isFromOtherApp = false
+    var isNightMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +80,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         pdfView = findViewById(R.id.pdfView)
         toolbar = findViewById(R.id.toolbar)
         rotate = findViewById(R.id.rotate)
+        nightMode = findViewById(R.id.night_mode)
         val share = findViewById<View>(R.id.share)
         seekBar = findViewById(R.id.seekBar)
         rootView = findViewById(R.id.rootView)
@@ -130,6 +137,21 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 rotate.setImageResource(R.drawable.ic_horizontal)
             } else {
                 rotate.setImageResource(R.drawable.ic_vertical)
+
+            }
+            if (viewType == 0) {
+                viewFile()
+            } else {
+                viewFileFromStream()
+            }
+        }
+
+        nightMode.setOnClickListener {
+            isNightMode = !isNightMode
+            if (!isNightMode) {
+                nightMode.setImageResource(R.drawable.ic_night_shift)
+            } else {
+                nightMode.setImageResource(R.drawable.ic_brightness)
 
             }
             if (viewType == 0) {
@@ -211,6 +233,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                             showInputPassword()
                         }
                     }
+                    .nightMode(isNightMode)
                     .onTap(object : OnTapListener {
                         override fun onTap(e: MotionEvent?): Boolean {
                             isFullscreen = !isFullscreen
@@ -249,38 +272,50 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun showRate() {
-        CustomAppRatingDialog.Builder()
-            .setPositiveButtonText("Submit")
-            .setNegativeButtonText("Later")
-//            .setNegativeButtonText("Cancel")
-//            .setNeutralButtonText("Later")
-            .setNoteDescriptions(
-                Arrays.asList(
-                    "Very Bad",
-                    "Not good",
-                    "Quite ok",
-                    "Very Good",
-                    "Excellent !!!"
-                )
-            )
-            .setDefaultRating(0)
-            .setThreshold(3)
-            .setTitle("Did you like the app?")
-            .setDescription("Let us know what you think")
-            .setCommentInputEnabled(true)
-            .setStarColor(R.color.navBgColor)
-            .setNoteDescriptionTextColor(R.color.colorPrimaryDark)
-            .setTitleTextColor(R.color.black)
-            .setDescriptionTextColor(R.color.descriptionTextColor)
-            .setHint("Please write your comment here ...")
-            .setHintTextColor(R.color.white)
-            .setCommentTextColor(R.color.white)
-            .setCommentBackgroundColor(R.color.blue50)
-            .setDialogBackgroundColor(R.color.white)
-            .setCancelable(false)
-            .setCanceledOnTouchOutside(false)
-            .create(this)
-            .show()
+        val view = layoutInflater.inflate(R.layout.dialog_rating, null)
+        val submit = view.findViewById(R.id.submit) as View
+        val skip = view.findViewById(R.id.skip) as View
+        val ratingBar = view.findViewById(R.id.ratingBar) as ScaleRatingBar
+        val commentEditText = view.findViewById(R.id.commentEditText) as AppCompatEditText
+
+        ratingBar.setOnRatingChangeListener { ratingBar, rating, fromUser ->
+
+            if (rating <= 0) {
+                skip.visibility = View.VISIBLE
+                submit.visibility = View.GONE
+            } else {
+                skip.visibility = View.GONE
+                submit.visibility = View.VISIBLE
+            }
+
+            if (rating <= 3) {
+                commentEditText.visibility = View.VISIBLE
+            } else {
+                commentEditText.setText("")
+                commentEditText.visibility = View.GONE
+            }
+        }
+
+        val dialog: AlertDialog = AlertDialog.Builder(this)
+            .setView(view)
+            .create()
+        Objects.requireNonNull(dialog.window)
+            ?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+
+        skip.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        submit.setOnClickListener {
+            if (!TextUtils.isEmpty(commentEditText.text.toString())){
+                onPositiveButtonClickedWithComment(ratingBar.rating.roundToInt(),commentEditText.text.toString())
+            }else{
+                onPositiveButtonClickedWithoutComment(ratingBar.rating.roundToInt())
+
+            }
+            dialog.dismiss()
+        }
     }
 
     fun addToRecent(path: String) {
@@ -395,7 +430,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                         if (it is PdfPasswordException) {
                             showInputPassword()
                         }
-                    }
+                    }.nightMode(isNightMode)
                     .onTap(object : OnTapListener {
                         override fun onTap(e: MotionEvent?): Boolean {
                             isFullscreen = !isFullscreen
@@ -657,21 +692,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
                 when (item?.itemId) {
                     R.id.printer -> {
-
-                        try {
-                            var printManager: PrintManager =
-                                getSystemService(Context.PRINT_SERVICE) as PrintManager
-                            var printAdapter =
-                                PdfDocumentAdapter(this@PdfViewerActivity, url)
-
-                            printManager.print(
-                                "Document",
-                                printAdapter,
-                                PrintAttributes.Builder().build()
-                            );
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
                     }
 
                     R.id.favorite -> {
@@ -683,7 +704,10 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     }
 
                     R.id.upload -> {
-                        url?.let { onFileClick(it) }
+                        url?.let {
+                            CommonUtils.onFileClick(this@PdfViewerActivity, it)
+
+                        }
                     }
                 }
 
@@ -798,34 +822,5 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
     }
 
-    private fun onFileClick(path: String) {
-        try {
-            val AUTHORITY_APP = "com.pdfreader.scanner.pdfviewer.provider"
-            val uri = FileProvider.getUriForFile(this, AUTHORITY_APP, File(path))
-            val uris: ArrayList<Uri> = ArrayList()
-            uris.add(uri)
-            val intent = Intent()
-            intent.action = Intent.ACTION_SEND_MULTIPLE
-            intent.putExtra(Intent.EXTRA_TEXT, "Upload PDF file")
-            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            intent.type = "application/pdf"
-            intent.setPackage("com.google.android.apps.docs")
 
-
-            try {
-                startActivity(
-                    Intent.createChooser(
-                        intent,
-                        "Select app"
-                    )
-                )
-            } catch (e: java.lang.Exception) {
-                Toast.makeText(this, "Can not share file now.", Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: Exception) {
-
-        }
-
-    }
 }

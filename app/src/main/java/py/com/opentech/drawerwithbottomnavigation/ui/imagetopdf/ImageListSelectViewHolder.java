@@ -20,7 +20,7 @@ public class ImageListSelectViewHolder extends RecyclerView.ViewHolder {
     private ImageView mCameraView;
     private View mSelectedView;
     private CardView mOrderView;
-    private TextView mOrderTextView;
+    private View mOrderTextView;
 
     public ImageListSelectViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -53,7 +53,8 @@ public class ImageListSelectViewHolder extends RecyclerView.ViewHolder {
                     .into(mImageView);
 
             if (orderSelected >= 0) {
-                mOrderTextView.setText("" + (orderSelected + 1));
+//                mOrderTextView.setText("" + (orderSelected + 1));
+//                mOrderView.setVisibility(View.VISIBLE);
                 mOrderView.setVisibility(View.VISIBLE);
                 mSelectedView.setVisibility(View.VISIBLE);
             }

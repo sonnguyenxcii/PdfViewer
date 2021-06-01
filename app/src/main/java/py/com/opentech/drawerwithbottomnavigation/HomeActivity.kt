@@ -3,7 +3,6 @@ package py.com.opentech.drawerwithbottomnavigation
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -12,18 +11,20 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.provider.Settings
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
-import android.webkit.MimeTypeMap
+import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -38,9 +39,8 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationView
-import com.hosseiniseyro.apprating.AppRatingDialog
-import com.hosseiniseyro.apprating.listener.RatingDialogListener
 import com.infideap.drawerbehavior.AdvanceDrawerLayout
+import com.willy.ratingbar.ScaleRatingBar
 import kotlinx.android.synthetic.main.app_bar_default.*
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import org.greenrobot.eventbus.EventBus
@@ -49,7 +49,6 @@ import org.greenrobot.eventbus.ThreadMode
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
-import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomAppRatingDialog
 import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
 import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.ImageToPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
@@ -61,6 +60,7 @@ import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 import java.io.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 
 class HomeActivity : AppCompatActivity(),
@@ -462,7 +462,6 @@ class HomeActivity : AppCompatActivity(),
 
         if (!InternetConnection.checkConnection(this)) {
             navigateToMerge()
-
         } else {
             preloadAdsLayout.visibility = View.VISIBLE
 
@@ -562,29 +561,29 @@ class HomeActivity : AppCompatActivity(),
                     !it.isHidden // it is not hidden
                     it != ANDROID_DIR // it is not Android directory
                             && it != DATA_DIR // it is not data directory
-                        && !File(it, ".nomedia").exists() //there is no .nomedia file inside
+                            && !File(it, ".nomedia").exists() //there is no .nomedia file inside
                 }
                 .filter { it.extension == "pdf" }
                 .toList().forEach {
 //                    if (it.name.contains("pdf")) {
 
-                        val lastModDate = Date(it.lastModified())
-                        var parentName = ""
-                        try {
-                            parentName = File(it.parent).name
-                        } catch (e: Exception) {
+                    val lastModDate = Date(it.lastModified())
+                    var parentName = ""
+                    try {
+                        parentName = File(it.parent).name
+                    } catch (e: Exception) {
 
-                        }
-                        uriList.add(
-                            PdfModel(
-                                name = it.name,
-                                path = it.absolutePath,
-                                size = it.length(),
-                                date = Utils.formatDate(lastModDate),
-                                folder = parentName,
-                                lastModifier = it.lastModified()
-                            )
+                    }
+                    uriList.add(
+                        PdfModel(
+                            name = it.name,
+                            path = it.absolutePath,
+                            size = it.length(),
+                            date = Utils.formatDate(lastModDate),
+                            folder = parentName,
+                            lastModifier = it.lastModified()
                         )
+                    )
 //                    }
 
                 }
@@ -712,7 +711,7 @@ class HomeActivity : AppCompatActivity(),
     fun getFileName(context: Context, uri: Uri): String? {
         var result: String? = null
         if (uri.scheme == "content") {
-            val cursor: Cursor? = context.getContentResolver().query(uri, null, null, null, null)
+            val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
             try {
                 if (cursor != null && cursor.moveToFirst()) {
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
@@ -812,38 +811,50 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun showRate() {
-        CustomAppRatingDialog.Builder()
-            .setPositiveButtonText("Submit")
-            .setNegativeButtonText("Later")
-//            .setNegativeButtonText("Cancel")
-//            .setNeutralButtonText("Later")
-            .setNoteDescriptions(
-                Arrays.asList(
-                    "Very Bad",
-                    "Not good",
-                    "Quite ok",
-                    "Very Good",
-                    "Excellent !!!"
-                )
-            )
-            .setDefaultRating(0)
-            .setThreshold(3)
-            .setTitle("Did you like the app?")
-            .setDescription("Let us know what you think")
-            .setCommentInputEnabled(true)
-            .setStarColor(R.color.navBgColor)
-            .setNoteDescriptionTextColor(R.color.colorPrimaryDark)
-            .setTitleTextColor(R.color.black)
-            .setDescriptionTextColor(R.color.descriptionTextColor)
-            .setHint("Please write your comment here ...")
-            .setHintTextColor(R.color.white)
-            .setCommentTextColor(R.color.white)
-            .setCommentBackgroundColor(R.color.blue50)
-            .setDialogBackgroundColor(R.color.white)
-            .setCancelable(false)
-            .setCanceledOnTouchOutside(false)
-            .create(this)
-            .show()
+        val view = layoutInflater.inflate(R.layout.dialog_rating, null)
+        val submit = view.findViewById(R.id.submit) as View
+        val skip = view.findViewById(R.id.skip) as View
+        val ratingBar = view.findViewById(R.id.ratingBar) as ScaleRatingBar
+        val commentEditText = view.findViewById(R.id.commentEditText) as AppCompatEditText
+
+        ratingBar.setOnRatingChangeListener { ratingBar, rating, fromUser ->
+
+            if (rating <= 0) {
+                skip.visibility = View.VISIBLE
+                submit.visibility = View.GONE
+            } else {
+                skip.visibility = View.GONE
+                submit.visibility = View.VISIBLE
+            }
+
+            if (rating <= 3) {
+                commentEditText.visibility = View.VISIBLE
+            } else {
+                commentEditText.setText("")
+                commentEditText.visibility = View.GONE
+            }
+        }
+
+        val dialog: AlertDialog = AlertDialog.Builder(this)
+            .setView(view)
+            .create()
+        Objects.requireNonNull(dialog.window)
+            ?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+
+        skip.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        submit.setOnClickListener {
+            if (!TextUtils.isEmpty(commentEditText.text.toString())){
+                onPositiveButtonClickedWithComment(ratingBar.rating.roundToInt(),commentEditText.text.toString())
+            }else{
+                onPositiveButtonClickedWithoutComment(ratingBar.rating.roundToInt())
+
+            }
+            dialog.dismiss()
+        }
     }
 
     override fun onNegativeButtonClicked() {
@@ -929,7 +940,7 @@ class HomeActivity : AppCompatActivity(),
 
     fun showInputSort() {
         var mSortModel = application?.global?.sortData?.value
-        val view = layoutInflater.inflate(R.layout.dialog_input_sort, null)
+        val view = layoutInflater.inflate(R.layout.dialog_sort, null)
 
         val rbName = view.findViewById(R.id.rbName) as RadioButton
         val rbSize = view.findViewById(R.id.rbSize) as RadioButton
@@ -939,48 +950,123 @@ class HomeActivity : AppCompatActivity(),
         val rbInc = view.findViewById(R.id.rbInc) as RadioButton
         val rbDesc = view.findViewById(R.id.rbDesc) as RadioButton
 
+        val lnName = view.findViewById(R.id.lnName) as FrameLayout
+        val lnSize = view.findViewById(R.id.lnSize) as FrameLayout
+        val lnDate = view.findViewById(R.id.lnDate) as FrameLayout
+
+        val lnEsc = view.findViewById(R.id.lnEsc) as FrameLayout
+        val lnDesc = view.findViewById(R.id.lnDesc) as FrameLayout
+
+        val ok = view.findViewById<AppCompatButton>(R.id.ok)
+        val cancel = view.findViewById<AppCompatButton>(R.id.cancel)
+
+        lnName.setOnClickListener {
+            rbName.isChecked = true
+            rbDate.isChecked = false
+            rbSize.isChecked = false
+        }
+
+        lnSize.setOnClickListener {
+            rbSize.isChecked = true
+            rbName.isChecked = false
+            rbDate.isChecked = false
+        }
+
+        lnDate.setOnClickListener {
+            rbDate.isChecked = true
+            rbName.isChecked = false
+            rbSize.isChecked = false
+        }
+
+        lnEsc.setOnClickListener {
+            rbInc.isChecked = true
+            rbDesc.isChecked = false
+        }
+
+        lnDesc.setOnClickListener {
+            rbDesc.isChecked = true
+            rbInc.isChecked = false
+        }
+
+
         if (mSortModel != null) {
             if (mSortModel.type.equals("1")) {
                 rbSize.isChecked = true
+                rbName.isChecked = false
+                rbDate.isChecked = false
             } else if (mSortModel.type.equals("2")) {
                 rbDate.isChecked = true
+                rbName.isChecked = false
+                rbSize.isChecked = false
+            } else {
+                rbName.isChecked = true
+                rbDate.isChecked = false
+                rbSize.isChecked = false
             }
             if (mSortModel.order.equals("0")) {
                 rbInc.isChecked = true
+                rbDesc.isChecked = false
             } else {
                 rbDesc.isChecked = true
+                rbInc.isChecked = false
+
             }
         }
         val dialog: AlertDialog = AlertDialog.Builder(this)
-
             .setView(view)
-            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-                var type = "0"
-                var order = "0"
-                if (rbName.isChecked) {
-                    type = "0"
-                }
-                if (rbSize.isChecked) {
-                    type = "1"
-                }
-                if (rbDate.isChecked) {
-                    type = "2"
-                }
-
-                if (rbInc.isChecked) {
-                    order = "0"
-                }
-                if (rbDesc.isChecked) {
-                    order = "1"
-                }
-                var model = SortModel(type = type, order = order)
-                saveSortStatus(model)
-                application?.global?.sortData?.postValue(model)
-            })
-            .setNegativeButton("Cancel", null)
             .create()
+        Objects.requireNonNull(dialog.window)
+            ?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
+
+        ok.setOnClickListener { v: View? ->
+            var type = "0"
+            var order = "0"
+            if (rbName.isChecked) {
+                type = "0"
+            }
+            if (rbSize.isChecked) {
+                type = "1"
+            }
+            if (rbDate.isChecked) {
+                type = "2"
+            }
+
+            if (rbInc.isChecked) {
+                order = "0"
+            }
+            if (rbDesc.isChecked) {
+                order = "1"
+            }
+            var model = SortModel(type = type, order = order)
+            saveSortStatus(model)
+            application?.global?.sortData?.postValue(model)
+            dialog.dismiss()
+        }
+        cancel.setOnClickListener { v: View? -> dialog.dismiss() }
     }
+
+//    fun onConfirmDelete(path: String) {
+//        val alertDialog: android.app.AlertDialog
+//        val dialogBuilder = android.app.AlertDialog.Builder(context)
+//        val inflater = this.layoutInflater
+//        val dialogView: View = inflater.inflate(R.layout.dialog_delete_layout, null)
+//        dialogBuilder.setView(dialogView)
+//
+//        val ok = dialogView.findViewById<AppCompatButton>(R.id.ok)
+//        val cancel = dialogView.findViewById<AppCompatButton>(R.id.cancel)
+//        alertDialog = dialogBuilder.create()
+//        alertDialog.setCancelable(true)
+//        Objects.requireNonNull(alertDialog.window)
+//            ?.setBackgroundDrawableResource(android.R.color.transparent)
+//        alertDialog.show()
+//
+//        ok.setOnClickListener { v: View? ->
+//            deleteFile(path)
+//            alertDialog.dismiss()
+//        }
+//        cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
+//    }
 
     fun saveSortStatus(model: SortModel) {
         var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
@@ -994,26 +1080,5 @@ class HomeActivity : AppCompatActivity(),
         val type = prefs.getString("type", "2")
         val order = prefs.getString("order", "1")
         return SortModel(type = type, order = order)
-    }
-
-    fun loadPdfFile() {
-        val pdf = MimeTypeMap.getSingleton().getMimeTypeFromExtension("pdf")
-
-        val table = MediaStore.Files.getContentUri("external")
-
-        val column = arrayOf(MediaStore.Files.FileColumns.DATA)
-
-        val where = (MediaStore.Files.FileColumns.MIME_TYPE + "=?")
-
-        val args = arrayOf(pdf)
-
-        val fileCursor: Cursor? =
-            getContentResolver().query(table, column, where, args, null)
-
-        while (fileCursor?.moveToNext()!!) {
-
-            //your code
-        }
-
     }
 }

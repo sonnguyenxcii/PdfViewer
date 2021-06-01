@@ -71,7 +71,7 @@
                     android:layout_height="150dp"
                     android:layout_gravity="center_horizontal"
                     android:visibility="gone"
-                    app:srcCompat="@drawable/ic_success" />
+                    app:srcCompat="@drawable/ic_scan_success" />
 
                 <TextView
                     android:id="@+id/convert_success_edit_name"
@@ -84,7 +84,7 @@
                     android:layout_marginEnd="@dimen/common_margin_top"
                     android:drawablePadding="16dp"
                     android:gravity="center"
-                    app:drawableEndCompat="@drawable/ic_success_pencil"
+                    app:drawableEndCompat="@drawable/ic_edit_pink"
                     tools:text="Text to PDF 12-Apr-2021.pdf" />
 
                 <TextView
@@ -108,13 +108,15 @@
 
         <Button
             android:id="@+id/btn_share"
-            style="@style/HuyCommonButtonStyle"
             android:layout_width="match_parent"
+            android:background="@drawable/bg_button_radius_border_gray"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:text="@string/share"
+            android:textColor="#77788E"
+            android:textAllCaps="false"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/banner_ads"
             app:layout_constraintEnd_toEndOf="parent" />
