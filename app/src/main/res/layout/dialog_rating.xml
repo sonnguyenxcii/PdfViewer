@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:padding="@dimen/_8sdp"
-                    android:text="Skip"
+                    android:text="Maybe later"
                     android:textColor="#0D6BBF"
                     android:textSize="14sp"
                     tools:targetApi="lollipop" />
