@@ -254,7 +254,7 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
         } else {
             preloadAdsLayout.visibility = View.VISIBLE
 
-            InterstitialAd.load(this, Constants.ADMOB_Iterstitial_Merge_PDF,
+            InterstitialAd.load(this, Constants.ADMOB_Interstitial_Merge_PDF,
                 adRequest!!, object : InterstitialAdLoadCallback() {
                     override fun onAdLoaded(interstitialAd: InterstitialAd) {
                         // The mInterstitialAd reference will be null until

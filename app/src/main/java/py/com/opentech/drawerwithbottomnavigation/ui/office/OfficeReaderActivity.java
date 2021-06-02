@@ -27,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -73,6 +74,7 @@ import com.wxiwei.office.system.dialog.ColorPickerDialog;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,7 +201,7 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
 //            }
 //        });
         filePath = getRealPath2(intent.getData());
-        System.out.println("-----------------"+filePath);
+        System.out.println("-----------------" + filePath);
         int index = getFilePath().indexOf(":");
         if (index > 0) {
             filePath = filePath.substring(index + 3);
@@ -212,7 +214,7 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_app_act,menu);
+        getMenuInflater().inflate(R.menu.menu_app_act, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -244,7 +246,8 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
         }
         return true;
     }
-    private void shareToOther(String pkg ) {
+
+    private void shareToOther(String pkg) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.putExtra(Intent.EXTRA_STREAM, uriFromFile(getApplicationContext(), filePath));
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -260,7 +263,7 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return FileProvider.getUriForFile(
                     context,
-                     getPackageName() + ".provider",
+                    getPackageName() + ".provider",
                     file
             );
         } else {
@@ -462,18 +465,57 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
     private void setFilePath() {
         Intent intent = getIntent();
 
-        filePath = intent.getStringExtra(MainConstant.INTENT_FILED_FILE_PATH);
+        filePath = getFilePathForN(intent.getData(), this);
         Log.d("AAA", "init: file path :" + filePath);
         // 文件关联打开文件
-        if (!intent.hasExtra(MainConstant.INTENT_FILED_FILE_PATH)) {
-            this.filePath = getRealPath2(intent.getData());
-            int index = getFilePath().indexOf(":");
-            if (index > 0) {
-                filePath = filePath.substring(index + 3);
+//        if (!intent.hasExtra(MainConstant.INTENT_FILED_FILE_PATH)) {
+//            this.filePath = getRealPath2(intent.getData());
+//            int index = getFilePath().indexOf(":");
+//            if (index > 0) {
+//                filePath = filePath.substring(index + 3);
+//            }
+//            filePath = Uri.decode(filePath);
+        startFromOtherApp = true;
+//        }
+    }
+
+    private static String getFilePathForN(Uri uri, Context context) {
+        Uri returnUri = uri;
+        Cursor returnCursor = context.getContentResolver().query(returnUri, null, null, null, null);
+        /*
+         * Get the column indexes of the data in the Cursor,
+         *     * move to the first row in the Cursor, get the data,
+         *     * and display it.
+         * */
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+        returnCursor.moveToFirst();
+        String name = (returnCursor.getString(nameIndex));
+        String size = (Long.toString(returnCursor.getLong(sizeIndex)));
+        File file = new File(context.getFilesDir(), name);
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            FileOutputStream outputStream = new FileOutputStream(file);
+            int read = 0;
+            int maxBufferSize = 1 * 1024 * 1024;
+            int bytesAvailable = inputStream.available();
+
+            //int bufferSize = 1024;
+            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+
+            final byte[] buffers = new byte[bufferSize];
+            while ((read = inputStream.read(buffers)) != -1) {
+                outputStream.write(buffers, 0, read);
             }
-            filePath = Uri.decode(filePath);
-            startFromOtherApp = true;
+            Log.e("File Size", "Size " + file.length());
+            inputStream.close();
+            outputStream.close();
+            Log.e("File Path", "Path " + file.getPath());
+            Log.e("File Size", "Size " + file.length());
+        } catch (Exception e) {
+            Log.e("Exception", e.getMessage());
         }
+        return file.getPath();
     }
 
     private void init() {
@@ -481,7 +523,6 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
         toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT);
         //
         dbService = new DBService(getApplicationContext());
-
 
 
         String[] temp = filePath.split("\\.");

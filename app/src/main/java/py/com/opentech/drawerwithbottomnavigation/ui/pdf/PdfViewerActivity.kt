@@ -1,18 +1,20 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
-import android.R.attr.path
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
 import android.text.InputType
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.SeekBar
@@ -47,8 +49,9 @@ import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
 import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
-import py.com.opentech.drawerwithbottomnavigation.utils.RealPathUtil
 import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -97,6 +100,11 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
             val action = intent.action
             val type = intent.type
+
+            println("-dataString-------------------" + intent.dataString)
+            println("-type-------------------" + intent.type)
+            println("-intent-------------------" + intent.toString())
+
             application = PdfApplication.create(this)
 
             if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
@@ -108,7 +116,17 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     fileUri = file_uri
                     viewFileFromStream()
 
-                    url = fileUri!!.path
+//                    url = fileUri!!.path
+
+                    println("-fileUri-------------------" + fileUri)
+                    println("-url-------------------" + url)
+                    println("-uriToPath-------------------" + uriToPath(fileUri!!))
+                    url = getFilePathForN(fileUri!!,this)
+                    println("-getFilePathForN-------------------" +  url)
+
+
+
+
 
                 }
 
@@ -205,6 +223,48 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
     }
 
+    private fun getFilePathForN(uri: Uri, context: Context): String? {
+        val returnCursor: Cursor = context.getContentResolver().query(uri, null, null, null, null)!!
+        /*
+     * Get the column indexes of the data in the Cursor,
+     *     * move to the first row in the Cursor, get the data,
+     *     * and display it.
+     * */
+        val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        val sizeIndex: Int = returnCursor.getColumnIndex(OpenableColumns.SIZE)
+        returnCursor.moveToFirst()
+        val name: String = returnCursor.getString(nameIndex)
+        val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
+        val file: File = File(context.getFilesDir(), name)
+        try {
+            val inputStream: InputStream = context.getContentResolver().openInputStream(uri)!!
+            val outputStream = FileOutputStream(file)
+            var read = 0
+            val maxBufferSize = 1 * 1024 * 1024
+            val bytesAvailable: Int = inputStream.available()
+
+            //int bufferSize = 1024;
+            val bufferSize = Math.min(bytesAvailable, maxBufferSize)
+            val buffers = ByteArray(bufferSize)
+            while (inputStream.read(buffers).also { read = it } != -1) {
+                outputStream.write(buffers, 0, read)
+            }
+            Log.e("File Size", "Size " + file.length())
+            inputStream.close()
+            outputStream.close()
+            Log.e("File Path", "Path " + file.path)
+            Log.e("File Size", "Size " + file.length())
+        } catch (e: java.lang.Exception) {
+            e.message?.let { Log.e("Exception", it) }
+        }
+        return file.path
+    }
+
+    private fun uriToPath(uri: Uri): String {
+        val backupFile = File(uri.path)
+        val absolutePath = backupFile.absolutePath
+        return absolutePath.substring(absolutePath.indexOf(':') + 1)
+    }
 
     fun viewFile() {
         val thread = Thread {

@@ -239,12 +239,19 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         val printer = bottomSheetDialog.findViewById<View>(R.id.printer)
         val lnRename = bottomSheetDialog.findViewById<View>(R.id.lnRename)
         val lnBookmark = bottomSheetDialog.findViewById<View>(R.id.lnBookmark)
+        val txtBookmark = bottomSheetDialog.findViewById<AppCompatTextView>(R.id.txtBookmark)
         val lnShare = bottomSheetDialog.findViewById<View>(R.id.lnShare)
         val lnMerge = bottomSheetDialog.findViewById<View>(R.id.lnMerge)
         val lnDelete = bottomSheetDialog.findViewById<View>(R.id.lnDelete)
 
         name?.text = model.name
         date?.text = model.date
+
+        if (model.isBookmark!!){
+            txtBookmark?.setText("Remove from bookmark")
+        }else{
+            txtBookmark?.setText("Bookmark")
+        }
 
         upload?.setOnClickListener {
             model.path?.let { it1 -> CommonUtils.onFileClick(requireContext(), it1) }
@@ -268,7 +275,8 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
         lnBookmark?.setOnClickListener {
             try {
-                model.path?.let { it1 -> addToBookmark(it1) }
+                onBookmarkClick(pos)
+//                model.path?.let { it1 -> addToBookmark(it1) }
             } catch (e: Exception) {
 
             }
@@ -329,10 +337,14 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                 params.putString("bookmark_file", "0")
 
                 deleteFromBookmark(data.path!!)
+                Toast.makeText(context, "Removed from bookmark", Toast.LENGTH_SHORT).show()
+
             } else {
                 params.putString("bookmark_file", "1")
 
                 addToBookmark(data.path!!)
+                Toast.makeText(context, "Added to bookmark", Toast.LENGTH_SHORT).show()
+
             }
 
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
