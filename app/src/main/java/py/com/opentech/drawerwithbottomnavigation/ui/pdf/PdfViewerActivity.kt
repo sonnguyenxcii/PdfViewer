@@ -108,7 +108,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     fileUri = file_uri
                     viewFileFromStream()
 
-                    url = RealPathUtil.getInstance().getRealPath(this, file_uri)
+                    url = fileUri!!.path
 
                 }
 
