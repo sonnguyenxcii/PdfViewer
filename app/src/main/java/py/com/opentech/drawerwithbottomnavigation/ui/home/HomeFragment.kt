@@ -314,6 +314,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
                 override fun onAdClosed() {
                     gotoViewPdf(path)
                 }
+
             }
         )
     }

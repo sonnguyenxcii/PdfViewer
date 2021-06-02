@@ -2,6 +2,7 @@ package py.com.opentech.drawerwithbottomnavigation
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
@@ -12,10 +13,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -54,7 +57,10 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         application = PdfApplication.create(this)
 
         Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Search)
-        application?.global?.listData?.value?.let { listData.addAll(it) }
+        application?.global?.listData?.observe(this, {
+            listData.clear()
+            listData.addAll(it)
+        })
         val recyclerView: RecyclerView = findViewById(R.id.recycleView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = HomeAdapter(this, listData, this)
@@ -201,6 +207,12 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
                     share(listData[pos].path!!)
                 } else if (item?.itemId == R.id.shortcut) {
                     createShortcut(listData[pos].path!!)
+                } else if (item?.itemId == R.id.rename) {
+                    try {
+                        onConfirmRename(pos,listData[pos].path!!)
+                    } catch (e: Exception) {
+
+                    }
                 }
                 return true
             }
@@ -376,5 +388,52 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
         }
         EventBus.getDefault().postSticky(FileChangeEvent())
 
+    }
+
+
+    fun onConfirmRename(pos:Int,path: String) {
+        val view = layoutInflater.inflate(R.layout.dialog_input_name, null)
+        val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
+        val currentFile = File(path)
+        var fileName = currentFile.nameWithoutExtension
+        categoryEditText.setText(fileName)
+        val dialog: AlertDialog =
+            AlertDialog.Builder(this)
+                .setTitle("Rename file")
+                .setMessage("Input name of file")
+                .setView(view)
+                .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
+                    val text = categoryEditText.text.toString()
+                    renameFile(pos,path, text)
+
+                })
+                .setNegativeButton("Cancel", null)
+                .create()
+        dialog.show()
+    }
+
+
+    fun renameFile(pos:Int,path: String, newName: String) {
+        val currentFile = File(path)
+        var oldName = currentFile.nameWithoutExtension
+        val newFile = File(path.replace(oldName, newName).trim())
+        println("-path--------------------" + path)
+        println("-replace--------------------" + path.replace(oldName, newName))
+        if (rename(currentFile, newFile)) {
+            //Success
+            Log.i("HomeFragment", "Success")
+        } else {
+            //Fail
+            Log.i("HomeFragment", "Fail")
+        }
+
+        listData[pos].name = newName
+        adapter.notifyDataSetChanged()
+        EventBus.getDefault().postSticky(FileChangeEvent())
+
+    }
+
+    private fun rename(from: File, to: File): Boolean {
+        return from.parentFile.exists() && from.exists() && from.renameTo(to)
     }
 }

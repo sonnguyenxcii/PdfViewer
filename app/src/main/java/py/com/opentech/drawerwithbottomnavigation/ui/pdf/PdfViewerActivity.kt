@@ -1,11 +1,14 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
+import android.R.attr.path
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
 import android.text.InputType
@@ -14,6 +17,7 @@ import android.view.*
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
@@ -43,6 +47,7 @@ import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
 import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
+import py.com.opentech.drawerwithbottomnavigation.utils.RealPathUtil
 import java.io.File
 import java.util.*
 import kotlin.math.roundToInt
@@ -102,7 +107,9 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 if (file_uri != null) {
                     fileUri = file_uri
                     viewFileFromStream()
-                    url = file_uri.path
+
+                    url = RealPathUtil.getInstance().getRealPath(this, file_uri)
+
                 }
 
             } else {
@@ -478,6 +485,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             askRatings()
 
         } else {
+            Toast.makeText(this, "Thank for rating", Toast.LENGTH_SHORT).show()
+
             onFinishing()
         }
 
@@ -507,6 +516,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             askRatings()
 
         } else {
+            Toast.makeText(this, "Thank for rating", Toast.LENGTH_SHORT).show()
+
             onFinishing()
         }
     }
@@ -696,8 +707,10 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
         menuBuilder.setCallback(object : MenuBuilder.Callback {
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
-                when (item?.itemId) {
+                when (item.itemId) {
                     R.id.printer -> {
+                        println("-printer-------------url---------" + url)
+
                         url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
                     }
 
@@ -710,6 +723,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     }
 
                     R.id.upload -> {
+                        println("-upload-------------url---------" + url)
                         url?.let {
                             CommonUtils.onFileClick(this@PdfViewerActivity, it)
 

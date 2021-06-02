@@ -3,6 +3,8 @@ package py.com.opentech.drawerwithbottomnavigation
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -64,9 +66,13 @@ class SplashScreen : AppCompatActivity() {
 
         if (count == 0) {
             val intent = Intent(this, HomeActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
-            finish()
             count++
+            Handler(Looper.getMainLooper()).postDelayed({
+                finish()
+            }, 1000)
+
         }
         println("--gotoMain-------------count-2-" + count)
 

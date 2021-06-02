@@ -785,8 +785,8 @@ class HomeActivity : AppCompatActivity(),
         try {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data =
-                Uri.parse("mailto: chongdaquan@gmail.com") // only email apps should handle this
-            intent.putExtra(Intent.EXTRA_EMAIL, "chongdaquan@gmail.com")
+                Uri.parse("mailto: elaineeyui@gmail.com") // only email apps should handle this
+            intent.putExtra(Intent.EXTRA_EMAIL, "elaineeyui@gmail.com")
             intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback about PDF Reader")
             startActivity(intent)
         } catch (e: Exception) {
@@ -880,6 +880,7 @@ class HomeActivity : AppCompatActivity(),
             askRatings()
 
         } else {
+            Toast.makeText(this,"Thank for rating",Toast.LENGTH_SHORT).show()
 //            finish()
         }
         application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
@@ -904,6 +905,8 @@ class HomeActivity : AppCompatActivity(),
             askRatings()
 
         } else {
+            Toast.makeText(this,"Thank for rating",Toast.LENGTH_SHORT).show()
+
 //            finish()
         }
     }

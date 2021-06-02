@@ -102,6 +102,8 @@ object CommonUtils {
     }
 
      fun onFileClick(context: Context, path: String) {
+
+         println("onFileClick-path---------------"+path)
         try {
             val AUTHORITY_APP = "com.pdfreader.scanner.pdfviewer.provider"
             val uri = FileProvider.getUriForFile(context, AUTHORITY_APP, File(path))
@@ -126,11 +128,12 @@ object CommonUtils {
                 Toast.makeText(context, "Can not share file now.", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
-
+            e.printStackTrace()
         }
 
     }
      fun onActionPrint(context: Context, path: String) {
+         println("--onActionPrint--------path----"+path)
          try {
              var printManager: PrintManager =
                  context.getSystemService(Context.PRINT_SERVICE) as PrintManager
