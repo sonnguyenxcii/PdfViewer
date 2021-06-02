@@ -400,6 +400,7 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
     }
 
     public void startCameraActivity(boolean isFromScanButton) {
+        try {
         Intent cameraImgIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         ResolveInfo cameraPackage = getCameraPackage();
         if (cameraPackage != null) {
@@ -408,13 +409,13 @@ public class ImageToPdfActivity extends BaseBindingActivity<ActivityImageToPdfBi
 
         File imageFile = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File newFile;
-        try {
+
             newFile = File.createTempFile(String.valueOf(System.currentTimeMillis()), ".jpg", imageFile);
             Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".provider", newFile);
             mCurrentPhotoPath = uri.toString();
             cameraImgIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(cameraImgIntent, isFromScanButton ? SCAN_REQUEST : CAMERA_REQUEST);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

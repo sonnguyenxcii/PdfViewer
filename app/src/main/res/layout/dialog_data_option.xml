@@ -45,13 +45,13 @@
         android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_cancel"
-            style="@style/HuyCommonButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/cancel"
+            android:textAllCaps="false"
             android:textStyle="bold"
             android:textColor="@color/button_background_secondary"
             android:background="@drawable/bg_button_common_secondary"

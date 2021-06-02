@@ -1,21 +1,19 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.print.PrintAttributes
-import android.print.PrintManager
+import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
 import android.text.InputType
 import android.text.TextUtils
 import android.view.*
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
@@ -40,7 +38,6 @@ import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
-import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomAppRatingDialog
 import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
 import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
@@ -305,12 +302,16 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
         skip.setOnClickListener {
             dialog.dismiss()
+            finish()
         }
 
         submit.setOnClickListener {
-            if (!TextUtils.isEmpty(commentEditText.text.toString())){
-                onPositiveButtonClickedWithComment(ratingBar.rating.roundToInt(),commentEditText.text.toString())
-            }else{
+            if (!TextUtils.isEmpty(commentEditText.text.toString())) {
+                onPositiveButtonClickedWithComment(
+                    ratingBar.rating.roundToInt(),
+                    commentEditText.text.toString()
+                )
+            } else {
                 onPositiveButtonClickedWithoutComment(ratingBar.rating.roundToInt())
 
             }
@@ -368,25 +369,30 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun shareFile(path: String) {
-        val intentShareFile = Intent(Intent.ACTION_SEND)
-        val fileWithinMyDir = File(path)
+        try {
+            val intentShareFile = Intent(Intent.ACTION_SEND)
+            val fileWithinMyDir = File(path)
 
-        if (fileWithinMyDir.exists()) {
-            intentShareFile.type = "application/pdf"
-            val photoURI = let {
-                FileProvider.getUriForFile(
-                    it, BuildConfig.APPLICATION_ID + ".provider",
-                    fileWithinMyDir
+            if (fileWithinMyDir.exists()) {
+                intentShareFile.type = "application/pdf"
+                val photoURI = let {
+                    FileProvider.getUriForFile(
+                        it, BuildConfig.APPLICATION_ID + ".provider",
+                        fileWithinMyDir
+                    )
+                }
+                intentShareFile.putExtra(Intent.EXTRA_STREAM, photoURI)
+                intentShareFile.putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    "Sharing File..."
                 )
+                intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
+                startActivity(Intent.createChooser(intentShareFile, "Share File"))
             }
-            intentShareFile.putExtra(Intent.EXTRA_STREAM, photoURI)
-            intentShareFile.putExtra(
-                Intent.EXTRA_SUBJECT,
-                "Sharing File..."
-            )
-            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
-            startActivity(Intent.createChooser(intentShareFile, "Share File"))
+        } catch (e: Exception) {
+
         }
+
     }
 
     fun shareFileUri(uri: Uri) {
@@ -731,13 +737,20 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
         categoryEditText.inputType = InputType.TYPE_CLASS_NUMBER
 
+        val maxLength = 10
+        categoryEditText.filters = arrayOf<InputFilter>(LengthFilter(maxLength))
+
         val dialog: android.app.AlertDialog =
             android.app.AlertDialog.Builder(this)
                 .setTitle("")
                 .setMessage("Input page number")
                 .setView(view)
                 .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-                    onChangePage(categoryEditText.text.toString())
+                    var number = categoryEditText.text.toString().toDouble()
+                    if (number > pdfView.pageCount) {
+                        number = (pdfView.pageCount - 1).toDouble()
+                    }
+                    onChangePage(number.toInt())
 
                 })
                 .setNegativeButton("Cancel", null)
@@ -745,10 +758,15 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         dialog.show()
     }
 
-    fun onChangePage(page: String) {
-        if (!TextUtils.isEmpty(page)) {
-            pdfView.jumpTo(page.toInt(), true)
+    fun onChangePage(page: Int) {
+        try {
+            pdfView.jumpTo(page, true)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+//        if (!TextUtils.isEmpty(page)) {
+//        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {

@@ -106,7 +106,7 @@
 
         </LinearLayout>
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_share"
             android:layout_width="match_parent"
             android:background="@drawable/bg_button_radius_border_gray"
