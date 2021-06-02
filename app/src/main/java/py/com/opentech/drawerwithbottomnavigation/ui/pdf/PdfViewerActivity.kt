@@ -309,7 +309,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
         skip.setOnClickListener {
             dialog.dismiss()
-            finish()
+            onFinishing()
+
         }
 
         submit.setOnClickListener {
@@ -760,11 +761,18 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 .setMessage("Input page number")
                 .setView(view)
                 .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, which ->
-                    var number = categoryEditText.text.toString().toDouble()
-                    if (number > pdfView.pageCount) {
-                        number = (pdfView.pageCount - 1).toDouble()
+                    var number = 0
+                    try {
+                        number = categoryEditText.text.toString().toInt()
+                    } catch (e: Exception) {
+                        number = -1
                     }
-                    onChangePage(number.toInt())
+                    if (number == -1 || number > pdfView.pageCount) {
+                        Toast.makeText(this, " Not valid page number", Toast.LENGTH_SHORT).show()
+                    } else {
+                        onChangePage(number)
+
+                    }
 
                 })
                 .setNegativeButton("Cancel", null)

@@ -547,9 +547,14 @@ class HomeActivity : AppCompatActivity(),
         )
     }
 
-    private fun getExternalPDFFileList(): ArrayList<PdfModel> {
-        val uriList: ArrayList<PdfModel> = ArrayList()
 
+    private fun getExternalPDFFileList(): ArrayList<PdfModel> {
+        var uriList: ArrayList<PdfModel> = ArrayList()
+
+//        uriList.clear()
+//        walkDir(Environment.getExternalStorageDirectory())
+
+        println("--uriList----------------" + uriList.size)
         try {
             val ROOT_DIR = Environment.getExternalStorageDirectory().absolutePath
             println("--ROOT_DIR------" + ROOT_DIR)
@@ -557,40 +562,71 @@ class HomeActivity : AppCompatActivity(),
             val DATA_DIR = File("$ROOT_DIR/data")
             File(ROOT_DIR).walk()
                 // befor entering this dir check if
-                .onEnter {
-                    !it.isHidden // it is not hidden
-                    it != ANDROID_DIR // it is not Android directory
-                            && it != DATA_DIR // it is not data directory
-                            && !File(it, ".nomedia").exists() //there is no .nomedia file inside
-                }
-                .filter { it.extension == "pdf" }
+//                .onEnter {
+//                    !it.isHidden // it is not hidden
+//                    it != ANDROID_DIR // it is not Android directory
+//                            && it != DATA_DIR // it is not data directory
+//                            && !File(it, ".nomedia").exists() //there is no .nomedia file inside
+//                }
+//                .filter { it.extension == "pdf" }
                 .toList().forEach {
-//                    if (it.name.contains("pdf")) {
+                    if (it.name.toLowerCase().endsWith(".pdf")) {
+                        val lastModDate = Date(it.lastModified())
+                        var parentName = ""
+                        try {
+                            parentName = File(it.parent).name
+                        } catch (e: Exception) {
 
+                        }
+                        uriList.add(
+                            PdfModel(
+                                name = it.name,
+                                path = it.absolutePath,
+                                size = it.length(),
+                                date = Utils.formatDate(lastModDate),
+                                folder = parentName,
+                                lastModifier = it.lastModified()
+                            )
+                        )
+                    }
+                }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return uriList
+    }
+
+
+    fun walkDir(dir: File) {
+        var listFile = dir.listFiles()
+        listFile?.forEach {
+            if (it.isDirectory) {
+                walkDir(it)
+            } else {
+                if (it.name.toLowerCase().endsWith(".pdf")) {
                     val lastModDate = Date(it.lastModified())
                     var parentName = ""
                     try {
                         parentName = File(it.parent).name
                     } catch (e: Exception) {
-
+                        e.printStackTrace()
                     }
-                    uriList.add(
-                        PdfModel(
-                            name = it.name,
-                            path = it.absolutePath,
-                            size = it.length(),
-                            date = Utils.formatDate(lastModDate),
-                            folder = parentName,
-                            lastModifier = it.lastModified()
-                        )
-                    )
-//                    }
-
+                    println("-name------------------" + it.name)
+                    println("-absolutePath------------------" + it.absolutePath)
+//                    uriList.add(
+//                        PdfModel(
+//                            name = it.name,
+//                            path = it.absolutePath,
+//                            size = it.length(),
+//                            date = Utils.formatDate(lastModDate),
+//                            folder = parentName,
+//                            lastModifier = it.lastModified()
+//                        )
+//                    )
                 }
-        } catch (e: Exception) {
-
+            }
         }
-        return uriList
     }
 
     fun requestRead() {
@@ -847,9 +883,12 @@ class HomeActivity : AppCompatActivity(),
         }
 
         submit.setOnClickListener {
-            if (!TextUtils.isEmpty(commentEditText.text.toString())){
-                onPositiveButtonClickedWithComment(ratingBar.rating.roundToInt(),commentEditText.text.toString())
-            }else{
+            if (!TextUtils.isEmpty(commentEditText.text.toString())) {
+                onPositiveButtonClickedWithComment(
+                    ratingBar.rating.roundToInt(),
+                    commentEditText.text.toString()
+                )
+            } else {
                 onPositiveButtonClickedWithoutComment(ratingBar.rating.roundToInt())
 
             }
@@ -880,7 +919,7 @@ class HomeActivity : AppCompatActivity(),
             askRatings()
 
         } else {
-            Toast.makeText(this,"Thank for rating",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Thank for rating", Toast.LENGTH_SHORT).show()
 //            finish()
         }
         application?.firebaseAnalytics?.logEvent("click_" + rate + "_star", null)
@@ -905,7 +944,7 @@ class HomeActivity : AppCompatActivity(),
             askRatings()
 
         } else {
-            Toast.makeText(this,"Thank for rating",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Thank for rating", Toast.LENGTH_SHORT).show()
 
 //            finish()
         }
