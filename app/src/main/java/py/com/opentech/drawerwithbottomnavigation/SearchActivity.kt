@@ -278,25 +278,30 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
     }
 
     fun share(path: String) {
-        val intentShareFile = Intent(Intent.ACTION_SEND)
-        val fileWithinMyDir = File(path)
+        try {
+            val intentShareFile = Intent(Intent.ACTION_SEND)
+            val fileWithinMyDir = File(path)
 
-        if (fileWithinMyDir.exists()) {
-            intentShareFile.type = "application/pdf"
-            val photoURI = let {
-                FileProvider.getUriForFile(
-                    it, BuildConfig.APPLICATION_ID + ".provider",
-                    fileWithinMyDir
+            if (fileWithinMyDir.exists()) {
+                intentShareFile.type = "application/pdf"
+                val photoURI = let {
+                    FileProvider.getUriForFile(
+                        it, BuildConfig.APPLICATION_ID + ".provider",
+                        fileWithinMyDir
+                    )
+                }
+                intentShareFile.putExtra(Intent.EXTRA_STREAM, photoURI)
+                intentShareFile.putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    "Sharing File..."
                 )
+                intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
+                startActivity(Intent.createChooser(intentShareFile, "Share File"))
             }
-            intentShareFile.putExtra(Intent.EXTRA_STREAM, photoURI)
-            intentShareFile.putExtra(
-                Intent.EXTRA_SUBJECT,
-                "Sharing File..."
-            )
-            intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
-            startActivity(Intent.createChooser(intentShareFile, "Share File"))
+        }catch (e:Exception){
+
         }
+
     }
 
     fun addToBookmark(path: String) {

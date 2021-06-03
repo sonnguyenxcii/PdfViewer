@@ -227,8 +227,18 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 //        })
 //
 //        optionsMenu.show() //showing popup menu
+        var model: PdfModel? = null
 
-        var model = listData[pos]
+        try {
+            model = listData[pos]
+
+        } catch (e: Exception) {
+
+        }
+
+        if (model == null) {
+            return
+        }
 
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout)
@@ -247,9 +257,9 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         name?.text = model.name
         date?.text = model.date
 
-        if (model.isBookmark!!){
+        if (model.isBookmark!!) {
             txtBookmark?.setText("Remove from bookmark")
-        }else{
+        } else {
             txtBookmark?.setText("Bookmark")
         }
 
@@ -259,7 +269,15 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
         }
         printer?.setOnClickListener {
-            model.path?.let { it1 -> CommonUtils.onActionPrint(requireContext(), it1) }
+            try {
+                model.path?.let { it1 -> CommonUtils.onActionPrint(requireContext(), it1) }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    requireContext(),
+                    "Temporarily unable to print the file, the feature will be available soon",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             bottomSheetDialog.dismiss()
 
         }

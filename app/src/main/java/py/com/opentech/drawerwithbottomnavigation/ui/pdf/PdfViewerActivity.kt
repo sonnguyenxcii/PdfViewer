@@ -78,6 +78,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     var isBookmark = false
     var isFromOtherApp = false
     var isNightMode = false
+    var isPasswordProtect = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,11 +122,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     println("-fileUri-------------------" + fileUri)
                     println("-url-------------------" + url)
                     println("-uriToPath-------------------" + uriToPath(fileUri!!))
-                    url = getFilePathForN(fileUri!!,this)
-                    println("-getFilePathForN-------------------" +  url)
-
-
-
+                    url = getFilePathForN(fileUri!!, this)
+                    println("-getFilePathForN-------------------" + url)
 
 
                 }
@@ -188,7 +186,10 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             override fun onSingleClick(v: View?) {
                 url?.let { it1 -> shareFile(it1) }
                 fileUri?.let {
-                    shareFileUri(it)
+                    try {
+                        shareFileUri(it)
+                    }catch (e:Exception){
+                    }
                 }
             }
         })
@@ -294,6 +295,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     .spacing(10)
                     .onError {
                         if (it is PdfPasswordException) {
+                            isPasswordProtect = true
                             showInputPassword()
                         }
                     }
@@ -502,6 +504,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     .spacing(10)
                     .onError {
                         if (it is PdfPasswordException) {
+                            isPasswordProtect = true
+
                             showInputPassword()
                         }
                     }.nightMode(isNightMode)
@@ -771,8 +775,15 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 when (item.itemId) {
                     R.id.printer -> {
                         println("-printer-------------url---------" + url)
-
-                        url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
+                        if (isPasswordProtect) {
+                            Toast.makeText(
+                                this@PdfViewerActivity,
+                                "Temporarily unable to print the file, the feature will be available soon",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
+                        }
                     }
 
                     R.id.favorite -> {
