@@ -109,24 +109,9 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             application = PdfApplication.create(this)
 
             if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
-                val file_uri = intent.data
                 viewType = 1
                 prepareAds()
 
-                if (file_uri != null) {
-                    fileUri = file_uri
-                    viewFileFromStream()
-
-//                    url = fileUri!!.path
-
-                    println("-fileUri-------------------" + fileUri)
-                    println("-url-------------------" + url)
-                    println("-uriToPath-------------------" + uriToPath(fileUri!!))
-                    url = getFilePathForN(fileUri!!, this)
-                    println("-getFilePathForN-------------------" + url)
-
-
-                }
 
             } else {
                 url = intent.extras!!.getString("url")
@@ -661,12 +646,24 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
 
         override fun onAdClosed() {
-
+            initData()
         }
 
         override fun onAdFailedToLoad(loadAdError: LoadAdError) {
             super.onAdFailedToLoad(loadAdError)
             preloadAdsLayout.visibility = View.GONE
+            initData()
+        }
+    }
+
+    fun initData(){
+        val file_uri = intent.data
+
+        if (file_uri != null) {
+            fileUri = file_uri
+            viewFileFromStream()
+
+            url = getFilePathForN(fileUri!!, this)
 
         }
     }
@@ -775,15 +772,11 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 when (item.itemId) {
                     R.id.printer -> {
                         println("-printer-------------url---------" + url)
-                        if (isPasswordProtect) {
-                            Toast.makeText(
-                                this@PdfViewerActivity,
-                                "Temporarily unable to print the file, the feature will be available soon",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
+//                        if (isPasswordProtect) {
+//
+//                        } else {
                             url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
-                        }
+//                        }
                     }
 
                     R.id.favorite -> {

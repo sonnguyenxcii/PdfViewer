@@ -22,6 +22,8 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
+import com.itextpdf.text.exceptions.BadPasswordException
+import com.itextpdf.text.pdf.PdfReader
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfDocumentAdapter
 import java.io.File
@@ -101,9 +103,9 @@ object CommonUtils {
         menuItem.icon = null
     }
 
-     fun onFileClick(context: Context, path: String) {
+    fun onFileClick(context: Context, path: String) {
 
-         println("onFileClick-path---------------"+path)
+        println("onFileClick-path---------------" + path)
         try {
             val AUTHORITY_APP = "com.pdfreader.scanner.pdfviewer.provider"
             val uri = FileProvider.getUriForFile(context, AUTHORITY_APP, File(path))
@@ -132,21 +134,40 @@ object CommonUtils {
         }
 
     }
-     fun onActionPrint(context: Context, path: String) {
-         println("--onActionPrint--------path----"+path)
-         try {
-             var printManager: PrintManager =
-                 context.getSystemService(Context.PRINT_SERVICE) as PrintManager
-             var printAdapter =
-                 PdfDocumentAdapter(context, path)
-             printManager.print(
-                 "Document",
-                 printAdapter,
-                 PrintAttributes.Builder().build()
-             );
-         } catch (e: Exception) {
-             e.printStackTrace()
-         }
 
+    fun onActionPrint(context: Context, path: String) {
+        if (isPasswordProtected(path)) {
+            Toast.makeText(
+                context,
+                "Temporarily unable to print the file, the feature will be available soon",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            println("--onActionPrint--------path----" + path)
+            try {
+                var printManager: PrintManager =
+                    context.getSystemService(Context.PRINT_SERVICE) as PrintManager
+                var printAdapter =
+                    PdfDocumentAdapter(context, path)
+                printManager.print(
+                    "Document",
+                    printAdapter,
+                    PrintAttributes.Builder().build()
+                );
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+        }
+
+    }
+
+    fun isPasswordProtected(pdfFullname: String): Boolean {
+        try {
+            var pdfReader = PdfReader(pdfFullname)
+            return false
+        } catch (e: BadPasswordException) {
+            return true
+        }
     }
 }
