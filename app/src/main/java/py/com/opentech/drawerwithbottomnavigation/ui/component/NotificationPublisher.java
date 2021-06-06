@@ -60,7 +60,7 @@ public class NotificationPublisher extends BroadcastReceiver {
                     .setContentText(content)
 //                    .setLargeIcon(largeImage)
                     .setContentIntent(pendingIntent)
-//                    .setStyle(new NotificationCompat.BigTextStyle())
+                    .setStyle(new NotificationCompat.BigTextStyle())
                     .setAutoCancel(true);
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -75,7 +75,7 @@ public class NotificationPublisher extends BroadcastReceiver {
                     .setContentText(content)
 //                    .setLargeIcon(largeImage)
                     .setContentIntent(pendingIntent)
-//                    .setStyle(new NotificationCompat.BigTextStyle())
+                    .setStyle(new NotificationCompat.BigTextStyle())
                     .setAutoCancel(true);
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

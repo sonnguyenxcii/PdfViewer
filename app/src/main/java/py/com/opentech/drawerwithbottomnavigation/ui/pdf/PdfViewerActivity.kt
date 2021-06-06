@@ -32,6 +32,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
+import com.ads.control.Admod
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
@@ -97,6 +98,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         rootView = findViewById(R.id.rootView)
         bottom = findViewById(R.id.bottom)
         more = findViewById(R.id.more)
+        Admod.getInstance().loadBanner(this, "ca-app-pub-3940256099942544/6300978111");
 
         try {
             setSupportActionBar(toolbar)
@@ -964,7 +966,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         var currentHour = "05"
-        var currentMinute = "13"
+        var currentMinute = "16"
         var currentType = "PM"
 //        val currentReminder: String = viewModel.getReminder()
 //        if (currentReminder != null && !currentReminder.isEmpty()) {

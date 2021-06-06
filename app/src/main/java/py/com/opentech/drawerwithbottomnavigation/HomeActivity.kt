@@ -3,6 +3,7 @@ package py.com.opentech.drawerwithbottomnavigation
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -17,6 +18,7 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.Toast
@@ -100,6 +102,10 @@ class HomeActivity : AppCompatActivity(),
 
         bottomNavigationView.background = null
         bottomNavigationView.menu.getItem(1).isEnabled = false
+
+        var badge = bottomNavigationView.getOrCreateBadge(R.id.recent)
+        badge.isVisible = true
+        badge.number = 9
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             if (item.itemId == R.id.recent) {
@@ -397,6 +403,14 @@ class HomeActivity : AppCompatActivity(),
 //                Toast.makeText(this, "share", Toast.LENGTH_SHORT).show()
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
+            }
+            R.id.nav_language -> {
+                showLanguageDialog()
+//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
+//                drawer!!.openDrawer(GravityCompat.END)
+                drawer!!.closeDrawer(GravityCompat.START)
+                return false
+
             }
         }
 //        drawer!!.closeDrawer(GravityCompat.START)
@@ -1122,5 +1136,42 @@ class HomeActivity : AppCompatActivity(),
         val type = prefs.getString("type", "2")
         val order = prefs.getString("order", "1")
         return SortModel(type = type, order = order)
+    }
+
+    fun showLanguageDialog(){
+        val builderSingle = AlertDialog.Builder(this)
+        builderSingle.setIcon(R.drawable.ic_icon_app)
+        builderSingle.setTitle("Choose a language")
+        builderSingle.setSingleChoiceItems(R.array.languages,0
+        ) { p0, p1 -> }
+        builderSingle.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
+
+        })
+        builderSingle.setPositiveButton("Ok", DialogInterface.OnClickListener { dialogInterface, i ->
+
+        })
+//        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
+//            this, android.R.layout.simple_list_item_1
+//        )
+//
+//        arrayAdapter.add("Customer 1 ")
+//        arrayAdapter.add("Customer 2")
+//
+//        builderSingle.setAdapter(arrayAdapter, object : DialogInterface.OnClickListener() {
+//            override fun onClick(dialog: DialogInterface?, which: Int) {
+//                when (which) {
+//                    0 -> {
+//                    }
+//                    1 -> {
+//                    }
+//                    2 -> {
+//                    }
+//                    else -> {
+//                    }
+//                }
+//            }
+//        })
+
+        builderSingle.show()
     }
 }

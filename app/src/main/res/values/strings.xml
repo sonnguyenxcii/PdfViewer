@@ -706,4 +706,21 @@
     <string name="save_image_to_gallery">Saved image to Gallery</string>
     <string name="save_all_image_to_gallery">Saved all image to Gallery</string>
 
+    <string-array name="languages">
+        <item>English</item>
+        <item>Simplified chinese</item>
+        <item>Hindi</item>
+        <item>French</item>
+        <item>Spanish</item>
+        <item>Portuguese</item>
+        <item>Indonesia</item>
+        <item>Korea</item>
+        <item>Dutch</item>
+        <item>Japan</item>
+        <item>German</item>
+        <item>Danish</item>
+        <item>Zulu</item>
+        <item>Vietnamese</item>
+
+    </string-array>
 </resources>
