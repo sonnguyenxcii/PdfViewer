@@ -1,6 +1,10 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -8,7 +12,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
@@ -45,6 +48,7 @@ import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
+import py.com.opentech.drawerwithbottomnavigation.ui.component.NotificationPublisher
 import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants.MY_PREFS_NAME
@@ -52,6 +56,7 @@ import py.com.opentech.drawerwithbottomnavigation.utils.OnSingleClickListener
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -173,7 +178,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 fileUri?.let {
                     try {
                         shareFileUri(it)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                     }
                 }
             }
@@ -656,7 +661,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
     }
 
-    fun initData(){
+    fun initData() {
         val file_uri = intent.data
 
         if (file_uri != null) {
@@ -775,7 +780,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 //                        if (isPasswordProtect) {
 //
 //                        } else {
-                            url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
+                        url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
 //                        }
                     }
 
@@ -915,6 +920,26 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
     }
 
+    override fun onDestroy() {
+        setContentNoti()
+        createNotificationChanel()
+        cancelReminderSchedule()
+        scheduleNotification()
+        super.onDestroy()
+
+    }
+
+    fun setContentNoti() {
+        val dateString: String = SimpleDateFormat("MM/dd/yyyy").format(Date())
+        var file = File(url)
+        var content =
+            "File PDF " + file.name + " read " + currentPage + "/" + pdfView.pageCount + " pages from " + dateString + ". Click here to continue reading"
+        var editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putString(Constants.NOTIFICATION_CONTENT, content)
+        println("-content----------------"+content)
+        editor.apply()
+    }
+
     fun saveBookmark(path: String) {
         var realm = Realm.getDefaultInstance()
         var id = PdfApplication.bookmarkPrimaryKey.getAndIncrement();
@@ -926,5 +951,71 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
     }
 
+    private fun scheduleNotification() {
+        val notificationIntent = Intent(
+            this,
+            NotificationPublisher::class.java
+        )
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        var currentHour = "05"
+        var currentMinute = "13"
+        var currentType = "PM"
+//        val currentReminder: String = viewModel.getReminder()
+//        if (currentReminder != null && !currentReminder.isEmpty()) {
+//            currentHour = currentReminder.substring(0, currentReminder.indexOf(":"))
+//            currentMinute = currentReminder.substring(
+//                currentReminder.indexOf(":") + 1,
+//                currentReminder.indexOf(" ")
+//            )
+//            currentType = currentReminder.substring(currentReminder.indexOf(" ") + 1)
+//        }
+        val cal_alarm = Calendar.getInstance()
+        cal_alarm.timeInMillis = System.currentTimeMillis()
+        cal_alarm[Calendar.HOUR_OF_DAY] = currentHour.toInt()
+        cal_alarm[Calendar.MINUTE] = currentMinute.toInt()
+        cal_alarm[Calendar.SECOND] = 0
+        cal_alarm[Calendar.AM_PM] = if (currentType == "PM") Calendar.PM else Calendar.AM
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            cal_alarm.timeInMillis,
+            (24 * 60 * 60 * 1000).toLong(),
+            pendingIntent
+        )
+    }
 
+    private fun createNotificationChanel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name: CharSequence = "ProXPdfReaderChanel"
+            val description = "Channel for reminder continues read"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel =
+                NotificationChannel(NotificationPublisher.NOTIFICATION_CHANEL_ID, name, importance)
+            channel.description = description
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun cancelReminderSchedule() {
+        val notificationIntent = Intent(
+            this,
+            NotificationPublisher::class.java
+        )
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1)
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        alarmManager.cancel(pendingIntent)
+    }
 }

@@ -161,7 +161,9 @@
         android:value="ca-app-pub-2767013993881421~9845247342" />
 
 <!--        android:value="ca-app-pub-3617606523175567~4786225920"/>-->
+        <receiver android:name=".ui.component.NotificationPublisher">
 
+        </receiver>
         <service
             android:name=".firebase.PdfReaderFirebaseMessageService"
             android:exported="false">

@@ -1,5 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 public class Constants {
     public static final String ADMOB_Interstitial_Splash = "ca-app-pub-3617606523175567/1776919200";
     public static final String ADMOB_Interstitial_Click_Open_Item = "ca-app-pub-3617606523175567/6340297399";
@@ -41,5 +43,9 @@ public class Constants {
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public static final String APP_PASSWORD = "pdf_tool_18012021";
+    public static final String NOTIFICATION_CONTENT = "notification_content";
 
+    public static String NOTIFICATION_ID = "notification-id";
+    public static String NOTIFICATION = "notification";
+    public static String NOTIFICATION_CHANEL_ID = "NOTIFICATION_CHANEL_ID";
 }
