@@ -45,4 +45,17 @@
 
     <include layout="@layout/include_preload_ads" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/confirmExitLayout"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:focusable="true"
+        android:clickable="true"
+        android:background="#e6000000">
+
+        <include layout="@layout/dialog_confirm_exit" />
+    </FrameLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
