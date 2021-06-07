@@ -98,7 +98,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         rootView = findViewById(R.id.rootView)
         bottom = findViewById(R.id.bottom)
         more = findViewById(R.id.more)
-        Admod.getInstance().loadBanner(this, "ca-app-pub-3940256099942544/6300978111");
+        Admod.getInstance().loadBanner(this, "ca-app-pub-3617606523175567/4292503925");
 
         try {
             setSupportActionBar(toolbar)

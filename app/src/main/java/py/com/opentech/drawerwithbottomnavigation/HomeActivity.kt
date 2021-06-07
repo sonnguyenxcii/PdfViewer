@@ -103,9 +103,9 @@ class HomeActivity : AppCompatActivity(),
         bottomNavigationView.background = null
         bottomNavigationView.menu.getItem(1).isEnabled = false
 
-        var badge = bottomNavigationView.getOrCreateBadge(R.id.recent)
-        badge.isVisible = true
-        badge.number = 9
+//        var badge = bottomNavigationView.getOrCreateBadge(R.id.recent)
+//        badge.isVisible = true
+//        badge.number = 9
 
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             if (item.itemId == R.id.recent) {
