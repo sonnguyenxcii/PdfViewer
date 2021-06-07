@@ -82,7 +82,6 @@ class RecentAdapter(
                         R.drawable.ic_bookmark_inactive
                     )
                 )
-
             }
             holder.itemView.setOnClickListener {
                 clickListener.onItemClick(holder.adapterPosition)

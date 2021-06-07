@@ -18,7 +18,6 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.Toast
@@ -43,6 +42,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationView
 import com.infideap.drawerbehavior.AdvanceDrawerLayout
 import com.willy.ratingbar.ScaleRatingBar
+import kotlinx.android.synthetic.main.activity_home_layout.*
 import kotlinx.android.synthetic.main.app_bar_default.*
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import org.greenrobot.eventbus.EventBus
@@ -91,6 +91,7 @@ class HomeActivity : AppCompatActivity(),
         setupNavController()
 
         Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Bottom_Left_Menu)
+        Admod.getInstance().loadNative(this, "ca-app-pub-3940256099942544/2247696110")
 
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
 
@@ -246,7 +247,8 @@ class HomeActivity : AppCompatActivity(),
         if (drawer!!.isDrawerOpen(GravityCompat.START)) {
             drawer!!.closeDrawer(GravityCompat.START)
         } else {
-            finish()
+            confirmExitLayout.visibility = View.VISIBLE
+//            finish()
 //            super.onBackPressed()
         }
     }
@@ -1138,18 +1140,23 @@ class HomeActivity : AppCompatActivity(),
         return SortModel(type = type, order = order)
     }
 
-    fun showLanguageDialog(){
+    fun showLanguageDialog() {
         val builderSingle = AlertDialog.Builder(this)
         builderSingle.setIcon(R.drawable.ic_icon_app)
         builderSingle.setTitle("Choose a language")
-        builderSingle.setSingleChoiceItems(R.array.languages,0
+        builderSingle.setSingleChoiceItems(
+            R.array.languages, 0
         ) { p0, p1 -> }
-        builderSingle.setNegativeButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
+        builderSingle.setNegativeButton(
+            "Cancel",
+            DialogInterface.OnClickListener { dialogInterface, i ->
 
-        })
-        builderSingle.setPositiveButton("Ok", DialogInterface.OnClickListener { dialogInterface, i ->
+            })
+        builderSingle.setPositiveButton(
+            "Ok",
+            DialogInterface.OnClickListener { dialogInterface, i ->
 
-        })
+            })
 //        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
 //            this, android.R.layout.simple_list_item_1
 //        )
