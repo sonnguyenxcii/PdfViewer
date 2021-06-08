@@ -17,9 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import py.com.opentech.drawerwithbottomnavigation.api.ApiFactory;
+import py.com.opentech.drawerwithbottomnavigation.api.ApiService;
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject;
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject;
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MultiFileSelectActivity;
@@ -36,6 +40,8 @@ public class PdfApplication extends AdsApplication {
     public static volatile Context applicationContext = null;
     public InterstitialAd mInterstitialAd,mInterstitialClickOpenAd,mInterstitialClickTabAd,mInterstitialSearchAd,mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private ApiService apiService;
+    private Scheduler scheduler;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -64,7 +70,12 @@ public class PdfApplication extends AdsApplication {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
     }
-
+    public ApiService getJsonService() {
+        if (apiService == null) {
+            apiService = ApiFactory.createGatewayJson(this);
+        }
+        return apiService;
+    }
     @Override
     public boolean enableAdsResume() {
         return true;
@@ -150,5 +161,11 @@ public class PdfApplication extends AdsApplication {
 
     public void setFirebaseAnalytics(FirebaseAnalytics mFirebaseAnalytics) {
         this.mFirebaseAnalytics = mFirebaseAnalytics;
+    }
+    public Scheduler subscribeScheduler() {
+        if (scheduler == null) {
+            scheduler = Schedulers.io();
+        }
+        return scheduler;
     }
 }

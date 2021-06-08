@@ -966,8 +966,9 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         var currentHour = "05"
-        var currentMinute = "16"
+        var currentMinute = "30"
         var currentType = "PM"
+
 //        val currentReminder: String = viewModel.getReminder()
 //        if (currentReminder != null && !currentReminder.isEmpty()) {
 //            currentHour = currentReminder.substring(0, currentReminder.indexOf(":"))
@@ -979,10 +980,10 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 //        }
         val cal_alarm = Calendar.getInstance()
         cal_alarm.timeInMillis = System.currentTimeMillis()
-        cal_alarm[Calendar.HOUR_OF_DAY] = currentHour.toInt()
-        cal_alarm[Calendar.MINUTE] = currentMinute.toInt()
+//        cal_alarm[Calendar.HOUR_OF_DAY] = currentHour.toInt()
+        cal_alarm[Calendar.MINUTE] += 5//currentMinute.toInt()
         cal_alarm[Calendar.SECOND] = 0
-        cal_alarm[Calendar.AM_PM] = if (currentType == "PM") Calendar.PM else Calendar.AM
+//        cal_alarm[Calendar.AM_PM] = if (currentType == "PM") Calendar.PM else Calendar.AM
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,

@@ -6,7 +6,13 @@
         android:title="All File" />
     <item
         android:id="@+id/nav_bookmark"
-        android:title="" />
+        android:icon="@drawable/ic_bookmark_new"
+        android:title="Bookmark" />
+
+    <item
+        android:id="@+id/nav_library"
+        android:icon="@drawable/ic_download_ebook"
+        android:title="Download" />
     <item
         android:id="@+id/recent"
         android:icon="@drawable/ic_recent"

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="@dimen/_8sdp"
+    tools:ignore="RtlSymmetry">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:id="@+id/tittle"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Fantasy"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:text="More"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/_13ssp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</androidx.appcompat.widget.LinearLayoutCompat><!--</androidx.cardview.widget.CardView>-->

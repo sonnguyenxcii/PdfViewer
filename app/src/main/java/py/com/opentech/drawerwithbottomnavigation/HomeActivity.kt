@@ -102,7 +102,7 @@ class HomeActivity : AppCompatActivity(),
         drawer!!.setViewElevation(Gravity.START, 20f)
 
         bottomNavigationView.background = null
-        bottomNavigationView.menu.getItem(1).isEnabled = false
+//        bottomNavigationView.menu.getItem(1).isEnabled = false
 
 //        var badge = bottomNavigationView.getOrCreateBadge(R.id.recent)
 //        badge.isVisible = true
@@ -152,24 +152,14 @@ class HomeActivity : AppCompatActivity(),
             }
         }
 
-        fab.setOnClickListener {
-            val params = Bundle()
-            params.putString("button_click", "Bookmark")
-            application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-//            if (InternetConnection.checkConnection(this)) {
-//                Admod.getInstance().forceShowInterstitial(
-//                    this,
-//                    application?.mInterstitialClickTabAd,
-//                    object : AdCallback() {
-//                        override fun onAdClosed() {
-            navigateToBookmark()
-//                        }
-//                    }
-//                )
-//            } else {
-//                navigateToBookmark()
-//            }
-        }
+//        fab.setOnClickListener {
+//            val params = Bundle()
+//            params.putString("button_click", "Bookmark")
+//            application?.firebaseAnalytics?.logEvent("Home_Layout", params)
+//
+//            navigateToBookmark()
+//
+//        }
 
         mode.setOnClickListener {
             var temp = this.application?.global?.isListMode?.value
@@ -408,6 +398,14 @@ class HomeActivity : AppCompatActivity(),
             }
             R.id.nav_language -> {
                 showLanguageDialog()
+//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
+//                drawer!!.openDrawer(GravityCompat.END)
+                drawer!!.closeDrawer(GravityCompat.START)
+                return false
+
+            }
+
+            R.id.nav_ebook -> {
 //                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
 //                drawer!!.openDrawer(GravityCompat.END)
                 drawer!!.closeDrawer(GravityCompat.START)
