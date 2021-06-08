@@ -41,6 +41,7 @@ public class PdfApplication extends AdsApplication {
     public InterstitialAd mInterstitialAd,mInterstitialClickOpenAd,mInterstitialClickTabAd,mInterstitialSearchAd,mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
     private ApiService apiService;
+    private ApiService apiServiceBhp;
     private Scheduler scheduler;
 
     @Override
@@ -75,6 +76,13 @@ public class PdfApplication extends AdsApplication {
             apiService = ApiFactory.createGatewayJson(this);
         }
         return apiService;
+    }
+
+    public ApiService getBhpService() {
+        if (apiServiceBhp == null) {
+            apiServiceBhp = ApiFactory.createGatewayBhp(this);
+        }
+        return apiServiceBhp;
     }
     @Override
     public boolean enableAdsResume() {

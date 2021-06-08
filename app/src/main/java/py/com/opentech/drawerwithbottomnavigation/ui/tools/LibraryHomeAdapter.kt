@@ -5,15 +5,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import py.com.opentech.drawerwithbottomnavigation.R
-import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.ResultModel
-import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
-import py.com.opentech.drawerwithbottomnavigation.utils.Utils
 
 
 class LibraryHomeAdapter(
@@ -29,9 +25,9 @@ class LibraryHomeAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
         val itemView: View
-            itemView =
-                LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_cat_home, parent, false)
+        itemView =
+            LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_list_cat_home, parent, false)
 
         return ItemViewHolder(itemView)
 
@@ -42,25 +38,10 @@ class LibraryHomeAdapter(
         if (holder is ItemViewHolder) {
             val data: ResultModel = list[position]
             holder.tittle.text = data.heading
-//            holder.size.text = Utils.convertToStringRepresentation(data.size!!)
-//            holder.date.text = data.date
-//            holder.folder.text = data.folder
-//            if (data.isBookmark!!) {
-//                holder.bookmarkIcon.setImageDrawable(
-//                    ContextCompat.getDrawable(
-//                        context,
-//                        R.drawable.ic_bookmark_active
-//                    )
-//                )
-//            } else {
-//                holder.bookmarkIcon.setImageDrawable(
-//                    ContextCompat.getDrawable(
-//                        context,
-//                        R.drawable.ic_bookmark_inactive
-//                    )
-//                )
-//
-//            }
+            holder.subRecycleView.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            var adapter = LibrarySubItemHomeAdapter(context, data.books!!)
+            holder.subRecycleView.adapter = adapter
 
         }
     }
@@ -80,7 +61,7 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
     itemView
 ) {
     val tittle = itemView.findViewById<AppCompatTextView>(R.id.tittle)
-//    val size = itemView.findViewById<AppCompatTextView>(R.id.size)
+    val subRecycleView = itemView.findViewById<RecyclerView>(R.id.subRecycleView)
 //    val more = itemView.findViewById<AppCompatImageView>(R.id.more)
 //    val date = itemView.findViewById<AppCompatTextView>(R.id.date)
 //    val folder = itemView.findViewById<AppCompatTextView>(R.id.folder)

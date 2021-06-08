@@ -15,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiFactory {
 
     public static String BASE_URL = "https://proxglobal.com/api/oodles-book/";
+    public static String BASE_URL_BHP = "http://bhpstudiotech.com/";
 
     private static OkHttpClient client_noauth;
 
@@ -47,7 +48,7 @@ public class ApiFactory {
         return retrofit.create(ApiService.class);
     }
 
-    public static ApiService createGatewayMultipart(Context context) {
+    public static ApiService createGatewayBhp(Context context) {
 
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -63,14 +64,13 @@ public class ApiFactory {
 
         okHttpBuilder.addInterceptor(chain -> {
             Request newRequest = chain.request().newBuilder()
-//                    .addHeader("APIKey", SharedPrefsUtils.getStringPreference(context, Constants.SECRET_KEY))
                     .addHeader("Content-Type", "application/json")
                     .build();
             return chain.proceed(newRequest);
         });
         client_noauth = okHttpBuilder.build();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL_BHP)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create()).client(client_noauth)
                 .build();

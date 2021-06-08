@@ -15,11 +15,9 @@ import io.reactivex.disposables.Disposable
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.api.ApiService
-import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.ResultModel
-import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 
-class ToolsFragment : Fragment() {
+class LibraryFragment : Fragment() {
     protected var compositeDisposable = CompositeDisposable()
 
     private lateinit var toolsViewModel: ToolsViewModel
@@ -55,7 +53,9 @@ class ToolsFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ responseBody ->
                 if (responseBody.data != null) {
-
+                    listData.clear()
+                    listData.addAll(responseBody.data!!)
+                    adapter.notifyDataSetChanged()
                 }
             }) { throwable ->
 

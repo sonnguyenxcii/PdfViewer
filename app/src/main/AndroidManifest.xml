@@ -27,10 +27,13 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_icon_app"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:icon"
+        tools:targetApi="m">
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -104,9 +107,9 @@
         <activity
             android:name=".ui.office.OfficeReaderActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="@string/app_name">
+            android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -146,6 +149,7 @@
                 <data android:scheme="file" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.tools.BookDetailActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -158,9 +162,9 @@
         </provider>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-        android:value="ca-app-pub-2767013993881421~9845247342" />
+            android:value="ca-app-pub-2767013993881421~9845247342" />
 
-<!--        android:value="ca-app-pub-3617606523175567~4786225920"/>-->
+        <!--        android:value="ca-app-pub-3617606523175567~4786225920"/>-->
         <receiver android:name=".ui.component.NotificationPublisher">
 
         </receiver>
