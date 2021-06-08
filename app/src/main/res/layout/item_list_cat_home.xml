@@ -28,12 +28,13 @@
             android:layout_gravity="center_vertical|end"
             android:text="More"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/_13ssp"
+            android:textSize="@dimen/_12ssp"
             android:textStyle="bold" />
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/subRecycleView"
+        android:layout_marginTop="@dimen/_8sdp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </androidx.appcompat.widget.LinearLayoutCompat><!--</androidx.cardview.widget.CardView>-->
