@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_tools.*
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.api.ApiService
@@ -56,6 +57,7 @@ class LibraryFragment : Fragment() {
                     listData.clear()
                     listData.addAll(responseBody.data!!)
                     adapter.notifyDataSetChanged()
+                    libraryloadingLayout.visibility = View.GONE
                 }
             }) { throwable ->
 

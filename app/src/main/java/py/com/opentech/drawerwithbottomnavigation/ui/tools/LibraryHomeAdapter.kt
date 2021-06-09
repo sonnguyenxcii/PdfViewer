@@ -2,6 +2,7 @@ package py.com.opentech.drawerwithbottomnavigation.ui.tools
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,11 @@ class LibraryHomeAdapter(
             var adapter = LibrarySubItemHomeAdapter(context, data.books!!)
             holder.subRecycleView.adapter = adapter
 
+            holder.more.setOnClickListener {
+                var intent = Intent(context, ListBookActivity::class.java)
+                intent.putExtra("id", data.heading)
+                context.startActivity(intent)
+            }
         }
     }
 
@@ -62,7 +68,7 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(
 ) {
     val tittle = itemView.findViewById<AppCompatTextView>(R.id.tittle)
     val subRecycleView = itemView.findViewById<RecyclerView>(R.id.subRecycleView)
-//    val more = itemView.findViewById<AppCompatImageView>(R.id.more)
+    val more = itemView.findViewById<AppCompatTextView>(R.id.more)
 //    val date = itemView.findViewById<AppCompatTextView>(R.id.date)
 //    val folder = itemView.findViewById<AppCompatTextView>(R.id.folder)
 //    val bookmark = itemView.findViewById<View>(R.id.bookmark)
