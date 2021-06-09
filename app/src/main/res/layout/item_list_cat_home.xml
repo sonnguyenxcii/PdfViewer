@@ -5,36 +5,42 @@
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:orientation="vertical"
-    android:padding="@dimen/_8sdp"
     tools:ignore="RtlSymmetry">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/_8sdp">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
             android:id="@+id/tittle"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:fontFamily="@font/segoe_bold"
+            android:gravity="center"
             android:text="Fantasy"
             android:textColor="@color/black"
-            android:textSize="@dimen/_15ssp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/_13ssp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:fontFamily="@font/seguisb"
+            android:gravity="center"
             android:text="More"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/_12ssp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/_12ssp" />
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/subRecycleView"
-        android:layout_marginTop="@dimen/_8sdp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:clipToPadding="false"
+        android:paddingEnd="@dimen/_14sdp" />
 </androidx.appcompat.widget.LinearLayoutCompat><!--</androidx.cardview.widget.CardView>-->

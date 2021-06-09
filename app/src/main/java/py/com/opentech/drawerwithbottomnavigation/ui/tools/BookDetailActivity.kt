@@ -1,7 +1,11 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.tools
 
+import android.graphics.Color
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -18,10 +22,38 @@ class BookDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_detail)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar!!.setTitle("")
+//        toolbar.setNavigationOnClickListener(object : OnClickListener() {
+//            fun onClick(view: View?) {
+//                //do something you want
+//            }
+//        })
         getBookDetail()
 
         downloadBtn.setOnClickListener {
             getBookUrl()
+        }
+
+        readmore.setOnClickListener {
+            descriptionText.onChange()
+            if (descriptionText.isTrim) {
+                readmore.setText("Read more")
+            } else {
+                readmore.setText("Show less")
+
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.getItemId()) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -73,7 +105,22 @@ class BookDetailActivity : AppCompatActivity() {
         author.setText(book.author?.name)
         descriptionText.setText(book.descriptions!![2])
         name.setText(book.title)
+        var imageUrl = ""
+        try {
+            book.images?.forEach {
+                if (it.size == "large") {
+                    imageUrl = it.amazon_url!!
+                }
+            }
+            println("--------------------------" + imageUrl)
+        } catch (e: Exception) {
+            println("---e-----------------------" + imageUrl)
 
+        }
+        Glide.with(this).load(imageUrl)
+            .placeholder(R.drawable.ic_ebook_placeholder)
+            .into(cover)
 
+        mTagContainerLayout.setTags(book.category)
     }
 }

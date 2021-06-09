@@ -53,7 +53,7 @@ class LibrarySubItemHomeAdapter(
 
             }
             Glide.with(context).load(imageUrl)
-                .placeholder(R.drawable.ic_pdf_new)
+                .placeholder(R.drawable.ic_ebook_placeholder)
                 .into(holder.image)
 
             holder.itemView.setOnClickListener {
