@@ -237,8 +237,8 @@ class HomeActivity : AppCompatActivity(),
         if (drawer!!.isDrawerOpen(GravityCompat.START)) {
             drawer!!.closeDrawer(GravityCompat.START)
         } else {
-            confirmExitLayout.visibility = View.VISIBLE
-//            finish()
+//            confirmExitLayout.visibility = View.VISIBLE
+            finish()
 //            super.onBackPressed()
         }
     }
