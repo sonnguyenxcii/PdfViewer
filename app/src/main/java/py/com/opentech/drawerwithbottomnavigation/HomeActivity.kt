@@ -15,9 +15,7 @@ import android.os.Environment
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.text.TextUtils
-import android.view.Gravity
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.Toast
@@ -33,10 +31,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.ads.control.Admod
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationView
@@ -52,6 +48,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
+import py.com.opentech.drawerwithbottomnavigation.ui.component.ExitDialog
 import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.ImageToPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
@@ -76,6 +73,7 @@ class HomeActivity : AppCompatActivity(),
     private var mInterstitialFileAd: InterstitialAd? = null
     private var mInterstitialMergeAd: InterstitialAd? = null
     private var adRequest: AdRequest? = null
+    var adobj: UnifiedNativeAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +91,7 @@ class HomeActivity : AppCompatActivity(),
         Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Bottom_Left_Menu)
         Admod.getInstance().loadNative(this, "ca-app-pub-3940256099942544/2247696110")
 
+        onExitAppLoadAds()
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
 
         val navigationView = findViewById<View>(R.id.nav_view) as NavigationView
@@ -237,10 +236,21 @@ class HomeActivity : AppCompatActivity(),
         if (drawer!!.isDrawerOpen(GravityCompat.START)) {
             drawer!!.closeDrawer(GravityCompat.START)
         } else {
+            showConfirmExitDialog()
 //            confirmExitLayout.visibility = View.VISIBLE
-            finish()
+//            finish()
 //            super.onBackPressed()
         }
+    }
+
+    fun showConfirmExitDialog() {
+        val exitDialog = ExitDialog(this, adobj)
+        exitDialog.show()
+        val window: Window? = exitDialog.getWindow()
+        window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -1178,5 +1188,19 @@ class HomeActivity : AppCompatActivity(),
 //        })
 
         builderSingle.show()
+    }
+
+    fun onExitAppLoadAds() {
+        val builder = AdLoader.Builder(this, "ca-app-pub-3617606523175567/9653244459")
+        builder.withAdListener(object : AdListener() {
+            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                super.onAdFailedToLoad(loadAdError)
+            }
+        })
+        builder.forUnifiedNativeAd { unifiedNativeAd ->
+            adobj = unifiedNativeAd
+        }
+        val adLoader = builder.build()
+        adLoader.loadAd(AdRequest.Builder().build())
     }
 }

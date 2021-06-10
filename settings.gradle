@@ -1,3 +1,4 @@
 include ':app'
 rootProject.name='Drawer with bottom navigation'
 include ':office'
+include ':nativetemplates'
