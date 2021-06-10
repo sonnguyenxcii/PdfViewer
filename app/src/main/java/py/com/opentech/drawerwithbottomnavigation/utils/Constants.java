@@ -44,6 +44,7 @@ public class Constants {
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public static final String APP_PASSWORD = "pdf_tool_18012021";
     public static final String NOTIFICATION_CONTENT = "notification_content";
+    public static final String NOTIFICATION_URL = "notification_url";
 
     public static String NOTIFICATION_ID = "notification-id";
     public static String NOTIFICATION = "notification";

@@ -112,16 +112,28 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             println("-dataString-------------------" + intent.dataString)
             println("-type-------------------" + intent.type)
             println("-intent-------------------" + intent.toString())
+            println("-data-------------------" + intent.data)
 
             application = PdfApplication.create(this)
 
-            if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
+            var unfinishUrl = intent.getStringExtra("unfinish_url")
+            println("-unfinishUrl-------------------" + unfinishUrl)
+
+            if (!TextUtils.isEmpty(unfinishUrl)) {
+                println("-unfinishUrl---------!isEmpty----------" + unfinishUrl)
+
+                viewType = 2
+                prepareAds()
+            } else if ((Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!)) {
+                println("-----------ACTION_VIEW---------" )
+
                 viewType = 1
                 prepareAds()
-
-
             } else {
+
                 url = intent.extras!!.getString("url")
+                println("-----------url---------"+url)
+
                 viewType = 0
                 url?.let {
                     addToRecent(it)
@@ -131,7 +143,6 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                             try {
                                 currentPage = temp[0]?.page!!
                             } catch (e: Exception) {
-
                             }
                         }
                     }
@@ -151,7 +162,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 rotate.setImageResource(R.drawable.ic_vertical)
 
             }
-            if (viewType == 0) {
+            if (viewType == 0 || viewType == 2) {
                 viewFile()
             } else {
                 viewFileFromStream()
@@ -166,7 +177,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 nightMode.setImageResource(R.drawable.ic_brightness)
 
             }
-            if (viewType == 0) {
+            if (viewType == 0 || viewType == 2) {
                 viewFile()
             } else {
                 viewFileFromStream()
@@ -580,7 +591,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun onFinishing() {
-        if (viewType == 1) {
+        println("--onFinishing------------------"+viewType)
+        if (viewType != 0) {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
@@ -664,20 +676,40 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun initData() {
-        val file_uri = intent.data
+        if (viewType == 2) {
+            url = intent.extras!!.getString("unfinish_url")
+            url?.let {
+                addToRecent(it)
+                var temp = getRecentByPath(it)
+                if (!temp.isNullOrEmpty()) {
+                    if (temp[0]?.page != null) {
+                        try {
+                            currentPage = temp[0]?.page!!
+                        } catch (e: Exception) {
 
-        if (file_uri != null) {
-            fileUri = file_uri
-            viewFileFromStream()
+                        }
+                    }
+                }
+                viewFile()
+            }
+        } else {
+            val file_uri = intent.data
+            println("-file_uri-------------------" + file_uri)
 
-            url = getFilePathForN(fileUri!!, this)
+            if (file_uri != null) {
+                fileUri = file_uri
+                viewFileFromStream()
 
+                url = getFilePathForN(fileUri!!, this)
+
+            }
         }
+
     }
 
     override fun onPause() {
         super.onPause()
-        if (viewType == 0) {
+        if (viewType == 0 || viewType ==2) {
             url?.let { savePageToRecent(it, currentPage) }
         }
 
@@ -705,7 +737,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             .setPositiveButton("OK") { dialog, which ->
                 val text = categoryEditText.text.toString()
                 password = text
-                if (viewType == 0) {
+                if (viewType == 0 || viewType ==2) {
                     viewFile()
                 } else {
                     viewFileFromStream()
@@ -938,7 +970,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             "File PDF " + file.name + " read " + currentPage + "/" + pdfView.pageCount + " pages from " + dateString + ". Click here to continue reading"
         var editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit()
         editor.putString(Constants.NOTIFICATION_CONTENT, content)
-        println("-content----------------"+content)
+        editor.putString(Constants.NOTIFICATION_URL, url)
+        println("-content----------------" + content)
         editor.apply()
     }
 
@@ -981,7 +1014,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         val cal_alarm = Calendar.getInstance()
         cal_alarm.timeInMillis = System.currentTimeMillis()
 //        cal_alarm[Calendar.HOUR_OF_DAY] = currentHour.toInt()
-        cal_alarm[Calendar.MINUTE] += 5//currentMinute.toInt()
+        cal_alarm[Calendar.MINUTE] += 2//currentMinute.toInt()
         cal_alarm[Calendar.SECOND] = 0
 //        cal_alarm[Calendar.AM_PM] = if (currentType == "PM") Calendar.PM else Calendar.AM
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager

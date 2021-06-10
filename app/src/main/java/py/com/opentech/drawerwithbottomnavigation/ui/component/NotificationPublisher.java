@@ -1,5 +1,6 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.component;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -13,6 +14,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
@@ -24,6 +26,7 @@ import java.util.List;
 
 import py.com.opentech.drawerwithbottomnavigation.R;
 import py.com.opentech.drawerwithbottomnavigation.SplashScreen;
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity;
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -35,6 +38,7 @@ public class NotificationPublisher extends BroadcastReceiver {
     public static String NOTIFICATION = "notification";
     public static String NOTIFICATION_CHANEL_ID = "NOTIFICATION_CHANEL_ID";
 
+    @SuppressLint("IntentReset")
     public void onReceive(Context context, Intent intent) {
 
         if (!isAppIsInBackground(context)) {
@@ -43,13 +47,19 @@ public class NotificationPublisher extends BroadcastReceiver {
         }
 
 //        Bitmap largeImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_app_border);
-
-        Intent intentOpen = new Intent(context, SplashScreen.class);
-        intentOpen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentOpen, 0);
         SharedPreferences prefs = context.getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE);
         String content = prefs.getString(Constants.NOTIFICATION_CONTENT, "");
-        System.out.println("-content----------------"+content);
+        System.out.println("-content----------------" + content);
+        String url = prefs.getString(Constants.NOTIFICATION_URL, "");
+        System.out.println("-url----------------" + url);
+
+        Intent intentOpen = new Intent(context, PdfViewerActivity.class);
+//        intentOpen.setAction(Intent.ACTION_VIEW);
+        intentOpen.putExtra("unfinish_url", url);
+//        intentOpen.setData(Uri.parse(url));
+        intentOpen.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intentOpen, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANEL_ID)
@@ -85,6 +95,7 @@ public class NotificationPublisher extends BroadcastReceiver {
 
 
     }
+
     private boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

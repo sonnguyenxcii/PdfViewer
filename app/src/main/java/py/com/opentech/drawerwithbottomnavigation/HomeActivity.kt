@@ -89,7 +89,7 @@ class HomeActivity : AppCompatActivity(),
         setupNavController()
 
         Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Bottom_Left_Menu)
-        Admod.getInstance().loadNative(this, "ca-app-pub-3940256099942544/2247696110")
+//        Admod.getInstance().loadNative(this, "ca-app-pub-3940256099942544/2247696110")
 
         onExitAppLoadAds()
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
@@ -1165,27 +1165,7 @@ class HomeActivity : AppCompatActivity(),
             DialogInterface.OnClickListener { dialogInterface, i ->
 
             })
-//        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter<String>(
-//            this, android.R.layout.simple_list_item_1
-//        )
-//
-//        arrayAdapter.add("Customer 1 ")
-//        arrayAdapter.add("Customer 2")
-//
-//        builderSingle.setAdapter(arrayAdapter, object : DialogInterface.OnClickListener() {
-//            override fun onClick(dialog: DialogInterface?, which: Int) {
-//                when (which) {
-//                    0 -> {
-//                    }
-//                    1 -> {
-//                    }
-//                    2 -> {
-//                    }
-//                    else -> {
-//                    }
-//                }
-//            }
-//        })
+
 
         builderSingle.show()
     }
