@@ -246,13 +246,13 @@ class HomeActivity : AppCompatActivity(),
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.space1 -> {
-//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
-//                drawer!!.openDrawer(GravityCompat.END)
-                drawer!!.closeDrawer(GravityCompat.START)
-                return false
-
-            }
+//            R.id.space1 -> {
+////                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
+////                drawer!!.openDrawer(GravityCompat.END)
+//                drawer!!.closeDrawer(GravityCompat.START)
+//                return false
+//
+//            }
             R.id.nav_home -> {
 //                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
 //                drawer!!.openDrawer(GravityCompat.END)
@@ -405,13 +405,13 @@ class HomeActivity : AppCompatActivity(),
 
             }
 
-            R.id.nav_ebook -> {
-//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
-//                drawer!!.openDrawer(GravityCompat.END)
-                drawer!!.closeDrawer(GravityCompat.START)
-                return false
-
-            }
+//            R.id.nav_ebook -> {
+////                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
+////                drawer!!.openDrawer(GravityCompat.END)
+//                drawer!!.closeDrawer(GravityCompat.START)
+//                return false
+//
+//            }
         }
 //        drawer!!.closeDrawer(GravityCompat.START)
         return true

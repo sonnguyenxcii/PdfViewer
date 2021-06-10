@@ -23,17 +23,17 @@
             android:id="@+id/nav_pdf_merge"
             android:icon="@drawable/ic_merge_files"
             android:title="Merge PDF" />
-        <item
-            android:id="@+id/nav_ebook"
-            android:icon="@drawable/ic_baseline_library_books_24"
-            android:title="Ebook" />
+<!--        <item-->
+<!--            android:id="@+id/nav_ebook"-->
+<!--            android:icon="@drawable/ic_baseline_library_books_24"-->
+<!--            android:title="Ebook" />-->
         <item
             android:id="@+id/nav_language"
             android:icon="@drawable/ic_baseline_language_24"
             android:title="Language" />
-        <item
-            android:id="@+id/space1"
-            android:title="" />
+<!--        <item-->
+<!--            android:id="@+id/space1"-->
+<!--            android:title="" />-->
         <!--        <menu>-->
         <item
             android:id="@+id/nav_feedback"
