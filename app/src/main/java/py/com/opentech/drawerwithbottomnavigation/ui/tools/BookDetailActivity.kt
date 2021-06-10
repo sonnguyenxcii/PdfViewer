@@ -1,39 +1,47 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.tools
 
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
+import android.text.TextUtils
 import android.view.MenuItem
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.appcompat.widget.AppCompatTextView
 import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_book_detail.*
+import okhttp3.*
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.api.ApiService
 import py.com.opentech.drawerwithbottomnavigation.model.BookModel
-import py.com.opentech.drawerwithbottomnavigation.model.BookRequestModel
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.util.*
+import java.util.concurrent.TimeUnit
+
 
 class BookDetailActivity : AppCompatActivity() {
     protected var compositeDisposable = CompositeDisposable()
     var bookModel: BookModel? = null
+    var path: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_detail)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.setTitle("")
-//        toolbar.setNavigationOnClickListener(object : OnClickListener() {
-//            fun onClick(view: View?) {
-//                //do something you want
-//            }
-//        })
+
         getBookDetail()
 
         downloadBtn.setOnClickListener {
-            getBookUrl()
+            downloadFile()
         }
 
         readmore.setOnClickListener {
@@ -45,6 +53,19 @@ class BookDetailActivity : AppCompatActivity() {
 
             }
         }
+
+        readBook.setOnClickListener {
+            if (!TextUtils.isEmpty(path)) {
+                gotoViewPdf(path!!)
+            }
+        }
+
+    }
+
+    fun gotoViewPdf(path: String) {
+        var intent = Intent(this, PdfViewerActivity::class.java)
+        intent.putExtra("url", path)
+        startActivity(intent)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -71,6 +92,8 @@ class BookDetailActivity : AppCompatActivity() {
                 if (responseBody != null) {
                     bookModel = responseBody
                     bindData(bookModel!!)
+                    loadingLayout.visibility = View.GONE
+
                 }
             }) { throwable ->
 
@@ -79,26 +102,74 @@ class BookDetailActivity : AppCompatActivity() {
         compositeDisposable.add(disposable)
     }
 
-    fun getBookUrl() {
+
+    fun downloadFile() {
         if (bookModel?.formats == null) {
             return
         }
+        showLoadingDialog()
+        Thread(Runnable {
 
-        var application = PdfApplication.create(this)
-        val peopleService: ApiService = application.bhpService
-        val disposable: Disposable =
-            peopleService.getBookUrl(BookRequestModel(url = bookModel!!.formats!![0].file_url))
-                .subscribeOn(application.subscribeScheduler())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ responseBody ->
-                    if (responseBody != null) {
+            var client = OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.MINUTES)
+                .readTimeout(30, TimeUnit.MINUTES)
+                .build();
+
+            val formBody: RequestBody = FormBody.Builder()
+                .add("url", bookModel!!.formats!![0].file_url!!)
+                .build()
+
+            val request: Request = Request.Builder()
+                .url("http://bhpstudiotech.com/epub/convert/url")
+                .post(formBody)
+                .build()
+
+            try {
+                client.newCall(request).enqueue(object : Callback {
+
+                    override fun onResponse(call: Call, response: Response) {
+                        println("successful download")
+
+                        val pdfData = response.body?.byteStream()
+
+                        if (pdfData != null) {
+                            val file = File(
+                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
+                                "${bookModel!!.title}.pdf"
+                            )
+                            val fos = FileOutputStream(file)
+                            fos.write(response.body!!.bytes())
+                            fos.close()
+
+                            path = file.absolutePath
+
+                        } else {
+
+                        }
+                        hideDialog()
+
+                        if (!TextUtils.isEmpty(path)) {
+                            runOnUiThread {
+                                completeTittle.setText("Download Complete: " + bookModel!!.title)
+                                completeLayout.visibility = View.VISIBLE
+                            }
+
+                        }
 
                     }
-                }) { throwable ->
 
-                }
+                    override fun onFailure(call: Call, e: IOException) {
+                        hideDialog()
 
-        compositeDisposable.add(disposable)
+                        println("failed to download")
+                    }
+                })
+            } catch (e: Exception) {
+                hideDialog()
+                e.printStackTrace()
+            }
+        }).start()
+
     }
 
     fun bindData(book: BookModel) {
@@ -122,5 +193,32 @@ class BookDetailActivity : AppCompatActivity() {
             .into(cover)
 
         mTagContainerLayout.setTags(book.category)
+    }
+
+    var dialog: AlertDialog? = null
+
+    fun showLoadingDialog() {
+        try {
+            val view = layoutInflater.inflate(R.layout.dialog_loading, null)
+            val tittle = view.findViewById(R.id.tittle) as AppCompatTextView
+            tittle.text = bookModel?.title
+            dialog = AlertDialog.Builder(this)
+                .setView(view)
+                .setCancelable(false)
+                .create()
+            Objects.requireNonNull(dialog!!.window)
+                ?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog!!.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+
+    }
+
+    fun hideDialog() {
+        if (dialog != null) {
+            dialog!!.dismiss()
+        }
     }
 }

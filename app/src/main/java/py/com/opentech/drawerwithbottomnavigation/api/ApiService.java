@@ -20,6 +20,9 @@ public interface ApiService {
     @GET("list-cat?skip=10")
     Observable<BaseResponseModel<List<ResultModel>>> getListCat();
 
+    @GET("get-cat")
+    Observable<BaseResponseModel<List<BookModel>>> getListBookByCat(@Query("subject") String subject);
+
     @GET("book")
     Observable<BookModel> getBookDetail(@Query("gutenberg_id") String gutenberg_id);
 

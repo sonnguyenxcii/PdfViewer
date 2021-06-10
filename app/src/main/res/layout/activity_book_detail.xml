@@ -1,235 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/completeLayout"
+        android:layout_height="0dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/top"
+        <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/imgLayout"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/top"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_8sdp"
-                android:background="@color/white"
-                android:gravity="center"
-                android:orientation="vertical"
-                app:cardCornerRadius="@dimen/_4sdp"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="@dimen/_120sdp"
-                    android:layout_height="@dimen/_167sdp"
+                    android:id="@+id/imgLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_8sdp"
+                    android:background="@color/white"
                     android:gravity="center"
                     android:orientation="vertical"
                     app:cardCornerRadius="@dimen/_4sdp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/cover"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_ebook_placeholder" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/_120sdp"
+                        android:layout_height="@dimen/_167sdp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        app:cardCornerRadius="@dimen/_4sdp"
+                        app:cardUseCompatPadding="true">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/cover"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_ebook_placeholder" />
+                    </androidx.cardview.widget.CardView>
                 </androidx.cardview.widget.CardView>
-            </androidx.cardview.widget.CardView>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/linearLayoutCompat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_4sdp"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toRightOf="@id/imgLayout"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/imgLayout">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
+                        android:fontFamily="@font/seguisb"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        tools:text="Bookname"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_14ssp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/author"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
+                        android:fontFamily="@font/segoe_normal"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:maxLines="2"
+                        android:scrollHorizontally="true"
+                        tools:text="By: Son Nguyen"
+                        android:textColor="@color/colorPrimaryText"
+                        android:textSize="@dimen/_11ssp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
+                        android:fontFamily="@font/segoe_normal"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:maxLines="2"
+                        android:scrollHorizontally="true"
+                        android:text="Source:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_11ssp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:maxLines="2"
+                        android:scrollHorizontally="true"
+                        android:text="http://gutenberg.org"
+                        android:textColor="#1877D3"
+                        android:textSize="@dimen/_11ssp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
+                        android:fontFamily="@font/seguisb"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:maxLines="2"
+                        android:scrollHorizontally="true"
+                        android:text="Copyright:"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_11ssp"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:ellipsize="marquee"
+                        android:fadingEdge="horizontal"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:text="This work is in the public domain."
+                        android:textSize="@dimen/_11ssp" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/linearLayoutCompat"
-                android:layout_width="0dp"
+                android:id="@+id/downloadBtn"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/_4sdp"
-                android:layout_marginEnd="@dimen/_8sdp"
-                android:orientation="vertical"
-                app:layout_constraintLeft_toRightOf="@id/imgLayout"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/imgLayout">
+                android:layout_marginLeft="@dimen/_12sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginRight="@dimen/_12sdp"
+                android:background="@drawable/background_button_radius_primary_8"
+                android:gravity="center"
+                android:padding="@dimen/_12sdp"
+                app:layout_constraintTop_toBottomOf="@id/top">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_download_ebook_white" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/name"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:fontFamily="@font/seguisb"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    android:text="Bookname"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_14ssp"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/author"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:fontFamily="@font/segoe_normal"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:maxLines="2"
-                    android:scrollHorizontally="true"
-                    android:text="By: Son Nguyen"
-                    android:textColor="@color/colorPrimaryText"
-                    android:textSize="@dimen/_11ssp" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:fontFamily="@font/segoe_normal"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:maxLines="2"
-                    android:scrollHorizontally="true"
-                    android:text="Source:"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_11ssp"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:maxLines="2"
-                    android:scrollHorizontally="true"
-                    android:text="http://gutenberg.org"
-                    android:textColor="#1877D3"
-                    android:textSize="@dimen/_11ssp" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:fontFamily="@font/seguisb"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:maxLines="2"
-                    android:scrollHorizontally="true"
-                    android:text="Copyright:"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/_11ssp"
-                    android:textStyle="bold" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    android:text="This work is in the public domain."
-                    android:textSize="@dimen/_11ssp" />
-
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:text="Download Book"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/downloadBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_12sdp"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginRight="@dimen/_12sdp"
-            android:background="@drawable/background_button_radius_primary_8"
-            android:gravity="center"
-            android:padding="@dimen/_12sdp"
-            app:layout_constraintTop_toBottomOf="@id/top">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
+            <py.com.opentech.drawerwithbottomnavigation.ui.component.ExpandableTextView
+                android:id="@+id/descriptionText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_download_ebook_white" />
+                android:layout_margin="@dimen/_10sdp"
+                android:clickable="false"
+                android:focusable="false"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/downloadBtn" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
+                android:id="@+id/readmore"
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:background="@drawable/bg_button_radius_border_primary_12"
+                android:fontFamily="@font/seguisb"
+                android:gravity="center"
+                android:paddingTop="@dimen/_10sdp"
+                android:paddingBottom="@dimen/_10sdp"
+                android:text="Readmore"
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/descriptionText" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tagTittle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_8sdp"
-                android:text="Download Book"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_12ssp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:fontFamily="@font/seguisb"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="2"
+                android:scrollHorizontally="true"
+                android:text="Tags"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15ssp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/readmore" />
 
-        <py.com.opentech.drawerwithbottomnavigation.ui.component.ExpandableTextView
-            android:id="@+id/descriptionText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_10sdp"
-            android:clickable="false"
-            android:focusable="false"
-            android:textColor="@color/black"
-            app:layout_constraintTop_toBottomOf="@id/downloadBtn" />
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/mTagContainerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:padding="10dp"
+                app:container_background_color="@color/white"
+                app:container_border_color="@color/white"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tagTittle"
+                app:tag_background_color="#E2E6E9"
+                app:tag_border_color="#E2E6E9"
+                app:tag_clickable="true"
+                app:tag_horizontal_padding="16dp"
+                app:tag_text_color="#000000"
+                app:tag_theme="none"
+                app:vertical_interval="10dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:id="@+id/completeLayout"
+        android:background="@color/colorPrimary"
+        android:paddingTop="@dimen/_16sdp"
+        android:paddingBottom="@dimen/_16sdp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/readmore"
-            android:layout_width="@dimen/_100sdp"
+            android:id="@+id/readBook"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/bg_button_radius_border_primary_12"
+            android:text="Read book"
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
+            android:textAllCaps="true"
             android:fontFamily="@font/seguisb"
-            android:gravity="center"
-            android:paddingTop="@dimen/_10sdp"
-            android:paddingBottom="@dimen/_10sdp"
-            android:text="Readmore"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="#FFDF0E"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/descriptionText" />
+            android:layout_marginEnd="@dimen/_16sdp"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tagTittle"
-            android:layout_width="match_parent"
+            android:id="@+id/completeTittle"
+            android:layout_width="0dp"
+            app:layout_constraintRight_toLeftOf="@id/readBook"
+            android:layout_marginEnd="@dimen/_8sdp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:fontFamily="@font/seguisb"
-            android:marqueeRepeatLimit="marquee_forever"
+            tools:text="Download Complete: A Life of william Sharkespeare..."
+            android:paddingTop="@dimen/_8sdp"
+            android:paddingBottom="@dimen/_8sdp"
             android:maxLines="2"
-            android:scrollHorizontally="true"
-            android:text="Tags"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/_15ssp"
-            android:textStyle="bold"
+            android:fontFamily="@font/segoe_normal"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/readmore" />
+            android:layout_marginStart="@dimen/_16sdp"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <co.lujun.androidtagview.TagContainerLayout
-            android:id="@+id/mTagContainerLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp"
-            android:padding="10dp"
-            app:container_background_color="@color/white"
-            app:container_border_color="@color/white"
-            app:container_enable_drag="false"
-            app:horizontal_interval="10dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tagTittle"
-            app:tag_background_color="#E2E6E9"
-            app:tag_text_color="#000000"
-            app:tag_horizontal_padding="16dp"
-            app:tag_border_color="#E2E6E9"
-            app:tag_clickable="true"
-            app:tag_theme="none"
-            app:vertical_interval="10dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+    <FrameLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

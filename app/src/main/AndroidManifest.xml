@@ -151,6 +151,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.tools.BookDetailActivity" />
+        <activity android:name=".ui.tools.ListBookActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
