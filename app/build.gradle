@@ -102,7 +102,7 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'com.intuit.ssp:ssp-android:1.0.6'
     implementation 'com.github.barteksc:pdfium-android:1.9.0'
-    implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
+//    implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
     implementation 'com.karumi:dexter:6.2.2'
 
 //    implementation 'org.apache.pdfbox:pdfbox:2.0.23'
@@ -140,6 +140,7 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.6"
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.1'
     implementation project(':office')
+    implementation project(':android-pdf-viewer')
 
 }
 

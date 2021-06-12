@@ -295,7 +295,6 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     })
                     .load()
             } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
         thread.start()
@@ -504,7 +503,6 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     })
                     .load()
             } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
         thread.start()
