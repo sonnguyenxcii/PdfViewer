@@ -29,6 +29,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
+import com.ads.control.Admod
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
@@ -83,6 +84,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdf_viewer)
+        Admod.getInstance().loadBanner(this, "ca-app-pub-3617606523175567/4292503925");
+
         pdfView = findViewById(R.id.pdfView)
         toolbar = findViewById(R.id.toolbar)
         rotate = findViewById(R.id.rotate)

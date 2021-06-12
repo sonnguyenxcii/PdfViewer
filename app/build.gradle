@@ -141,6 +141,7 @@ dependencies {
     implementation 'com.github.ome450901:SimpleRatingBar:1.5.1'
     implementation project(':office')
     implementation project(':android-pdf-viewer')
+    implementation project(path: ':nativetemplates1')
 
 }
 
