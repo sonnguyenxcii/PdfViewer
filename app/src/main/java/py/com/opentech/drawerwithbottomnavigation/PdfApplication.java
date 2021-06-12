@@ -67,7 +67,7 @@ public class PdfApplication extends AdsApplication {
 
     @Override
     public boolean enableAdsResume() {
-        return true;
+        return false;
     }
 
     @Override
