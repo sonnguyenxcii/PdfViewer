@@ -8,7 +8,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
@@ -176,7 +175,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 fileUri?.let {
                     try {
                         shareFileUri(it)
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                     }
                 }
             }
@@ -304,24 +303,25 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-//        onBackPressed()
-        if (!isRating()) {
-            showRate()
-        } else {
-            onFinishing()
-        }
-
+        prepareToFinish()
         return true
     }
 
-    override fun onBackPressed() {
-//        super.onBackPressed()
-//        showRate()
-        if (!isRating()) {
-            showRate()
-        } else {
+    fun prepareToFinish() {
+        if (viewType != 0) {
             onFinishing()
+        } else {
+            if (!isRating()) {
+                showRate()
+            } else {
+                onFinishing()
+            }
         }
+    }
+
+    override fun onBackPressed() {
+
+        prepareToFinish()
     }
 
     fun showRate() {
@@ -629,7 +629,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         ) { initializationStatus: InitializationStatus? -> }
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd!!.adUnitId = Constants.ADMOB_Interstitial_Click_Open_Item
+        mInterstitialAd!!.adUnitId = Constants.ADMOB_Iterstitial_Open_From_Other_App
         mInterstitialAd!!.adListener = mDefaultListener
         val adRequest = AdRequest.Builder().build()
         mInterstitialAd!!.loadAd(adRequest)
@@ -657,7 +657,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
     }
 
-    fun initData(){
+    fun initData() {
         val file_uri = intent.data
 
         if (file_uri != null) {
@@ -776,7 +776,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 //                        if (isPasswordProtect) {
 //
 //                        } else {
-                            url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
+                        url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
 //                        }
                     }
 
