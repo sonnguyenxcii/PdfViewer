@@ -801,27 +801,31 @@ public class PDFView extends RelativeLayout {
      * Called when the PDF is loaded
      */
     void loadComplete(PdfFile pdfFile) {
-        System.out.println("----loadComplete--------------");
-        state = State.LOADED;
+        try {
+            state = State.LOADED;
 
-        this.pdfFile = pdfFile;
+            this.pdfFile = pdfFile;
 
-        if (renderingHandlerThread != null && !renderingHandlerThread.isAlive()) {
-            renderingHandlerThread.start();
+            if (!renderingHandlerThread.isAlive()) {
+                renderingHandlerThread.start();
+            }
+            renderingHandler = new RenderingHandler(renderingHandlerThread.getLooper(), this);
+            renderingHandler.start();
+
+            if (scrollHandle != null) {
+                scrollHandle.setupLayout(this);
+                isScrollHandleInit = true;
+            }
+
+            dragPinchManager.enable();
+
+            callbacks.callOnLoadComplete(pdfFile.getPagesCount());
+
+            jumpTo(defaultPage, false);
+        }catch (Exception e){
+
         }
-        renderingHandler = new RenderingHandler(renderingHandlerThread.getLooper(), this);
-        renderingHandler.start();
-
-        if (scrollHandle != null) {
-            scrollHandle.setupLayout(this);
-            isScrollHandleInit = true;
-        }
-
-        dragPinchManager.enable();
-
-        callbacks.callOnLoadComplete(pdfFile.getPagesCount());
-
-        jumpTo(defaultPage, false);
+    
     }
 
     void loadError(Throwable t) {
