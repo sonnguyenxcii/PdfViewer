@@ -113,7 +113,12 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
                 viewType = 1
                 prepareAds()
+                try {
+                    val params = Bundle()
+                    application?.firebaseAnalytics?.logEvent("Open_From_Other_App", params)
+                } catch (e: Exception) {
 
+                }
 
             } else {
                 url = intent.extras!!.getString("url")
@@ -675,16 +680,16 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             url?.let { savePageToRecent(it, currentPage) }
         }
 
-        try {
-            val currentFile = File(url)
-            var fileName = currentFile.nameWithoutExtension
-            val params = Bundle()
-            params.putString("file_name", fileName)
-            params.putString("file_page_count", "" + pdfView.pageCount)
-            application?.firebaseAnalytics?.logEvent("File_View_Info", params)
-        } catch (e: Exception) {
-
-        }
+//        try {
+//            val currentFile = File(url)
+//            var fileName = currentFile.nameWithoutExtension
+//            val params = Bundle()
+//            params.putString("file_name", fileName)
+//            params.putString("file_page_count", "" + pdfView.pageCount)
+//            application?.firebaseAnalytics?.logEvent("File_View_Info", params)
+//        } catch (e: Exception) {
+//
+//        }
 
     }
 
