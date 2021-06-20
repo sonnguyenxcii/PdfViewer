@@ -177,13 +177,14 @@ class HomeActivity : AppCompatActivity(),
             params.putString("button_click", "Button Search")
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
+
+            var intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+
             if (application?.mInterstitialSearchAd == null) {
                 application?.mInterstitialSearchAd = Admod.getInstance()
                     .getInterstitalAds(this, Constants.ADMOB_Interstitial_Search)
             }
-
-            var intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
         }
 
         application?.global?.isListMode?.observe(this, Observer {

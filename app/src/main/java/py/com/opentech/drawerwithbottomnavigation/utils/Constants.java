@@ -22,7 +22,7 @@ public class Constants {
 
     public static final String ADMOB_Interstitial_Splash = "ca-app-pub-2767013993881421/1865850824";
     public static final String ADMOB_Interstitial_Click_Open_Item = "ca-app-pub-2767013993881421/4262921639";
-    public static final String ADMOB_Interstitial_Click_Tab_Menu = "ca-app-pub-2767013993881421/7627451571";
+//    public static final String ADMOB_Interstitial_Click_Tab_Menu = "ca-app-pub-2767013993881421/7627451571";
     public static final String ADMOB_Native_Home = "ca-app-pub-2767013993881421/5424508800";
     public static final String ADMOB_Native_Bottom_Left_Menu = "ca-app-pub-2767013993881421/8204862611";
     public static final String ADMOB_Interstitial_Search = "ca-app-pub-3617606523175567/8237856511";

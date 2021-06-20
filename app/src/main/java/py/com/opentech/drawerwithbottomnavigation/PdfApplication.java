@@ -59,7 +59,7 @@ public class PdfApplication extends AdsApplication {
         initRealm();
 //        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
         mInterstitialClickOpenAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Open_Item);
-        mInterstitialClickTabAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Tab_Menu);
+//        mInterstitialClickTabAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Tab_Menu);
         PDFBoxResourceLoader.init(getApplicationContext());
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
