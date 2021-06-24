@@ -142,6 +142,7 @@ dependencies {
     implementation project(':office')
     implementation project(':android-pdf-viewer')
     implementation project(path: ':nativetemplates1')
+//    implementation 'com.github.AperoVN:AperoModuleAds:1.6.0'
 
 }
 

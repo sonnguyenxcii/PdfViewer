@@ -705,5 +705,6 @@
     <string name="save_all_to_gallery">Save all to Gallery</string>
     <string name="save_image_to_gallery">Saved image to Gallery</string>
     <string name="save_all_image_to_gallery">Saved all image to Gallery</string>
+    <string name="old_price"><strike>$3.00</strike></string>
 
 </resources>

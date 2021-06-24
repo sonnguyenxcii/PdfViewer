@@ -24,8 +24,12 @@
             android:icon="@drawable/ic_merge_files"
             android:title="Merge PDF" />
         <item
-            android:id="@+id/space1"
-            android:title="" />
+            android:id="@+id/remove_ads"
+            android:icon="@drawable/ic_premium"
+            android:title="Remove Ads" />
+<!--        <item-->
+<!--            android:id="@+id/space1"-->
+<!--            android:title="" />-->
         <!--        <menu>-->
         <item
             android:id="@+id/nav_feedback"

@@ -147,6 +147,7 @@
                 <data android:scheme="file" />
             </intent-filter>
         </activity>
+        <activity android:name=".PremiumActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

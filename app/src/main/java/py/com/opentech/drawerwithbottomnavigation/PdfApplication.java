@@ -45,7 +45,7 @@ public class PdfApplication extends AdsApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3","11507FE661199D176A33735A46AF1470"));
+        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3","11507FE661199D176A33735A46AF1470","443B27A8969D4F15F3C1B6E66330F30D"));
 
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashScreen.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ScanPdfActivity.class);

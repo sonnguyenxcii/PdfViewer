@@ -78,6 +78,12 @@ class HomeActivity : AppCompatActivity(),
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
 
+        val prefs = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE)
+        var count = prefs.getInt("openAppCount", 0)
+
+        if (count == 3) {
+            openPremium()
+        }
         adRequest = AdRequest.Builder().build()
         var sortData = getSortStatus()
         application?.global?.sortData?.postValue(sortData)
@@ -172,6 +178,10 @@ class HomeActivity : AppCompatActivity(),
             showInputSort()
         }
 
+        premium.setOnClickListener {
+            openPremium()
+        }
+
         search.setOnClickListener {
             val params = Bundle()
             params.putString("button_click", "Button Search")
@@ -199,6 +209,11 @@ class HomeActivity : AppCompatActivity(),
         })
 
 
+    }
+
+    fun openPremium() {
+        var intent = Intent(this, PremiumActivity::class.java)
+        startActivity(intent)
     }
 
     fun navigateToBookmark() {
@@ -258,9 +273,11 @@ class HomeActivity : AppCompatActivity(),
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.space1 -> {
+            R.id.remove_ads -> {
 //                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
 //                drawer!!.openDrawer(GravityCompat.END)
+                openPremium()
+
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
 
