@@ -17,6 +17,8 @@ public class Constants {
     public static final String ADMOB_Interstitial_File_Management  = "ca-app-pub-3617606523175567/7972109116";
     public static final String ADMOB_Native_PDF_Scanner  = "ca-app-pub-3617606523175567/2719782432";
     public static final String ADMOB_Native_Merge_PDF  = "ca-app-pub-3617606523175567/1215129078";
+    public static final String ADMOB_Iterstitial_Open_From_Other_App  = "ca-app-pub-3617606523175567/7418839062";
+    public static final String ADMOB_Native_Exit  = "ca-app-pub-3617606523175567/9653244459";
 
 
 
@@ -37,8 +39,8 @@ public class Constants {
 //    public static final String ADMOB_Native_PDF_Scanner  = "ca-app-pub-2767013993881421/8721041399";
 //    public static final String ADMOB_Native_Merge_PDF  = "ca-app-pub-2767013993881421/2569392558";
 //    public static final String ADMOB_Iterstitial_Merge_PDF  = "ca-app-pub-2767013993881421/9842551378";
-    public static final String ADMOB_Iterstitial_Open_From_Other_App  = "ca-app-pub-2767013993881421/4892798407";
-    public static final String ADMOB_Native_Exit  = "ca-app-pub-2767013993881421/8385454304";
+//public static final String ADMOB_Iterstitial_Open_From_Other_App  = "ca-app-pub-2767013993881421/4892798407";
+//    public static final String ADMOB_Native_Exit  = "ca-app-pub-2767013993881421/8385454304";
 
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
