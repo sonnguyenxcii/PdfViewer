@@ -23,6 +23,7 @@ import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import io.realm.Realm
 import io.realm.RealmResults
+import kotlinx.android.synthetic.main.fragment_bookmark.*
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
@@ -42,6 +43,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
     protected var application: PdfApplication? = null
     var isListMode: Boolean = false
     var sort: SortModel? = null
+    var mIsPremium = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,24 +52,37 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_bookmark, container, false)
+        application = PdfApplication.create(activity)
+        this.application?.mIsPurchased?.observe(viewLifecycleOwner, Observer {
+            mIsPremium = it
+            if (it) {
+                bookmarkFragmentSmallNativeAds.visibility = View.GONE
+            }
+        })
+
+        if (!mIsPremium) {
+            Admod.getInstance()
+                .loadSmallNativeFragment(activity, Constants.ADMOB_Native_Bookmark, root)
+        }
+
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
-        recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-            requireContext(),
-            2
-        )
-        Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Bookmark, root)
+        recyclerView.layoutManager =
+            if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                requireContext(),
+                2
+            )
 
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
-        application = PdfApplication.create(activity)
 
         application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 isListMode = it
-                recyclerView.layoutManager = if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
-                    requireContext(),
-                    2
-                )
+                recyclerView.layoutManager =
+                    if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
+                        requireContext(),
+                        2
+                    )
                 adapter.isSwitchView = isListMode
                 adapter.notifyDataSetChanged()
             }
@@ -90,11 +105,11 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
 
         models?.forEach { bm ->
             application?.global?.listData?.value?.forEach { data ->
-              if (bm?.path?.equals(data.path)!!){
-                  data.isBookmark = true
-                  listData.add(data)
-                  processData()
-              }
+                if (bm?.path?.equals(data.path)!!) {
+                    data.isBookmark = true
+                    listData.add(data)
+                    processData()
+                }
             }
         }
         adapter.notifyDataSetChanged()
@@ -105,7 +120,6 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
 
         return realm.where(BookmarkRealmObject::class.java).findAll()
     }
-
 
 
     override fun onItemClick(pos: Int) {
@@ -158,7 +172,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
                     params.putString("bookmark_file", "0")
                     application?.firebaseAnalytics?.logEvent("Bookmark_Layout", params)
 
-                }else if (item?.itemId == R.id.share) {
+                } else if (item?.itemId == R.id.share) {
                     share(listData[pos].path!!)
                 } else if (item?.itemId == R.id.shortcut) {
                     createShortcut(listData[pos].path!!)
@@ -190,7 +204,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
 
 //        if (bookmarkStatus){
 
-            deleteFromBookmark(data.path!!)
+        deleteFromBookmark(data.path!!)
         listData.removeAt(pos)
         adapter.notifyDataSetChanged()
 //        }else{
@@ -233,7 +247,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
         }
     }
 
-    fun share(path: String){
+    fun share(path: String) {
         try {
             val intentShareFile = Intent(Intent.ACTION_SEND)
             val fileWithinMyDir = File(path)
@@ -254,11 +268,12 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
                 intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing File...")
                 startActivity(Intent.createChooser(intentShareFile, "Share File"))
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
 
     }
+
     fun deleteFromBookmark(path: String) {
         var realm = Realm.getDefaultInstance()
 
@@ -280,30 +295,30 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
             sort = SortModel(type = "0", order = "0")
         }
 
-        if (sort!!.order.equals("0")){
+        if (sort!!.order.equals("0")) {
             if (sort!!.type.equals("0")) {
                 listData.sortBy {
                     it.name
                 }
-            }else if (sort!!.type.equals("1")){
+            } else if (sort!!.type.equals("1")) {
                 listData.sortBy {
                     it.size
                 }
-            }else{
+            } else {
                 listData.sortBy {
                     it.lastModifier
                 }
             }
-        }else{
+        } else {
             if (sort!!.type.equals("0")) {
                 listData.sortByDescending {
                     it.name
                 }
-            }else if (sort!!.type.equals("1")){
+            } else if (sort!!.type.equals("1")) {
                 listData.sortByDescending {
                     it.size
                 }
-            }else{
+            } else {
                 listData.sortByDescending {
                     it.lastModifier
                 }

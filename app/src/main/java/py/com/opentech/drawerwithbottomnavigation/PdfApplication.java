@@ -2,17 +2,18 @@ package py.com.opentech.drawerwithbottomnavigation;
 
 import android.content.Context;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDex;
 
 import com.ads.control.Admod;
 import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
+import com.ads.control.Purchase;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
 import com.yalantis.ucrop.UCropActivity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,18 +35,22 @@ public class PdfApplication extends AdsApplication {
     public static AtomicLong bookmarkPrimaryKey;
     public static AtomicLong recentPrimaryKey;
     public static volatile Context applicationContext = null;
-    public InterstitialAd mInterstitialAd,mInterstitialClickOpenAd,mInterstitialClickTabAd,mInterstitialSearchAd,mInterstitialMergeAd;
+    public InterstitialAd mInterstitialAd, mInterstitialClickOpenAd, mInterstitialClickTabAd, mInterstitialSearchAd, mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
+    static final String PRODUCT_ID = "android.test.purchased";
+    public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
+//    public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3","11507FE661199D176A33735A46AF1470","443B27A8969D4F15F3C1B6E66330F30D"));
+        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3", "11507FE661199D176A33735A46AF1470", "443B27A8969D4F15F3C1B6E66330F30D"));
 
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashScreen.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ScanPdfActivity.class);
@@ -54,7 +59,15 @@ public class PdfApplication extends AdsApplication {
         AppOpenManager.getInstance().disableAppResumeWithActivity(UCropActivity.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ImagePickerActivity.class);
 
+//        List<String> listINAPId = new ArrayList<>();
+//        listINAPId.add(PRODUCT_ID);
+//        List<String> listSubsId = new ArrayList<>();
 
+        Purchase.getInstance().initBilling(this);
+        Purchase.getInstance().setProductId(PRODUCT_ID);
+        Purchase.getInstance().consumePurchase(PRODUCT_ID);
+
+        mIsPurchased.postValue(Purchase.getInstance().isPurchased(getApplicationContext()));
         applicationContext = getApplicationContext();
         initRealm();
 //        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
@@ -62,6 +75,7 @@ public class PdfApplication extends AdsApplication {
 //        mInterstitialClickTabAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Tab_Menu);
         PDFBoxResourceLoader.init(getApplicationContext());
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
 
     }
 

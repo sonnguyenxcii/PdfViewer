@@ -11,6 +11,7 @@
 
 
         <include
+            android:id="@+id/recentSmallNativeLayout"
             layout="@layout/layout_small_native_control"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
