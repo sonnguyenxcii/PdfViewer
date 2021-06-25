@@ -46,6 +46,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.wxiwei.office.common.IOfficeToPicture;
 import com.wxiwei.office.constant.EventConstant;
 import com.wxiwei.office.constant.MainConstant;
@@ -79,6 +88,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import py.com.opentech.drawerwithbottomnavigation.R;
+import py.com.opentech.drawerwithbottomnavigation.utils.Constants;
 
 /**
  * 文件注释
@@ -101,16 +111,78 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
 
     FrameLayout frameLayout;
     Toolbar toolbar;
+    View preloadAdsLayout;
     private boolean startFromOtherApp = false;
+    private InterstitialAd mInterstitialAd;
 
     /**
      * 构造器
      */
+    void loadAds() {
+        preloadAdsLayout.setVisibility(View.VISIBLE);
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest, new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                // The mInterstitialAd reference will be null until
+                // an ad is loaded.
+                mInterstitialAd = interstitialAd;
+//                Log.i(TAG, "onAdLoaded");
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(OfficeReaderActivity.this);
+
+                    mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            // Called when fullscreen content is dismissed.
+                            Log.d("TAG", "The ad was dismissed.");
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            // Called when fullscreen content failed to show.
+                            Log.d("TAG", "The ad failed to show.");
+                        }
+
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            // Called when fullscreen content is shown.
+                            // Make sure to set your reference to null so you don't
+                            // show it a second time.
+                            mInterstitialAd = null;
+                            Log.d("TAG", "The ad was shown.");
+                        }
+                    });
+                } else {
+                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                }
+                preloadAdsLayout.setVisibility(View.GONE);
+                loadFile();
+
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                // Handle the error
+                mInterstitialAd = null;
+                preloadAdsLayout.setVisibility(View.GONE);
+                loadFile();
+            }
+        });
+
+
+    }
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);        
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
 
         control = new MainControl(this);
         appFrame = new AppFrame(getApplicationContext());
@@ -169,17 +241,26 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
         setContentView(R.layout.activity_office_detail);
         toolbar = findViewById(R.id.toolbar_office);
         frameLayout = findViewById(R.id.viewer_office);
+        preloadAdsLayout = findViewById(R.id.preloadAdsLayout);
 
         toolbar.setNavigationIcon(R.drawable.ic_back_24);
         toolbar.setTitleTextAppearance(this,
                 R.style.TitleToolBar
         );
 
+        
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         frameLayout.removeAllViews();
         frameLayout.addView(appFrame);
+
+        loadAds();
+
+    }
+
+    void loadFile(){
         frameLayout.post(new Runnable() {
             /**
              */
@@ -188,7 +269,6 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
                 init();
             }
         });
-
     }
 
     @Override
