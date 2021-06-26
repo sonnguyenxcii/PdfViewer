@@ -173,15 +173,15 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
     }
 
     fun onPrepareOpenAds(path: String) {
-        Admod.getInstance().forceShowInterstitial(
-            context,
-            application?.mInterstitialClickOpenAd,
-            object : AdCallback() {
-                override fun onAdClosed() {
+//        Admod.getInstance().forceShowInterstitial(
+//            context,
+//            application?.mInterstitialClickOpenAd,
+//            object : AdCallback() {
+//                override fun onAdClosed() {
                     gotoViewPdf(path)
-                }
-            }
-        )
+//                }
+//            }
+//        )
     }
 
     override fun onBookmarkClick(pos: Int) {
