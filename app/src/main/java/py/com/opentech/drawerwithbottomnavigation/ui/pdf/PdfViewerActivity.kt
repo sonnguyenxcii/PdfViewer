@@ -110,9 +110,10 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
             application = PdfApplication.create(this)
 
-            if (Intent.ACTION_VIEW == action && type?.endsWith("pdf")!!) {
+            if (null != intent.data) {
                 viewType = 1
-                prepareAds()
+                initData()
+//                prepareAds()
                 try {
                     val params = Bundle()
                     application?.firebaseAnalytics?.logEvent("Open_From_Other_App", params)

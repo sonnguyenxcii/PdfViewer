@@ -40,6 +40,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerInAppAdsLoadingActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import java.io.File
@@ -346,20 +347,16 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
     }
 
     fun onPrepareOpenAds(path: String) {
-        if (mIsPremium) {
-            gotoViewPdf(path)
-            return
-        }
-        Admod.getInstance().forceShowInterstitial(
-            context,
-            application?.mInterstitialClickOpenAd,
-            object : AdCallback() {
-                override fun onAdClosed() {
-                    gotoViewPdf(path)
-                }
+//        Admod.getInstance().forceShowInterstitial(
+//            context,
+//            application?.mInterstitialClickOpenAd,
+//            object : AdCallback() {
+//                override fun onAdClosed() {
+        gotoViewPdf(path)
+//                }
 
-            }
-        )
+//            }
+//        )
     }
 
     override fun onBookmarkClick(pos: Int) {
@@ -496,7 +493,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
 
     fun gotoViewPdf(path: String) {
-        var intent = Intent(context, PdfViewerActivity::class.java)
+        var intent = Intent(context, PdfViewerInAppAdsLoadingActivity::class.java)
         intent.putExtra("url", path)
         startActivity(intent)
     }

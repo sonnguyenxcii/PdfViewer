@@ -46,9 +46,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.ads.control.Admod;
-import com.ads.control.funtion.AdCallback;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
@@ -111,51 +111,18 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
 
     FrameLayout frameLayout;
     Toolbar toolbar;
+    View preloadAdsLayout;
     private boolean startFromOtherApp = false;
-    private InterstitialAd mInterstitialAd;
-    String TAG = OfficeReaderActivity.class.getSimpleName();
 
     /**
      * 构造器
      */
 
-    void loadAds() {
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        InterstitialAd.load(this, Constants.ADMOB_Interstitial_Click_Open_Item, adRequest, new InterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                // The mInterstitialAd reference will be null until
-                // an ad is loaded.
-                mInterstitialAd = interstitialAd;
-                Log.i(TAG, "onAdLoaded");
-                if (mInterstitialAd != null) {
-                    mInterstitialAd.show(OfficeReaderActivity.this);
-                } else {
-                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
-                }
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                // Handle the error
-                Log.i(TAG, loadAdError.getMessage());
-                mInterstitialAd = null;
-            }
-        });
-    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);        
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
-        loadAds();
 
         control = new MainControl(this);
         appFrame = new AppFrame(getApplicationContext());
@@ -225,6 +192,12 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         frameLayout.removeAllViews();
         frameLayout.addView(appFrame);
+        loadFile();
+
+
+    }
+
+    void loadFile(){
         frameLayout.post(new Runnable() {
             /**
              */
@@ -233,7 +206,6 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
                 init();
             }
         });
-
     }
 
     @Override

@@ -1151,7 +1151,7 @@ class HomeActivity : AppCompatActivity(),
         if (mIsPremium) {
             return
         }
-        val builder = AdLoader.Builder(this, "ca-app-pub-3617606523175567/9653244459")
+        val builder = AdLoader.Builder(this, Constants.ADMOB_Native_Exit)
         builder.withAdListener(object : AdListener() {
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 super.onAdFailedToLoad(loadAdError)
