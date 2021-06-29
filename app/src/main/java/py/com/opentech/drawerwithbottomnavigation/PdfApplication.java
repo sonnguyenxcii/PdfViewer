@@ -37,7 +37,7 @@ public class PdfApplication extends AdsApplication {
     public static volatile Context applicationContext = null;
     public InterstitialAd mInterstitialAd, mInterstitialClickOpenAd, mInterstitialClickTabAd, mInterstitialSearchAd, mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
-    static final String PRODUCT_ID = "android.test.purchased";
+    static final String PRODUCT_ID = "remove_ads";
     public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
 //    public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
 

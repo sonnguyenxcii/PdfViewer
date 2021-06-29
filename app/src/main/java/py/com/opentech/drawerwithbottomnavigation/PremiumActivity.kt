@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Purchase
 import com.ads.control.funtion.PurchaseListioner
 import kotlinx.android.synthetic.main.activity_premium.*
+import py.com.opentech.drawerwithbottomnavigation.utils.ToastUtils
 
 
 class PremiumActivity : AppCompatActivity() {
@@ -30,15 +31,16 @@ class PremiumActivity : AppCompatActivity() {
         Purchase.getInstance().setPurchaseListioner(object : PurchaseListioner {
 
             fun displayErrorMessage(errorMsg: String) {
-                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(false)
-
+//                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(false)
+                ToastUtils.showMessageShort(this@PremiumActivity, errorMsg)
                 Log.e("PurchaseListioner", "displayErrorMessage:$errorMsg")
             }
 
             override fun onProductPurchased(productId: String?) {
                 Log.e("PurchaseListioner", "onProductPurchased:$productId")
+                ToastUtils.showMessageShort(this@PremiumActivity, "Purchase Success")
 
-                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(true)
+//                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(true)
                 finish()
             }
         })
