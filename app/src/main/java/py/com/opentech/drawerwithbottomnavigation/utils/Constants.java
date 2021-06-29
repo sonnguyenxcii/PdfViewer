@@ -1,5 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 public class Constants {
     public static final String ADMOB_Interstitial_Splash = "ca-app-pub-3617606523175567/1776919200";
     public static final String ADMOB_Interstitial_Click_Open_Item = "ca-app-pub-3617606523175567/6340297399";
@@ -17,6 +19,7 @@ public class Constants {
     public static final String ADMOB_Interstitial_File_Management  = "ca-app-pub-3617606523175567/7972109116";
     public static final String ADMOB_Native_PDF_Scanner  = "ca-app-pub-3617606523175567/2719782432";
     public static final String ADMOB_Native_Merge_PDF  = "ca-app-pub-3617606523175567/1215129078";
+    public static final String ADMOB_Native_Exit = "ca-app-pub-3617606523175567/9653244459";
 
 
 

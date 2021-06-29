@@ -103,10 +103,10 @@ class HomeActivity : AppCompatActivity(),
 
         setupNavController()
 
-        if (!mIsPremium) {
-            Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Bottom_Left_Menu)
-            onExitAppLoadAds()
-        }
+
+        Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Bottom_Left_Menu)
+        onExitAppLoadAds()
+
 
 
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
@@ -620,38 +620,6 @@ class HomeActivity : AppCompatActivity(),
         return uriList
     }
 
-
-    fun walkDir(dir: File) {
-        var listFile = dir.listFiles()
-        listFile?.forEach {
-            if (it.isDirectory) {
-                walkDir(it)
-            } else {
-                if (it.name.toLowerCase().endsWith(".pdf")) {
-                    val lastModDate = Date(it.lastModified())
-                    var parentName = ""
-                    try {
-                        parentName = File(it.parent).name
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    println("-name------------------" + it.name)
-                    println("-absolutePath------------------" + it.absolutePath)
-//                    uriList.add(
-//                        PdfModel(
-//                            name = it.name,
-//                            path = it.absolutePath,
-//                            size = it.length(),
-//                            date = Utils.formatDate(lastModDate),
-//                            folder = parentName,
-//                            lastModifier = it.lastModified()
-//                        )
-//                    )
-                }
-            }
-        }
-    }
-
     fun requestRead() {
 
         if (checkPermission()) {
@@ -680,20 +648,6 @@ class HomeActivity : AppCompatActivity(),
             }
         }
 
-
-//        if (ContextCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE
-//            )
-//            != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            ActivityCompat.requestPermissions(
-//                this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-//            )
-//        } else {
-//            readFile()
-//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
@@ -1110,28 +1064,6 @@ class HomeActivity : AppCompatActivity(),
         }
         cancel.setOnClickListener { v: View? -> dialog.dismiss() }
     }
-
-//    fun onConfirmDelete(path: String) {
-//        val alertDialog: android.app.AlertDialog
-//        val dialogBuilder = android.app.AlertDialog.Builder(context)
-//        val inflater = this.layoutInflater
-//        val dialogView: View = inflater.inflate(R.layout.dialog_delete_layout, null)
-//        dialogBuilder.setView(dialogView)
-//
-//        val ok = dialogView.findViewById<AppCompatButton>(R.id.ok)
-//        val cancel = dialogView.findViewById<AppCompatButton>(R.id.cancel)
-//        alertDialog = dialogBuilder.create()
-//        alertDialog.setCancelable(true)
-//        Objects.requireNonNull(alertDialog.window)
-//            ?.setBackgroundDrawableResource(android.R.color.transparent)
-//        alertDialog.show()
-//
-//        ok.setOnClickListener { v: View? ->
-//            deleteFile(path)
-//            alertDialog.dismiss()
-//        }
-//        cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
-//    }
 
     fun saveSortStatus(model: SortModel) {
         var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()

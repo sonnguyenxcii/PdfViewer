@@ -31,7 +31,7 @@ class PremiumActivity : AppCompatActivity() {
         Purchase.getInstance().setPurchaseListioner(object : PurchaseListioner {
 
             fun displayErrorMessage(errorMsg: String) {
-//                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(false)
+                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(false)
                 ToastUtils.showMessageShort(this@PremiumActivity, errorMsg)
                 Log.e("PurchaseListioner", "displayErrorMessage:$errorMsg")
             }
@@ -40,7 +40,7 @@ class PremiumActivity : AppCompatActivity() {
                 Log.e("PurchaseListioner", "onProductPurchased:$productId")
                 ToastUtils.showMessageShort(this@PremiumActivity, "Purchase Success")
 
-//                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(true)
+                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(true)
                 finish()
             }
         })
