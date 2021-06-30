@@ -2,21 +2,32 @@ package py.com.opentech.drawerwithbottomnavigation.ui.office
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Admod
+import com.ads.control.AppPurchase
 import com.ads.control.funtion.AdCallback
-import com.google.android.gms.ads.*
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
+import java.util.*
 
 class OfficeReaderAdsLoadingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preload_ads)
+
+//        List<String> listINAPId = new ArrayList<>();
+//        listINAPId.add(PRODUCT_ID);
+//        List<String> listSubsId = new ArrayList<>();
+
+//        AppPurchase.getInstance().initBilling(this);
+        val listINAPId: MutableList<String> = ArrayList()
+        listINAPId.add(PdfApplication.REMOVE_ADS)
+        val listSubsId: List<String> = ArrayList()
+
+        AppPurchase.getInstance().initBilling(PdfApplication.create(this), listINAPId, listSubsId)
+
         loadAds()
     }
 

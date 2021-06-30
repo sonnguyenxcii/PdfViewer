@@ -8,12 +8,13 @@ import androidx.multidex.MultiDex;
 import com.ads.control.Admod;
 import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
-import com.ads.control.Purchase;
+import com.ads.control.AppPurchase;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
 import com.yalantis.ucrop.UCropActivity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -37,7 +38,7 @@ public class PdfApplication extends AdsApplication {
     public static volatile Context applicationContext = null;
     public InterstitialAd mInterstitialAd, mInterstitialClickOpenAd, mInterstitialClickTabAd, mInterstitialSearchAd, mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
-    static final String PRODUCT_ID = "remove_ads";
+    public  static final String REMOVE_ADS = "remove_ads";
     public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
 //    public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
 
@@ -63,11 +64,15 @@ public class PdfApplication extends AdsApplication {
 //        listINAPId.add(PRODUCT_ID);
 //        List<String> listSubsId = new ArrayList<>();
 
-        Purchase.getInstance().initBilling(this);
-        Purchase.getInstance().setProductId(PRODUCT_ID);
-        Purchase.getInstance().consumePurchase(PRODUCT_ID);
+//        AppPurchase.getInstance().initBilling(this);
+        List<String> listINAPId = new ArrayList<>();
+        listINAPId.add(REMOVE_ADS);
+        List<String> listSubsId = new ArrayList<>();
 
-        mIsPurchased.postValue(Purchase.getInstance().isPurchased(getApplicationContext()));
+        AppPurchase.getInstance().initBilling(this,listINAPId,listSubsId);
+
+
+
         applicationContext = getApplicationContext();
         initRealm();
 //        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
+import com.ads.control.AppPurchase;
 import com.google.android.ads.nativetemplates.TemplateView;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
@@ -47,7 +48,7 @@ public class ExitDialog extends Dialog
             }
         });
         TemplateView ad = findViewById(R.id.ad_template);
-        if(this.ad == null)
+        if(this.ad == null || AppPurchase.getInstance().isPurchased(activity))
         {
             ad.setVisibility(View.GONE);
         }

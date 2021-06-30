@@ -30,6 +30,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.ads.control.Admod
+import com.ads.control.AppPurchase
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -80,6 +81,13 @@ class HomeActivity : AppCompatActivity(),
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
 
+        println(
+            "-isPurchased-----------" + AppPurchase.getInstance().isPurchased(applicationContext)
+        )
+
+        this.application?.mIsPurchased?.postValue(
+            AppPurchase.getInstance().isPurchased(applicationContext)
+        )
         this.application?.mIsPurchased?.observe(this, Observer {
             mIsPremium = it
             if (it) {
@@ -174,6 +182,19 @@ class HomeActivity : AppCompatActivity(),
                 return@setOnClickListener
             }
             openPremium()
+//            AppPurchase.getInstance()
+//                .consumePurchase(PdfApplication.REMOVE_ADS)
+//            AppPurchase.getInstance()
+//                .consumePurchase(PdfApplication.REMOVE_ADS)
+//            val dialog = InAppDialog(this)
+//            dialog.setCallback {
+//                AppPurchase.getInstance()
+//                    .consumePurchase(PdfApplication.REMOVE_ADS)
+//                AppPurchase.getInstance()
+//                    .purchase(this, PdfApplication.REMOVE_ADS)
+//                dialog.dismiss()
+//            }
+//            dialog.show()
         }
 
         search.setOnClickListener {
@@ -270,9 +291,10 @@ class HomeActivity : AppCompatActivity(),
             R.id.remove_ads -> {
                 if (!mIsPremium) {
                     openPremium()
+
+                }else{
+                    Toast.makeText(this, "Ads removed", Toast.LENGTH_SHORT).show()
                 }
-//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
-//                drawer!!.openDrawer(GravityCompat.END)
 
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false

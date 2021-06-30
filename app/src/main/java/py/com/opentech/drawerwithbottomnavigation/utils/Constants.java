@@ -45,5 +45,6 @@ public class Constants {
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public static final String APP_PASSWORD = "pdf_tool_18012021";
+    public static final String REMOVE_ADS = "remove_ads";
 
 }

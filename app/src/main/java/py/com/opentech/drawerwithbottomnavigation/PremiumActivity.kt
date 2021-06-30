@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.ads.control.Purchase
+import com.ads.control.AppPurchase
 import com.ads.control.funtion.PurchaseListioner
 import kotlinx.android.synthetic.main.activity_premium.*
 import py.com.opentech.drawerwithbottomnavigation.utils.ToastUtils
@@ -15,33 +15,30 @@ class PremiumActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_premium)
-        Purchase.getInstance().consumePurchase(PdfApplication.PRODUCT_ID)
+        AppPurchase.getInstance().consumePurchase(PdfApplication.REMOVE_ADS)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.title = "Premium"
 
         purchase.setOnClickListener {
-            Purchase.getInstance()
-                .consumePurchase(PdfApplication.PRODUCT_ID)
-            Purchase.getInstance()
-                .purchase(this, PdfApplication.PRODUCT_ID)
+            AppPurchase.getInstance()
+                .consumePurchase(PdfApplication.REMOVE_ADS)
+            AppPurchase.getInstance()
+                .purchase(this, PdfApplication.REMOVE_ADS)
         }
 
-        Purchase.getInstance().setPurchaseListioner(object : PurchaseListioner {
+        AppPurchase.getInstance().setPurchaseListioner(object : PurchaseListioner {
 
-            fun displayErrorMessage(errorMsg: String) {
-                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(false)
-                ToastUtils.showMessageShort(this@PremiumActivity, errorMsg)
-                Log.e("PurchaseListioner", "displayErrorMessage:$errorMsg")
-            }
-
-            override fun onProductPurchased(productId: String?) {
-                Log.e("PurchaseListioner", "onProductPurchased:$productId")
-                ToastUtils.showMessageShort(this@PremiumActivity, "Purchase Success")
-
+            override fun onProductPurchased(p0: String?, p1: String?) {
                 PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(true)
                 finish()
+            }
+
+            override fun displayErrorMessage(p0: String?) {
+                PdfApplication.create(this@PremiumActivity).mIsPurchased.postValue(false)
+                ToastUtils.showMessageShort(this@PremiumActivity, p0)
+                Log.e("PurchaseListioner", "displayErrorMessage:$p0")
             }
         })
     }

@@ -4,17 +4,24 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Admod
+import com.ads.control.AppPurchase
 import com.ads.control.funtion.AdCallback
-import com.google.android.gms.ads.interstitial.InterstitialAd
+import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
+import java.util.ArrayList
 
 class PdfViewerAdsLoadingActivity : AppCompatActivity() {
-    private val mInterstitialAd: InterstitialAd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preload_ads)
+        val listINAPId: MutableList<String> = ArrayList()
+        listINAPId.add(PdfApplication.REMOVE_ADS)
+        val listSubsId: List<String> = ArrayList()
+
+        AppPurchase.getInstance().initBilling(PdfApplication.create(this), listINAPId, listSubsId)
+
         loadAds()
     }
 
