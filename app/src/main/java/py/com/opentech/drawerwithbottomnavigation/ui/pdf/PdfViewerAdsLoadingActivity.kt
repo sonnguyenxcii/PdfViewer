@@ -33,7 +33,7 @@ class PdfViewerAdsLoadingActivity : AppCompatActivity() {
         }
 
         Admod.getInstance().loadSplashInterstitalAds(this,
-            Constants.ADMOB_Interstitial_Splash,
+            Constants.ADMOB_Iterstitial_Open_From_Other_App,
             5000,
             object : AdCallback() {
                 override fun onAdImpression() {
