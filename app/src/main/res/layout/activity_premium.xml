@@ -119,6 +119,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
+                android:id="@+id/currentPrice"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/svn_gilroy_regular"
                 android:gravity="center"
@@ -130,6 +131,7 @@
             <View
                 android:layout_width="@dimen/_1sdp"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 android:layout_marginLeft="@dimen/_16sdp"
                 android:layout_marginRight="@dimen/_16sdp"
                 android:background="#8D8D8D" />
@@ -137,6 +139,8 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:id="@+id/oldPrice"
                 android:fontFamily="@font/svn_gilroy_regular"
                 android:gravity="center"
                 android:text="@string/old_price"

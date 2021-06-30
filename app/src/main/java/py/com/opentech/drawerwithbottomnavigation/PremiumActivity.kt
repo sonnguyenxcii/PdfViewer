@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatTextView
 import com.ads.control.AppPurchase
 import com.ads.control.funtion.PurchaseListioner
 import kotlinx.android.synthetic.main.activity_premium.*
@@ -12,9 +13,16 @@ import py.com.opentech.drawerwithbottomnavigation.utils.ToastUtils
 
 class PremiumActivity : AppCompatActivity() {
 
+    lateinit var currentPrice : AppCompatTextView
+    lateinit var oldPrice : AppCompatTextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_premium)
+        currentPrice = findViewById(R.id.currentPrice);
+        oldPrice = findViewById(R.id.oldPrice);
+        currentPrice.setText(AppPurchase.getInstance().getPrice(PdfApplication.REMOVE_ADS))
+        oldPrice.setText(AppPurchase.getInstance().getPrice(PdfApplication.REMOVE_ADS))
         AppPurchase.getInstance().consumePurchase(PdfApplication.REMOVE_ADS)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
