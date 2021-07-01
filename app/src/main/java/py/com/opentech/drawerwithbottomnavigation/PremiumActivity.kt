@@ -1,11 +1,13 @@
 package py.com.opentech.drawerwithbottomnavigation
 
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import com.ads.control.AppPurchase
+import com.ads.control.AppPurchase.TYPE_IAP
 import com.ads.control.funtion.PurchaseListioner
 import kotlinx.android.synthetic.main.activity_premium.*
 import py.com.opentech.drawerwithbottomnavigation.utils.ToastUtils
@@ -13,8 +15,8 @@ import py.com.opentech.drawerwithbottomnavigation.utils.ToastUtils
 
 class PremiumActivity : AppCompatActivity() {
 
-    lateinit var currentPrice : AppCompatTextView
-    lateinit var oldPrice : AppCompatTextView
+    lateinit var currentPrice: AppCompatTextView
+    lateinit var oldPrice: AppCompatTextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +24,16 @@ class PremiumActivity : AppCompatActivity() {
         currentPrice = findViewById(R.id.currentPrice);
         oldPrice = findViewById(R.id.oldPrice);
         currentPrice.setText(AppPurchase.getInstance().getPrice(PdfApplication.REMOVE_ADS))
-        oldPrice.setText(AppPurchase.getInstance().getPrice(PdfApplication.REMOVE_ADS))
+        var priceNoCurrency = AppPurchase.getInstance()
+            .getPriceWithoutCurrency(PdfApplication.REMOVE_ADS, TYPE_IAP.PURCHASE) / 1000000 * 2
+        var oldPriceText = AppPurchase.getInstance().formatCurrency(
+            priceNoCurrency,
+            AppPurchase.getInstance().getCurrency(PdfApplication.REMOVE_ADS, TYPE_IAP.PURCHASE)
+        )
+
+        oldPrice.setText(oldPriceText)
+        oldPrice.setPaintFlags(oldPrice.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
+
         AppPurchase.getInstance().consumePurchase(PdfApplication.REMOVE_ADS)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

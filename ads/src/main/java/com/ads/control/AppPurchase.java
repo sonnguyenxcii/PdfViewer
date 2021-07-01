@@ -531,17 +531,17 @@ public class AppPurchase {
         }
         return skuDetails.getPriceAmountMicros();
     }
-//
-//    public String getOldPrice() {
-//        SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
-//        if (skuDetails == null)
-//            return "";
-//        return formatCurrency(skuDetails.priceValue / discount, skuDetails.currency);
-//    }
 
-    private String formatCurrency(double price, String currency) {
+    public String getOldPrice() {
+        SkuDetails skuDetails = skuDetailsINAPMap.get(productId);
+        if (skuDetails == null)
+            return "";
+        return formatCurrency(skuDetails.getPriceAmountMicros() / discount, skuDetails.getPriceCurrencyCode());
+    }
+
+    public String formatCurrency(double price, String currency) {
         NumberFormat format = NumberFormat.getCurrencyInstance();
-        format.setMaximumFractionDigits(0);
+        format.setMaximumFractionDigits(2);
         format.setCurrency(Currency.getInstance(currency));
         return format.format(price);
     }
