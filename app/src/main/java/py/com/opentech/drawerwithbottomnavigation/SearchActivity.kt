@@ -40,6 +40,7 @@ import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -176,7 +177,7 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
     override fun onItemClick(pos: Int) {
         Admod.getInstance().forceShowInterstitial(
             this,
-            application?.mInterstitialSearchAd,
+            InterstitialUtils.getInterClickOpenFile(),
             object : AdCallback() {
                 override fun onAdClosed() {
                     gotoViewPdf(listData[pos].path!!)

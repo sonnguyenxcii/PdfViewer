@@ -23,7 +23,6 @@ import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import io.realm.Realm
 import io.realm.RealmResults
-import kotlinx.android.synthetic.main.fragment_bookmark.*
 import kotlinx.android.synthetic.main.fragment_recent.*
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
@@ -32,10 +31,10 @@ import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
-import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 import java.io.File
 
 
@@ -201,7 +200,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
     fun onPrepareOpenAds(path: String) {
         Admod.getInstance().forceShowInterstitial(
             context,
-            application?.mInterstitialClickOpenAd,
+            InterstitialUtils.getInterClickOpenFile(),
             object : AdCallback() {
                 override fun onAdClosed() {
                     gotoViewPdf(path)

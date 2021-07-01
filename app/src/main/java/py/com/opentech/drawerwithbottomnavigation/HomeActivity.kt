@@ -206,10 +206,6 @@ class HomeActivity : AppCompatActivity(),
             var intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
 
-            if (application?.mInterstitialSearchAd == null) {
-                application?.mInterstitialSearchAd = Admod.getInstance()
-                    .getInterstitalAds(this, Constants.ADMOB_Interstitial_Search)
-            }
         }
 
         application?.global?.isListMode?.observe(this, Observer {

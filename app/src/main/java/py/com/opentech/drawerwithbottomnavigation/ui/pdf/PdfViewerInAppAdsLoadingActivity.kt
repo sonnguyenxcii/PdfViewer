@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
-import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 
 class PdfViewerInAppAdsLoadingActivity : AppCompatActivity() {
 
@@ -15,7 +15,7 @@ class PdfViewerInAppAdsLoadingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_preload_ads)
         Admod.getInstance().forceShowInterstitial(
             this,
-            PdfApplication.create(this).mInterstitialClickOpenAd,
+            InterstitialUtils.getInterClickOpenFile(),
             object : AdCallback() {
                 override fun onAdClosed() {
                     super.onAdClosed()

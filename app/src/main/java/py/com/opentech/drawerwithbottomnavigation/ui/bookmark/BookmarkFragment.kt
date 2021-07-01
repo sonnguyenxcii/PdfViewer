@@ -34,6 +34,7 @@ import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 import java.io.File
 
 class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
@@ -189,7 +190,7 @@ class BookmarkFragment : Fragment(), RecycleViewOnClickListener {
     fun onPrepareOpenAds(path: String) {
         Admod.getInstance().forceShowInterstitial(
             context,
-            application?.mInterstitialClickOpenAd,
+            InterstitialUtils.getInterClickOpenFile(),
             object : AdCallback() {
                 override fun onAdClosed() {
                     gotoViewPdf(path)

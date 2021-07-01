@@ -143,11 +143,6 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
             params.putString("button_click", "Button Search")
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
 
-            if (application?.mInterstitialSearchAd == null) {
-                application?.mInterstitialSearchAd = Admod.getInstance()
-                    .getInterstitalAds(context, Constants.ADMOB_Interstitial_Search)
-            }
-
             var intent = Intent(context, SearchActivity::class.java)
             startActivity(intent)
         }
