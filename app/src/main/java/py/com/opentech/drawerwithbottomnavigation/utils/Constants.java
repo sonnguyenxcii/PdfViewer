@@ -20,6 +20,7 @@ public class Constants {
     public static final String ADMOB_Native_PDF_Scanner  = "ca-app-pub-3617606523175567/2719782432";
     public static final String ADMOB_Native_Merge_PDF  = "ca-app-pub-3617606523175567/1215129078";
     public static final String ADMOB_Native_Exit = "ca-app-pub-3617606523175567/9653244459";
+    public static final String Interstitial_Open_File_208 = "ca-app-pub-3617606523175567/9341115197";
 //    public static final String ADMOB_Native_Open_Office = "ca-app-pub-3617606523175567/7418839062";
 
 

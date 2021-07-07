@@ -10,7 +10,7 @@ object InterstitialUtils {
 
     fun initInterstitialStartup(context: Context) {
         if (mInterClickOpenFile == null) {
-            mInterClickOpenFile = Admod.getInstance().getInterstitalAds(context, Constants.ADMOB_Iterstitial_Open_From_Other_App_Test)
+            mInterClickOpenFile = Admod.getInstance().getInterstitalAds(context, Constants.Interstitial_Open_File_208)
         }
     }
 

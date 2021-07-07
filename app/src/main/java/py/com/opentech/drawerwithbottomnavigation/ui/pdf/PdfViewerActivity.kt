@@ -132,7 +132,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                             try {
                                 currentPage = temp[0]?.page!!
                             } catch (e: Exception) {
-
+                                currentPage = 0
                             }
                         }
                     }
@@ -496,6 +496,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     .enableAntialiasing(true) // improve rendering a little bit on low-res screens
                     .spacing(10)
                     .onError {
+                        println("------------------"+it.message)
                         if (it is PdfPasswordException) {
                             isPasswordProtect = true
 
@@ -512,6 +513,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     })
                     .load()
             } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
         thread.start()
