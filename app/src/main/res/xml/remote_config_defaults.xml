@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- START xml_defaults -->
+<defaultsMap>
+    <entry>
+        <key>open_from_other_app_time_out</key>
+        <value>5000</value>
+    </entry>
+    <entry>
+        <key>click_time_to_open_ads</key>
+        <value>1</value>
+    </entry>
+</defaultsMap>

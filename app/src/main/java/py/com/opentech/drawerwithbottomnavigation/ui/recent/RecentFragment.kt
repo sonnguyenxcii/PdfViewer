@@ -33,6 +33,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
 import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerInAppAdsLoadingActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import java.io.File
 
@@ -324,7 +325,13 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
     }
 
     fun gotoViewPdf(path: String) {
-        var intent = Intent(context, PdfViewerActivity::class.java)
+        if (application?.checkShowAdsOpen() == false) {
+            var intent = Intent(context, PdfViewerActivity::class.java)
+            intent.putExtra("url", path)
+            startActivity(intent)
+            return
+        }
+        var intent = Intent(context, PdfViewerInAppAdsLoadingActivity::class.java)
         intent.putExtra("url", path)
         startActivity(intent)
     }

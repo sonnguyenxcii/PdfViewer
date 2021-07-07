@@ -165,69 +165,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
     @SuppressLint("RestrictedApi")
     override fun onMoreClick(pos: Int, view: View) {
-        //Creating the instance of PopupMenu
 
-//        val menuBuilder = MenuBuilder(context)
-//        val inflater = MenuInflater(context)
-//        inflater.inflate(R.menu.poupup_menu, menuBuilder)
-//        val optionsMenu = MenuPopupHelper(requireContext(), menuBuilder, view)
-//        optionsMenu.setForceShowIcon(true)
-//
-//        menuBuilder.setCallback(object : MenuBuilder.Callback {
-//            override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
-//                if (item.itemId == R.id.open) {
-//
-//                    val params = Bundle()
-//                    params.putString("more_action_click", "Open File")
-//                    application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-//
-//                    try {
-//                        onPrepareOpenAds(listData[pos].path!!)
-//
-//                    } catch (e: Exception) {
-//
-//                    }
-//
-//                } else if (item.itemId == R.id.delete) {
-//                    try {
-//                        onConfirmDelete(listData[pos].path!!)
-//                    } catch (e: Exception) {
-//
-//                    }
-//                } else if (item.itemId == R.id.bookmark) {
-//                    try {
-//                        addToBookmark(listData[pos].path!!)
-//                    } catch (e: Exception) {
-//
-//                    }
-//                } else if (item.itemId == R.id.share) {
-//                    try {
-//                        share(listData[pos].path!!)
-//                    } catch (e: Exception) {
-//
-//                    }
-//                } else if (item.itemId == R.id.shortcut) {
-//                    try {
-//                        createShortcut(listData[pos].path!!)
-//                    } catch (e: Exception) {
-//
-//                    }
-//                } else if (item.itemId == R.id.rename) {
-//                    try {
-//                        onConfirmRename(listData[pos].path!!)
-//                    } catch (e: Exception) {
-//
-//                    }
-//                }
-//                return true
-//            }
-//
-//            override fun onMenuModeChange(menu: MenuBuilder) {
-//            }
-//
-//        })
-//
-//        optionsMenu.show() //showing popup menu
         var model: PdfModel? = null
 
         try {
@@ -480,6 +418,13 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
 
     fun gotoViewPdf(path: String) {
+
+        if (application?.checkShowAdsOpen() == false) {
+            var intent = Intent(context, PdfViewerActivity::class.java)
+            intent.putExtra("url", path)
+            startActivity(intent)
+            return
+        }
         var intent = Intent(context, PdfViewerInAppAdsLoadingActivity::class.java)
         intent.putExtra("url", path)
         startActivity(intent)

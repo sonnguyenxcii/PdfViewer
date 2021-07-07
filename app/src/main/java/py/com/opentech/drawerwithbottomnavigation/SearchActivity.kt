@@ -39,6 +39,7 @@ import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObjec
 import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerInAppAdsLoadingActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import java.io.File
 import java.util.*
@@ -174,6 +175,11 @@ class SearchActivity : AppCompatActivity(), RecycleViewOnClickListener {
     }
 
     override fun onItemClick(pos: Int) {
+        if (application?.checkShowAdsOpen() == false) {
+            gotoViewPdf(listData[pos].path!!)
+            return
+        }
+
         Admod.getInstance().forceShowInterstitial(
             this,
             application?.mInterstitialSearchAd,

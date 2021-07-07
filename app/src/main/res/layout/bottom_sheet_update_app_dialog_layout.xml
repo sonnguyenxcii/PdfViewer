@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tittle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/_16sdp"
+        android:fontFamily="@font/product_sans_regular"
+        android:text="Update New Version"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_13ssp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ECECEC" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_16sdp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_icon_app"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:ellipsize="marquee"
+            android:fadingEdge="horizontal"
+            android:fontFamily="@font/product_sans_regular"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="PDF Reader"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_13ssp"
+            app:layout_constraintBottom_toTopOf="@id/version"
+            app:layout_constraintLeft_toRightOf="@id/image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/version"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:fontFamily="@font/product_sans_regular"
+            android:text="Version 2.3.0"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            app:layout_constraintLeft_toRightOf="@id/image"
+            app:layout_constraintRight_toRightOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:fontFamily="@font/product_sans_regular"
+        android:text="Updated version with many performance improvements and new features. Update your apps now!"
+        android:textColor="#262626"
+        android:textSize="@dimen/_11ssp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/_16sdp"
+        android:background="#ECECEC" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/btnUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/_16sdp"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:background="@drawable/background_button_radius_green_8"
+        android:fontFamily="@font/product_sans_regular"
+        android:gravity="center"
+        android:paddingTop="@dimen/_12sdp"
+        android:paddingBottom="@dimen/_12sdp"
+        android:text="Update"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_11ssp"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_16sdp" />
+</androidx.appcompat.widget.LinearLayoutCompat>

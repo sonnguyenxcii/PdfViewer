@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_50sdp"
+            android:background="@color/white"
+            android:layout_marginLeft="@dimen/_2sdp"
+            android:layout_marginRight="@dimen/_2sdp"
+            app:layout_constraintBottom_toBottomOf="@id/image"
+            app:layout_constraintLeft_toLeftOf="@id/image"
+            app:layout_constraintRight_toRightOf="@id/image" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            app:layout_constraintLeft_toLeftOf="@id/image"
+            app:layout_constraintRight_toRightOf="@id/image"
+            android:layout_height="0dp"
+            android:background="@drawable/background_button_radius_top_white_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@id/view" />
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:layout_marginEnd="@dimen/_24sdp"
+            android:adjustViewBounds="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_force_update" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_75sdp"
+            android:fontFamily="@font/product_sans_regular"
+            android:lineSpacingExtra="@dimen/_4sdp"
+            android:text="UPDATE NEW\nVERSION"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_14ssp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_32sdp"
+            android:layout_marginEnd="@dimen/_32sdp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="@id/view">
+
+            <ImageView
+                android:id="@+id/appIcon"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/_32sdp"
+                android:layout_marginTop="@dimen/_28sdp"
+                android:layout_marginEnd="@dimen/_32sdp"
+                android:adjustViewBounds="true"
+                app:layout_constraintTop_toTopOf="@id/view"
+                app:srcCompat="@drawable/ic_icon_app" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:fontFamily="@font/product_sans_regular"
+                android:gravity="center"
+                android:text="PDF Reader"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_13ssp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:fontFamily="@font/product_sans_regular"
+                android:gravity="center"
+                android:text="Version 2.3.0"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/_10ssp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:fontFamily="@font/product_sans_regular"
+                android:gravity="center"
+                android:text="Updated version with many performance improvements and new features. Update your apps now!"
+                android:textColor="#262626"
+                android:textSize="@dimen/_11ssp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/update"
+                android:layout_width="@dimen/_130sdp"
+                android:fontFamily="@font/product_sans_bold"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginBottom="@dimen/_24sdp"
+                android:background="@drawable/background_button_radius_green_16"
+                android:text="Update"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_13ssp"
+                tools:targetApi="lollipop" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

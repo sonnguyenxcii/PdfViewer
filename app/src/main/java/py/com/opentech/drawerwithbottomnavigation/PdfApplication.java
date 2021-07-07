@@ -34,18 +34,21 @@ public class PdfApplication extends AdsApplication {
     public static AtomicLong bookmarkPrimaryKey;
     public static AtomicLong recentPrimaryKey;
     public static volatile Context applicationContext = null;
-    public InterstitialAd mInterstitialAd,mInterstitialClickOpenAd,mInterstitialClickTabAd,mInterstitialSearchAd,mInterstitialMergeAd;
+    public InterstitialAd mInterstitialAd, mInterstitialClickOpenAd, mInterstitialClickTabAd, mInterstitialSearchAd, mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private Long clickOpenCount = 0L;
+    private int clickTimeToShowAds = 1;
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3","11507FE661199D176A33735A46AF1470"));
+        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3", "11507FE661199D176A33735A46AF1470"));
 
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashScreen.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ScanPdfActivity.class);
@@ -150,5 +153,28 @@ public class PdfApplication extends AdsApplication {
 
     public void setFirebaseAnalytics(FirebaseAnalytics mFirebaseAnalytics) {
         this.mFirebaseAnalytics = mFirebaseAnalytics;
+    }
+
+    public int getClickTimeToShowAds() {
+        return clickTimeToShowAds;
+    }
+
+    public void setClickTimeToShowAds(int clickTimeToShowAds) {
+        this.clickTimeToShowAds = clickTimeToShowAds;
+    }
+
+    public Long getClickOpenCount() {
+        return clickOpenCount;
+    }
+
+    public void setClickOpenCount(Long clickOpenCount) {
+        this.clickOpenCount = clickOpenCount;
+    }
+
+    public boolean checkShowAdsOpen() {
+
+        this.clickOpenCount += 1;
+
+        return clickOpenCount % clickTimeToShowAds == 0;
     }
 }

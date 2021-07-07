@@ -14,15 +14,18 @@ import android.os.Environment
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -34,7 +37,14 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.infideap.drawerbehavior.AdvanceDrawerLayout
 import com.willy.ratingbar.ScaleRatingBar
 import kotlinx.android.synthetic.main.app_bar_default.*
@@ -45,15 +55,13 @@ import org.greenrobot.eventbus.ThreadMode
 import py.com.opentech.drawerwithbottomnavigation.model.FileChangeEvent
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
+import py.com.opentech.drawerwithbottomnavigation.model.UpdateAppModel
 import py.com.opentech.drawerwithbottomnavigation.ui.component.CustomRatingDialogListener
 import py.com.opentech.drawerwithbottomnavigation.ui.component.ExitDialog
 import py.com.opentech.drawerwithbottomnavigation.ui.imagetopdf.ImageToPdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.merge.MergePdfActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
-import py.com.opentech.drawerwithbottomnavigation.utils.Constants
-import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
-import py.com.opentech.drawerwithbottomnavigation.utils.RealPathUtil
-import py.com.opentech.drawerwithbottomnavigation.utils.Utils
+import py.com.opentech.drawerwithbottomnavigation.utils.*
 import java.io.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -75,6 +83,7 @@ class HomeActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activeRemoteConfig()
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
 
@@ -1147,4 +1156,166 @@ class HomeActivity : AppCompatActivity(),
         val adLoader = builder.build()
         adLoader.loadAd(AdRequest.Builder().build())
     }
+
+    private lateinit var remoteConfig: FirebaseRemoteConfig
+
+    fun activeRemoteConfig() {
+
+        remoteConfig = FirebaseRemoteConfig.getInstance()
+        val configSettings = FirebaseRemoteConfigSettings.Builder()
+            .setMinimumFetchIntervalInSeconds(60)
+            .build()
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
+
+        remoteConfig.fetchAndActivate()
+            .addOnCompleteListener(this, object : OnCompleteListener<Boolean?> {
+                override fun onComplete(@NonNull task: Task<Boolean?>) {
+                    if (task.isSuccessful) {
+                        Log.d("HomeActivity", "fetch success")
+
+                        val updated: Boolean = task.result!!
+//                        Log.d(TAG, "Config params updated: $updated")
+
+                    } else {
+                        Log.d("HomeActivity", "fetch failed")
+                    }
+
+                    getDataFromRemote()
+                }
+            })
+
+    }
+
+    fun getDataFromRemote() {
+        val clickTimeToOpenAds: Long = remoteConfig.getLong("click_time_to_open_ads")
+        val openFromOtherAppTimeOut: Long = remoteConfig.getLong("open_from_other_app_time_out")
+        val configUpdateVersion: String = remoteConfig.getString("config_update_version")
+
+        saveConfigTimeout(clickTimeToOpenAds)
+        saveConfigClickTime(openFromOtherAppTimeOut)
+
+        var forceUpdate = false
+        var normalUpdate = false
+        try {
+            val updateAppModel: UpdateAppModel? =
+                Gson().fromJson(configUpdateVersion, UpdateAppModel::class.java)
+            if (updateAppModel?.required!!) {
+                updateAppModel.versionCodeRequired.forEach {
+                    if (it == BuildConfig.VERSION_CODE) {
+                        forceUpdate = true
+                    }
+                }
+            } else {
+                if (updateAppModel.status && updateAppModel.versionCode > BuildConfig.VERSION_CODE) {
+                    normalUpdate = true
+                }
+            }
+
+            if (forceUpdate) {
+                showForceUpdateApp(updateAppModel)
+            } else if (normalUpdate) {
+                showBottomSheetUpdate(updateAppModel)
+            }
+        } catch (e: Exception) {
+
+        }
+    }
+
+    fun saveConfigTimeout(clickTimeToOpenAds: Long?) {
+        if (clickTimeToOpenAds == null) {
+            return
+        }
+        application?.clickTimeToShowAds = clickTimeToOpenAds.toInt()
+        var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putLong("clickTimeToOpenAds", clickTimeToOpenAds)
+        editor.apply()
+
+    }
+
+    fun saveConfigClickTime(openFromOtherAppTimeOut: Long?) {
+        if (openFromOtherAppTimeOut == null) {
+            return
+        }
+        var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putLong("openFromOtherAppTimeOut", openFromOtherAppTimeOut)
+        editor.apply()
+
+    }
+
+    fun showBottomSheetUpdate(updateAppModel: UpdateAppModel?) {
+        try {
+            val bottomSheetDialog = BottomSheetDialog(this)
+            bottomSheetDialog.setContentView(R.layout.bottom_sheet_update_app_dialog_layout)
+            val tittle = bottomSheetDialog.findViewById<AppCompatTextView>(R.id.tittle)
+            val version = bottomSheetDialog.findViewById<AppCompatTextView>(R.id.version)
+            val btnUpdate = bottomSheetDialog.findViewById<AppCompatTextView>(R.id.btnUpdate)
+            tittle?.setText(updateAppModel?.title)
+            version?.setText(updateAppModel?.versionName)
+            btnUpdate?.setOnClickListener {
+                try {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" + updateAppModel?.newPackage)
+                        )
+                    )
+                } catch (e: Exception) {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=" + updateAppModel?.newPackage)
+                        )
+                    )
+                }
+            }
+
+            bottomSheetDialog.show()
+        } catch (e: Exception) {
+
+        }
+
+    }
+
+    fun showForceUpdateApp(updateAppModel: UpdateAppModel?) {
+        try {
+            val alertDialog: android.app.AlertDialog
+            val dialogBuilder = android.app.AlertDialog.Builder(this)
+            val inflater = this.layoutInflater
+            val dialogView: View = inflater.inflate(R.layout.dialog_force_update_layout, null)
+            dialogBuilder.setView(dialogView)
+
+            val update = dialogView.findViewById<AppCompatButton>(R.id.update)
+            val version = dialogView.findViewById<AppCompatTextView>(R.id.version)
+            version?.setText(updateAppModel?.versionName)
+
+            alertDialog = dialogBuilder.create()
+            alertDialog.setCancelable(false)
+            Objects.requireNonNull(alertDialog.window)
+                ?.setBackgroundDrawableResource(android.R.color.transparent)
+            alertDialog.show()
+
+            update.setOnClickListener { v: View? ->
+                try {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" + updateAppModel?.newPackage)
+                        )
+                    )
+                } catch (e: Exception) {
+                    startActivity(
+                        Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=" + updateAppModel?.newPackage)
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+
+        }
+
+    }
+
 }
