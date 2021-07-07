@@ -76,7 +76,6 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
     var isFullscreen = false
     var isBookmark = false
-    var isFromOtherApp = false
     var isNightMode = false
     var isPasswordProtect = false
 
@@ -100,45 +99,46 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setDisplayShowHomeEnabled(true)
             supportActionBar!!.title = ""
-
-            val action = intent.action
-            val type = intent.type
-
-            println("-dataString-------------------" + intent.dataString)
-            println("-type-------------------" + intent.type)
-            println("-intent-------------------" + intent.toString())
-
             application = PdfApplication.create(this)
 
-            if (null != intent.data) {
-                viewType = 1
-                initData()
-//                prepareAds()
+//            if (null != intent.data) {
+//                viewType = 1
+//                initData()
+////                prepareAds()
+//                try {
+//                    val params = Bundle()
+//                    application?.firebaseAnalytics?.logEvent("Open_From_Other_App", params)
+//                } catch (e: Exception) {
+//
+//                }
+//
+//            } else {
+            url = intent.extras!!.getString("url")
+            val fromOtherApp = isFromOtherApp()
+            if (fromOtherApp) {
                 try {
                     val params = Bundle()
                     application?.firebaseAnalytics?.logEvent("Open_From_Other_App", params)
                 } catch (e: Exception) {
 
                 }
-
-            } else {
-                url = intent.extras!!.getString("url")
-                viewType = 0
-                url?.let {
-                    addToRecent(it)
-                    var temp = getRecentByPath(it)
-                    if (!temp.isNullOrEmpty()) {
-                        if (temp[0]?.page != null) {
-                            try {
-                                currentPage = temp[0]?.page!!
-                            } catch (e: Exception) {
-                                currentPage = 0
-                            }
+            }
+//            viewType = 0
+            url?.let {
+                addToRecent(it)
+                var temp = getRecentByPath(it)
+                if (!temp.isNullOrEmpty()) {
+                    if (temp[0]?.page != null) {
+                        try {
+                            currentPage = temp[0]?.page!!
+                        } catch (e: Exception) {
+                            currentPage = 0
                         }
                     }
-                    viewFile()
                 }
+                viewFile()
             }
+//            }
         } catch (e: Exception) {
 
         }
@@ -215,6 +215,10 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
 
 
+    }
+
+    fun isFromOtherApp() : Boolean {
+        return intent.extras!!.getBoolean("other_app", false)
     }
 
     private fun getFilePathForN(uri: Uri, context: Context): String? {
@@ -314,7 +318,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun prepareToFinish() {
-        if (viewType != 0) {
+        if (isFromOtherApp()) {
             onFinishing()
         } else {
             if (!isRating()) {
@@ -496,7 +500,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     .enableAntialiasing(true) // improve rendering a little bit on low-res screens
                     .spacing(10)
                     .onError {
-                        println("------------------"+it.message)
+                        println("------------------" + it.message)
                         if (it is PdfPasswordException) {
                             isPasswordProtect = true
 
@@ -582,7 +586,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun onFinishing() {
-        if (viewType == 1) {
+        if (isFromOtherApp()) {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()

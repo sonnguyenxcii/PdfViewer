@@ -1,13 +1,21 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class PdfViewerAdsLoadingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,9 +104,53 @@ class PdfViewerAdsLoadingActivity : AppCompatActivity() {
     }
 
     fun gotoRead() {
-        val intent = Intent(this, PdfViewerActivity::class.java)
-        intent.data = getIntent().data
-        startActivity(intent)
-        finish()
+        val file_uri = intent.data
+
+        if (file_uri != null) {
+            val url = getFilePathForN(file_uri, this)
+            val intent = Intent(this, PdfViewerActivity::class.java)
+            intent.putExtra("url", url)
+            intent.putExtra("other_app", true)
+            startActivity(intent)
+            finish()
+        }
+
+    }
+
+    private fun getFilePathForN(uri: Uri, context: Context): String? {
+        val returnCursor: Cursor = context.getContentResolver().query(uri, null, null, null, null)!!
+        /*
+     * Get the column indexes of the data in the Cursor,
+     *     * move to the first row in the Cursor, get the data,
+     *     * and display it.
+     * */
+        val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        val sizeIndex: Int = returnCursor.getColumnIndex(OpenableColumns.SIZE)
+        returnCursor.moveToFirst()
+        val name: String = returnCursor.getString(nameIndex)
+        val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
+        val file: File = File(context.getFilesDir(), name)
+        try {
+            val inputStream: InputStream = context.getContentResolver().openInputStream(uri)!!
+            val outputStream = FileOutputStream(file)
+            var read = 0
+            val maxBufferSize = 1 * 1024 * 1024
+            val bytesAvailable: Int = inputStream.available()
+
+            //int bufferSize = 1024;
+            val bufferSize = Math.min(bytesAvailable, maxBufferSize)
+            val buffers = ByteArray(bufferSize)
+            while (inputStream.read(buffers).also { read = it } != -1) {
+                outputStream.write(buffers, 0, read)
+            }
+            Log.e("File Size", "Size " + file.length())
+            inputStream.close()
+            outputStream.close()
+            Log.e("File Path", "Path " + file.path)
+            Log.e("File Size", "Size " + file.length())
+        } catch (e: java.lang.Exception) {
+            e.message?.let { Log.e("Exception", it) }
+        }
+        return file.path
     }
 }

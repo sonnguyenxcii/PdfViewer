@@ -89,11 +89,6 @@ class HomeActivity : AppCompatActivity(),
         activeRemoteConfig()
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
-
-        println(
-            "-isPurchased-----------" + AppPurchase.getInstance().isPurchased(applicationContext)
-        )
-
         this.application?.mIsPurchased?.postValue(
             AppPurchase.getInstance().isPurchased(applicationContext)
         )
