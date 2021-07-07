@@ -7,6 +7,7 @@ import androidx.multidex.MultiDex;
 
 import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
+import com.ads.control.AppPurchase;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
@@ -52,7 +53,6 @@ public class PdfApplication extends AdsApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        Admod.getInstance().init(this, Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3", "11507FE661199D176A33735A46AF1470"));
 
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashScreen.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ScanPdfActivity.class);

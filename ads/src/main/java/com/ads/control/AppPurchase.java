@@ -103,8 +103,8 @@ public class AppPurchase {
         public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
 
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                if (purchaseListioner!=null)
-                 purchaseListioner.displayErrorMessage("done");
+                if (purchaseListioner != null)
+                    purchaseListioner.displayErrorMessage("done");
 
                 isAvailable = true;
 
@@ -113,7 +113,11 @@ public class AppPurchase {
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
                     @Override
                     public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
-                        Log.d(TAG, "onSkuINAPDetailsResponse: " + list.size());
+                        if (list == null || list.isEmpty()) {
+                            return;
+                        }
+                        Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
+
                         skuListINAPFromStore = list;
                         isListGot = true;
                         addSkuINAPToMap(list);
@@ -124,6 +128,9 @@ public class AppPurchase {
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
                     @Override
                     public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
+                        if (list == null || list.isEmpty()) {
+                            return;
+                        }
                         Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
                         skuListSubsFromStore = list;
                         isListGot = true;
@@ -131,7 +138,7 @@ public class AppPurchase {
                     }
                 });
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE || billingResult.getResponseCode() == BillingClient.BillingResponseCode.ERROR) {
-                Log.e(TAG, "onBillingSetupFinished:ERROR " );
+                Log.e(TAG, "onBillingSetupFinished:ERROR ");
                 if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("error");
             }
@@ -154,13 +161,13 @@ public class AppPurchase {
     }
 
     public void addSubcriptionId(String id) {
-        if (listSubcriptionId==null)
+        if (listSubcriptionId == null)
             listSubcriptionId = new ArrayList<>();
         listSubcriptionId.add(id);
     }
 
     public void addProductId(String id) {
-        if (listINAPId==null)
+        if (listINAPId == null)
             listINAPId = new ArrayList<>();
         listINAPId.add(id);
     }
@@ -176,7 +183,7 @@ public class AppPurchase {
         billingClient.startConnection(purchaseClientStateListener);
     }
 
-    public void initBilling(final Application application,List<String> listINAPId ,List<String> listSubsId  ) {
+    public void initBilling(final Application application, List<String> listINAPId, List<String> listSubsId) {
         listSubcriptionId = listSubsId;
         this.listINAPId = listINAPId;
 
@@ -187,8 +194,6 @@ public class AppPurchase {
 
         billingClient.startConnection(purchaseClientStateListener);
     }
-
-
 
 
     private void addSkuSubsToMap(List<SkuDetails> skuList) {
@@ -266,7 +271,7 @@ public class AppPurchase {
 
     public String purchase(Activity activity, String productId) {
         if (skuListINAPFromStore == null) {
-            if (purchaseListioner!=null)
+            if (purchaseListioner != null)
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
@@ -289,7 +294,7 @@ public class AppPurchase {
         switch (responseCode.getResponseCode()) {
 
             case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Billing not supported for type of request");
                 return "Billing not supported for type of request";
 
@@ -298,7 +303,7 @@ public class AppPurchase {
                 return "";
 
             case BillingClient.BillingResponseCode.ERROR:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Error completing request");
                 return "Error completing request";
 
@@ -318,12 +323,12 @@ public class AppPurchase {
                 return "Timeout";
 
             case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Network error.");
                 return "Network Connection down";
 
             case BillingClient.BillingResponseCode.USER_CANCELED:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Request Canceled");
                 return "Request Canceled";
 
@@ -339,7 +344,7 @@ public class AppPurchase {
     public String subscribe(Activity activity, String SubsId) {
 
         if (skuListSubsFromStore == null) {
-            if (purchaseListioner!=null)
+            if (purchaseListioner != null)
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
@@ -358,7 +363,7 @@ public class AppPurchase {
         switch (responseCode.getResponseCode()) {
 
             case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Billing not supported for type of request");
                 return "Billing not supported for type of request";
 
@@ -367,7 +372,7 @@ public class AppPurchase {
                 return "";
 
             case BillingClient.BillingResponseCode.ERROR:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Error completing request");
                 return "Error completing request";
 
@@ -387,12 +392,12 @@ public class AppPurchase {
                 return "Timeout";
 
             case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Network error.");
                 return "Network Connection down";
 
             case BillingClient.BillingResponseCode.USER_CANCELED:
-                if (purchaseListioner!=null)
+                if (purchaseListioner != null)
                     purchaseListioner.displayErrorMessage("Request Canceled");
                 return "Request Canceled";
 
@@ -447,7 +452,7 @@ public class AppPurchase {
     }
 
     private void handlePurchase(Purchase purchase) {
-        if (purchaseListioner!=null)
+        if (purchaseListioner != null)
             purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
         if (isConsumePurchase) {
             ConsumeParams consumeParams =
@@ -509,11 +514,11 @@ public class AppPurchase {
     }
 
     public String getIntroductorySubPrice(String productId) {
-        SkuDetails skuDetails =  skuDetailsSubsMap.get(productId);
+        SkuDetails skuDetails = skuDetailsSubsMap.get(productId);
         if (skuDetails == null) {
             return "";
         }
-        return  skuDetails.getPrice();
+        return skuDetails.getPrice();
     }
 
     public String getCurrency(String productId, int typeIAP) {
@@ -525,7 +530,7 @@ public class AppPurchase {
     }
 
     public double getPriceWithoutCurrency(String productId, int typeIAP) {
-        SkuDetails skuDetails = typeIAP == TYPE_IAP.PURCHASE ?skuDetailsINAPMap.get(productId) : skuDetailsSubsMap.get(productId);
+        SkuDetails skuDetails = typeIAP == TYPE_IAP.PURCHASE ? skuDetailsINAPMap.get(productId) : skuDetailsSubsMap.get(productId);
         if (skuDetails == null) {
             return 0;
         }
