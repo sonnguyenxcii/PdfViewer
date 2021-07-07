@@ -23,6 +23,7 @@ import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import io.realm.Realm
 import io.realm.RealmResults
+import kotlinx.android.synthetic.main.fragment_recent.*
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
 import py.com.opentech.drawerwithbottomnavigation.R
@@ -30,11 +31,11 @@ import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.model.SortModel
 import py.com.opentech.drawerwithbottomnavigation.model.realm.BookmarkRealmObject
 import py.com.opentech.drawerwithbottomnavigation.model.realm.RecentRealmObject
-import py.com.opentech.drawerwithbottomnavigation.ui.home.HomeAdapter
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerInAppAdsLoadingActivity
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 import java.io.File
 
 
@@ -45,6 +46,7 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
     protected var application: PdfApplication? = null
     var isListMode: Boolean = false
     var sort: SortModel? = null
+    var mIsPremium = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,17 +55,26 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_recent, container, false)
+        application = PdfApplication.create(activity)
+        this.application?.mIsPurchased?.observe(viewLifecycleOwner, Observer {
+            mIsPremium = it
+            if (it) {
+                recentSmallNativeLayout.visibility = View.GONE
+            }
+        })
+        if (!mIsPremium) {
+            Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Recently, root)
+
+        }
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
         recyclerView.layoutManager =
             if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
                 requireContext(),
                 2
             )
-        Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Recently, root)
 
         adapter = RecentAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
-        application = PdfApplication.create(activity)
         application?.global?.isListMode?.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 isListMode = it
@@ -188,15 +199,15 @@ class RecentFragment : Fragment(), RecycleViewOnClickListener {
     }
 
     fun onPrepareOpenAds(path: String) {
-//        Admod.getInstance().forceShowInterstitial(
-//            context,
-//            application?.mInterstitialClickOpenAd,
-//            object : AdCallback() {
-//                override fun onAdClosed() {
+        Admod.getInstance().forceShowInterstitial(
+            context,
+            InterstitialUtils.getInterClickOpenFile(),
+            object : AdCallback() {
+                override fun onAdClosed() {
                     gotoViewPdf(path)
-//                }
-//            }
-//        )
+                }
+            }
+        )
     }
 
     override fun onBookmarkClick(pos: Int) {

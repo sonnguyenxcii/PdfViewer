@@ -86,6 +86,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
+            android:id="@+id/homeFragmentSmallNativeAds"
             layout="@layout/layout_small_native_control"/>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -181,14 +181,11 @@ public class OfficeReaderActivity extends AppCompatActivity implements IMainFram
         setContentView(R.layout.activity_office_detail);
         toolbar = findViewById(R.id.toolbar_office);
         frameLayout = findViewById(R.id.viewer_office);
-        preloadAdsLayout = findViewById(R.id.preloadAdsLayout);
 
         toolbar.setNavigationIcon(R.drawable.ic_back_24);
         toolbar.setTitleTextAppearance(this,
                 R.style.TitleToolBar
         );
-
-        
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

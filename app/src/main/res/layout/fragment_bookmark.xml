@@ -22,6 +22,8 @@
 <!--            android:textStyle="bold" />-->
 
         <include
+            android:id="@+id/bookmarkFragmentSmallNativeAds"
+
             layout="@layout/layout_small_native_control"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

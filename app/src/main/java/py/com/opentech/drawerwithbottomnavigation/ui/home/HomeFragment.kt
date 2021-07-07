@@ -11,9 +11,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
@@ -28,6 +29,7 @@ import com.ads.control.funtion.AdCallback
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.realm.Realm
 import io.realm.RealmResults
+import kotlinx.android.synthetic.main.fragment_home.*
 import org.greenrobot.eventbus.EventBus
 import py.com.opentech.drawerwithbottomnavigation.BuildConfig
 import py.com.opentech.drawerwithbottomnavigation.PdfApplication
@@ -54,6 +56,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
     var isListMode: Boolean = false
     var sort: SortModel? = null
+    var mIsPremium = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,8 +67,19 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         val recyclerView: RecyclerView = root.findViewById(R.id.recycleView)
         val searchBox: View = root.findViewById(R.id.searchBox)
+        application = PdfApplication.create(activity)
 
-        Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Home, root)
+        this.application?.mIsPurchased?.observe(viewLifecycleOwner, Observer {
+            mIsPremium = it
+            if (it) {
+                homeFragmentSmallNativeAds.visibility = View.GONE
+            }
+        })
+
+        if (!mIsPremium) {
+            Admod.getInstance().loadSmallNativeFragment(activity, Constants.ADMOB_Native_Home, root)
+
+        }
 
         recyclerView.layoutManager =
             if (isListMode) LinearLayoutManager(requireContext()) else GridLayoutManager(
@@ -75,7 +89,6 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
         adapter = HomeAdapter(requireContext(), listData, this)
         recyclerView.adapter = adapter
-        application = PdfApplication.create(activity)
 
         application?.global?.listData?.observe(viewLifecycleOwner, Observer { list ->
             if (list != null) {
@@ -129,11 +142,6 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
             val params = Bundle()
             params.putString("button_click", "Button Search")
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-
-            if (application?.mInterstitialSearchAd == null) {
-                application?.mInterstitialSearchAd = Admod.getInstance()
-                    .getInterstitalAds(context, Constants.ADMOB_Interstitial_Search)
-            }
 
             var intent = Intent(context, SearchActivity::class.java)
             startActivity(intent)

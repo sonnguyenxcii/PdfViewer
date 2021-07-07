@@ -2,9 +2,9 @@ package py.com.opentech.drawerwithbottomnavigation;
 
 import android.content.Context;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.multidex.MultiDex;
 
-import com.ads.control.Admod;
 import com.ads.control.AdsApplication;
 import com.ads.control.AppOpenManager;
 import com.google.android.gms.ads.InterstitialAd;
@@ -28,6 +28,7 @@ import py.com.opentech.drawerwithbottomnavigation.ui.scan.ScanPdfActivity;
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants;
 import py.com.opentech.drawerwithbottomnavigation.utils.Globals;
 import py.com.opentech.drawerwithbottomnavigation.utils.ImagePickerActivity;
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils;
 
 public class PdfApplication extends AdsApplication {
     private Globals instance;
@@ -36,6 +37,9 @@ public class PdfApplication extends AdsApplication {
     public static volatile Context applicationContext = null;
     public InterstitialAd mInterstitialAd, mInterstitialClickOpenAd, mInterstitialClickTabAd, mInterstitialSearchAd, mInterstitialMergeAd;
     private FirebaseAnalytics mFirebaseAnalytics;
+    public  static final String REMOVE_ADS = "remove_ads";
+    public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
+//    public MutableLiveData<Boolean> mIsPurchased = new MutableLiveData<>();
     private Long clickOpenCount = 0L;
     private int clickTimeToShowAds = 1;
 
@@ -57,14 +61,29 @@ public class PdfApplication extends AdsApplication {
         AppOpenManager.getInstance().disableAppResumeWithActivity(UCropActivity.class);
         AppOpenManager.getInstance().disableAppResumeWithActivity(ImagePickerActivity.class);
 
+//        List<String> listINAPId = new ArrayList<>();
+//        listINAPId.add(PRODUCT_ID);
+//        List<String> listSubsId = new ArrayList<>();
+
+//        AppPurchase.getInstance().initBilling(this);
+        List<String> listINAPId = new ArrayList<>();
+        listINAPId.add(REMOVE_ADS);
+        List<String> listSubsId = new ArrayList<>();
+
+        AppPurchase.getInstance().initBilling(this,listINAPId,listSubsId);
+
+
 
         applicationContext = getApplicationContext();
         initRealm();
 //        mInterstitialAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial);
-        mInterstitialClickOpenAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Open_Item);
+//        mInterstitialClickOpenAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Open_Item);
 //        mInterstitialClickTabAd = Admod.getInstance().getInterstitalAds(this, Constants.ADMOB_Interstitial_Click_Tab_Menu);
         PDFBoxResourceLoader.init(getApplicationContext());
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        InterstitialUtils.INSTANCE.initInterstitialStartup(this);
+
 
     }
 
@@ -75,7 +94,7 @@ public class PdfApplication extends AdsApplication {
 
     @Override
     public List<String> getListTestDeviceId() {
-        return null;
+        return Arrays.asList("8D33ADC9AED86C2B99A46918C11F60D3", "11507FE661199D176A33735A46AF1470", "443B27A8969D4F15F3C1B6E66330F30D");
     }
 
     @Override

@@ -1,9 +1,11 @@
 package py.com.opentech.drawerwithbottomnavigation.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 public class Constants {
     public static final String ADMOB_Interstitial_Splash = "ca-app-pub-3617606523175567/1776919200";
     public static final String ADMOB_Interstitial_Click_Open_Item = "ca-app-pub-3617606523175567/6340297399";
-//    public static final String ADMOB_Interstitial_Click_Tab_Menu = "ca-app-pub-3617606523175567/1087970713";
+    public static final String ADMOB_Interstitial_Click_Tab_Menu = "ca-app-pub-3617606523175567/1087970713";
     public static final String ADMOB_Native_Home = "ca-app-pub-3617606523175567/9449371576";
     public static final String ADMOB_Native_Bottom_Left_Menu = "ca-app-pub-3617606523175567/4924463315";
     public static final String ADMOB_Interstitial_Search = "ca-app-pub-3617606523175567/8237856511";
@@ -17,8 +19,8 @@ public class Constants {
     public static final String ADMOB_Interstitial_File_Management  = "ca-app-pub-3617606523175567/7972109116";
     public static final String ADMOB_Native_PDF_Scanner  = "ca-app-pub-3617606523175567/2719782432";
     public static final String ADMOB_Native_Merge_PDF  = "ca-app-pub-3617606523175567/1215129078";
-    public static final String ADMOB_Iterstitial_Open_From_Other_App  = "ca-app-pub-3617606523175567/7418839062";
-    public static final String ADMOB_Native_Exit  = "ca-app-pub-3617606523175567/9653244459";
+    public static final String ADMOB_Native_Exit = "ca-app-pub-3617606523175567/9653244459";
+//    public static final String ADMOB_Native_Open_Office = "ca-app-pub-3617606523175567/7418839062";
 
 
 
@@ -39,11 +41,12 @@ public class Constants {
 //    public static final String ADMOB_Native_PDF_Scanner  = "ca-app-pub-2767013993881421/8721041399";
 //    public static final String ADMOB_Native_Merge_PDF  = "ca-app-pub-2767013993881421/2569392558";
 //    public static final String ADMOB_Iterstitial_Merge_PDF  = "ca-app-pub-2767013993881421/9842551378";
-//public static final String ADMOB_Iterstitial_Open_From_Other_App  = "ca-app-pub-2767013993881421/4892798407";
-//    public static final String ADMOB_Native_Exit  = "ca-app-pub-2767013993881421/8385454304";
+    public static final String ADMOB_Iterstitial_Open_From_Other_App  = "ca-app-pub-3617606523175567/7418839062";
+    public static final String ADMOB_Iterstitial_Open_From_Other_App_Test  = "ca-app-pub-3617606523175567/3450322825";
 
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public static final String APP_PASSWORD = "pdf_tool_18012021";
+    public static final String REMOVE_ADS = "remove_ads";
 
 }

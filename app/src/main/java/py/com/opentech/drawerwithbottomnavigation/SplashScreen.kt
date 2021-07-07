@@ -28,7 +28,7 @@ class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-
+        countOpenApp()
 //        Thread{
         if (InternetConnection.checkConnection(this)) {
             prepareAds()
@@ -124,6 +124,15 @@ class SplashScreen : AppCompatActivity() {
         super.onPause()
         mPrepareAdsDone = true
 
+    }
+
+    fun countOpenApp() {
+        val prefs = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE)
+        var count = prefs.getInt("openAppCount", 0)
+        count++
+        var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
+        editor.putInt("openAppCount", count)
+        editor.apply()
     }
 
 }

@@ -33,6 +33,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.ads.control.Admod
+import com.ads.control.AppPurchase
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -47,6 +48,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.infideap.drawerbehavior.AdvanceDrawerLayout
 import com.willy.ratingbar.ScaleRatingBar
+import kotlinx.android.synthetic.main.activity_home_layout.*
 import kotlinx.android.synthetic.main.app_bar_default.*
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import org.greenrobot.eventbus.EventBus
@@ -80,12 +82,35 @@ class HomeActivity : AppCompatActivity(),
     private var mInterstitialMergeAd: InterstitialAd? = null
     private var adRequest: AdRequest? = null
     var adobj: UnifiedNativeAd? = null
+    var mIsPremium = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activeRemoteConfig()
         setContentView(R.layout.activity_home_layout)
         application = PdfApplication.create(this)
+
+        println(
+            "-isPurchased-----------" + AppPurchase.getInstance().isPurchased(applicationContext)
+        )
+
+        this.application?.mIsPurchased?.postValue(
+            AppPurchase.getInstance().isPurchased(applicationContext)
+        )
+        this.application?.mIsPurchased?.observe(this, Observer {
+            mIsPremium = it
+            if (it) {
+                premium.visibility = View.GONE
+                homeSmallNativeAdsLayout.visibility = View.GONE
+            }
+        })
+
+        val prefs = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE)
+        var count = prefs.getInt("openAppCount", 0)
+
+        if (!mIsPremium && count == 3) {
+            openPremium()
+        }
 
         adRequest = AdRequest.Builder().build()
         var sortData = getSortStatus()
@@ -95,8 +120,11 @@ class HomeActivity : AppCompatActivity(),
 
         setupNavController()
 
+
         Admod.getInstance().loadSmallNative(this, Constants.ADMOB_Native_Bottom_Left_Menu)
         onExitAppLoadAds()
+
+
 
         drawer = findViewById<View>(R.id.drawer_layout) as AdvanceDrawerLayout
 
@@ -115,20 +143,8 @@ class HomeActivity : AppCompatActivity(),
                 val params = Bundle()
                 params.putString("button_click", "Recently")
                 application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-//
-//                if (InternetConnection.checkConnection(this)) {
-//                    Admod.getInstance().forceShowInterstitial(
-//                        this,
-//                        application?.mInterstitialClickTabAd,
-//                        object : AdCallback() {
-//                            override fun onAdClosed() {
-//                                navigateTo(item.itemId)
-//                            }
-//                        }
-//                    )
-//                } else {
                 navigateTo(item.itemId)
-//                }
+
             } else if (item.itemId == R.id.nav_home) {
 
                 val params = Bundle()
@@ -157,19 +173,8 @@ class HomeActivity : AppCompatActivity(),
             val params = Bundle()
             params.putString("button_click", "Bookmark")
             application?.firebaseAnalytics?.logEvent("Home_Layout", params)
-//            if (InternetConnection.checkConnection(this)) {
-//                Admod.getInstance().forceShowInterstitial(
-//                    this,
-//                    application?.mInterstitialClickTabAd,
-//                    object : AdCallback() {
-//                        override fun onAdClosed() {
+
             navigateToBookmark()
-//                        }
-//                    }
-//                )
-//            } else {
-//                navigateToBookmark()
-//            }
         }
 
         mode.setOnClickListener {
@@ -181,6 +186,26 @@ class HomeActivity : AppCompatActivity(),
             showInputSort()
         }
 
+        premium.setOnClickListener {
+            if (mIsPremium) {
+                return@setOnClickListener
+            }
+            openPremium()
+//            AppPurchase.getInstance()
+//                .consumePurchase(PdfApplication.REMOVE_ADS)
+//            AppPurchase.getInstance()
+//                .consumePurchase(PdfApplication.REMOVE_ADS)
+//            val dialog = InAppDialog(this)
+//            dialog.setCallback {
+//                AppPurchase.getInstance()
+//                    .consumePurchase(PdfApplication.REMOVE_ADS)
+//                AppPurchase.getInstance()
+//                    .purchase(this, PdfApplication.REMOVE_ADS)
+//                dialog.dismiss()
+//            }
+//            dialog.show()
+        }
+
         search.setOnClickListener {
             val params = Bundle()
             params.putString("button_click", "Button Search")
@@ -190,10 +215,6 @@ class HomeActivity : AppCompatActivity(),
             var intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
 
-            if (application?.mInterstitialSearchAd == null) {
-                application?.mInterstitialSearchAd = Admod.getInstance()
-                    .getInterstitalAds(this, Constants.ADMOB_Interstitial_Search)
-            }
         }
 
         application?.global?.isListMode?.observe(this, Observer {
@@ -208,6 +229,11 @@ class HomeActivity : AppCompatActivity(),
         })
 
 
+    }
+
+    fun openPremium() {
+        var intent = Intent(this, PremiumActivity::class.java)
+        startActivity(intent)
     }
 
     fun navigateToBookmark() {
@@ -267,9 +293,14 @@ class HomeActivity : AppCompatActivity(),
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.space1 -> {
-//                Toast.makeText(this, "file", Toast.LENGTH_SHORT).show()
-//                drawer!!.openDrawer(GravityCompat.END)
+            R.id.remove_ads -> {
+                if (!mIsPremium) {
+                    openPremium()
+
+                }else{
+                    Toast.makeText(this, "Ads removed", Toast.LENGTH_SHORT).show()
+                }
+
                 drawer!!.closeDrawer(GravityCompat.START)
                 return false
 
@@ -300,7 +331,7 @@ class HomeActivity : AppCompatActivity(),
                 params.putString("menu_click", "PDF Scanner")
                 application?.firebaseAnalytics?.logEvent("Menu_Layout", params)
 
-                if (!InternetConnection.checkConnection(this)) {
+                if (mIsPremium || !InternetConnection.checkConnection(this)) {
                     navigateToScan()
 
                 } else {
@@ -424,7 +455,7 @@ class HomeActivity : AppCompatActivity(),
 
     fun processToFile() {
 
-        if (!InternetConnection.checkConnection(this)) {
+        if (mIsPremium || !InternetConnection.checkConnection(this)) {
             navigateToFile()
 
         } else {
@@ -479,7 +510,7 @@ class HomeActivity : AppCompatActivity(),
 
     fun processToMerge() {
 
-        if (!InternetConnection.checkConnection(this)) {
+        if (mIsPremium || !InternetConnection.checkConnection(this)) {
             navigateToMerge()
         } else {
             preloadAdsLayout.visibility = View.VISIBLE
@@ -616,38 +647,6 @@ class HomeActivity : AppCompatActivity(),
         return uriList
     }
 
-
-    fun walkDir(dir: File) {
-        var listFile = dir.listFiles()
-        listFile?.forEach {
-            if (it.isDirectory) {
-                walkDir(it)
-            } else {
-                if (it.name.toLowerCase().endsWith(".pdf")) {
-                    val lastModDate = Date(it.lastModified())
-                    var parentName = ""
-                    try {
-                        parentName = File(it.parent).name
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    println("-name------------------" + it.name)
-                    println("-absolutePath------------------" + it.absolutePath)
-//                    uriList.add(
-//                        PdfModel(
-//                            name = it.name,
-//                            path = it.absolutePath,
-//                            size = it.length(),
-//                            date = Utils.formatDate(lastModDate),
-//                            folder = parentName,
-//                            lastModifier = it.lastModified()
-//                        )
-//                    )
-                }
-            }
-        }
-    }
-
     fun requestRead() {
 
         if (checkPermission()) {
@@ -676,20 +675,6 @@ class HomeActivity : AppCompatActivity(),
             }
         }
 
-
-//        if (ContextCompat.checkSelfPermission(
-//                this,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE
-//            )
-//            != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            ActivityCompat.requestPermissions(
-//                this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
-//            )
-//        } else {
-//            readFile()
-//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
@@ -1107,28 +1092,6 @@ class HomeActivity : AppCompatActivity(),
         cancel.setOnClickListener { v: View? -> dialog.dismiss() }
     }
 
-//    fun onConfirmDelete(path: String) {
-//        val alertDialog: android.app.AlertDialog
-//        val dialogBuilder = android.app.AlertDialog.Builder(context)
-//        val inflater = this.layoutInflater
-//        val dialogView: View = inflater.inflate(R.layout.dialog_delete_layout, null)
-//        dialogBuilder.setView(dialogView)
-//
-//        val ok = dialogView.findViewById<AppCompatButton>(R.id.ok)
-//        val cancel = dialogView.findViewById<AppCompatButton>(R.id.cancel)
-//        alertDialog = dialogBuilder.create()
-//        alertDialog.setCancelable(true)
-//        Objects.requireNonNull(alertDialog.window)
-//            ?.setBackgroundDrawableResource(android.R.color.transparent)
-//        alertDialog.show()
-//
-//        ok.setOnClickListener { v: View? ->
-//            deleteFile(path)
-//            alertDialog.dismiss()
-//        }
-//        cancel.setOnClickListener { v: View? -> alertDialog.dismiss() }
-//    }
-
     fun saveSortStatus(model: SortModel) {
         var editor = getSharedPreferences(Constants.MY_PREFS_NAME, MODE_PRIVATE).edit()
         editor.putString("type", model.type)
@@ -1144,6 +1107,9 @@ class HomeActivity : AppCompatActivity(),
     }
 
     fun onExitAppLoadAds() {
+        if (mIsPremium) {
+            return
+        }
         val builder = AdLoader.Builder(this, Constants.ADMOB_Native_Exit)
         builder.withAdListener(object : AdListener() {
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
