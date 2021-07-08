@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.activity_splash_screen.*
 import kotlinx.android.synthetic.main.include_preload_ads.*
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 
 
 class SplashScreen : AppCompatActivity() {
@@ -29,6 +30,7 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
         countOpenApp()
+        InterstitialUtils.initInterstitialStartup(this)
 //        Thread{
         if (InternetConnection.checkConnection(this)) {
             prepareAds()

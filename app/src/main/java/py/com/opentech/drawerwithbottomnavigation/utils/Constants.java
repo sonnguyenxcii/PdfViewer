@@ -44,6 +44,7 @@ public class Constants {
 //    public static final String ADMOB_Iterstitial_Merge_PDF  = "ca-app-pub-2767013993881421/9842551378";
     public static final String ADMOB_Iterstitial_Open_From_Other_App  = "ca-app-pub-3617606523175567/7418839062";
     public static final String ADMOB_Iterstitial_Open_From_Other_App_Test  = "ca-app-pub-3617606523175567/3450322825";
+    public static final String ADMOB_Iterstitial_Open_From_Other_App_208 = "ca-app-pub-3617606523175567/9341115197";
 
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";

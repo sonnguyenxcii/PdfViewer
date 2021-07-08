@@ -82,8 +82,6 @@ public class PdfApplication extends AdsApplication {
         PDFBoxResourceLoader.init(getApplicationContext());
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        InterstitialUtils.INSTANCE.initInterstitialStartup(this);
-
 
     }
 

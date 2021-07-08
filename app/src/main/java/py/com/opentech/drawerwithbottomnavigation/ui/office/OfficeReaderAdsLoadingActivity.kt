@@ -2,21 +2,21 @@ package py.com.opentech.drawerwithbottomnavigation.ui.office
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
+import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 
 class OfficeReaderAdsLoadingActivity : AppCompatActivity() {
     private var mInterstitialAd: InterstitialAd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preload_ads)
+        InterstitialUtils.initInterstitialStartup(this)
         loadAds()
     }
 
