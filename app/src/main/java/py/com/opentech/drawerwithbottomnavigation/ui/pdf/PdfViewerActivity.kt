@@ -29,6 +29,7 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import com.ads.control.Admod
+import com.ads.control.funtion.AdCallback
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
@@ -101,44 +102,34 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             supportActionBar!!.title = ""
             application = PdfApplication.create(this)
 
-//            if (null != intent.data) {
-//                viewType = 1
-//                initData()
-////                prepareAds()
-//                try {
-//                    val params = Bundle()
-//                    application?.firebaseAnalytics?.logEvent("Open_From_Other_App", params)
-//                } catch (e: Exception) {
-//
-//                }
-//
-//            } else {
-            url = intent.extras!!.getString("url")
-            val fromOtherApp = isFromOtherApp()
-            if (fromOtherApp) {
+            if (null != intent.data) {
+                viewType = 1
                 try {
                     val params = Bundle()
                     application?.firebaseAnalytics?.logEvent("Open_From_Other_App", params)
                 } catch (e: Exception) {
-
                 }
-            }
-//            viewType = 0
-            url?.let {
-                addToRecent(it)
-                var temp = getRecentByPath(it)
-                if (!temp.isNullOrEmpty()) {
-                    if (temp[0]?.page != null) {
-                        try {
-                            currentPage = temp[0]?.page!!
-                        } catch (e: Exception) {
-                            currentPage = 0
+                prepareAds()
+
+            } else {
+                url = intent.extras!!.getString("url")
+
+                viewType = 0
+                url?.let {
+                    addToRecent(it)
+                    var temp = getRecentByPath(it)
+                    if (!temp.isNullOrEmpty()) {
+                        if (temp[0]?.page != null) {
+                            try {
+                                currentPage = temp[0]?.page!!
+                            } catch (e: Exception) {
+                                currentPage = 0
+                            }
                         }
                     }
+                    viewFile()
                 }
-                viewFile()
             }
-//            }
         } catch (e: Exception) {
 
         }
@@ -194,7 +185,11 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         })
 
         seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            override fun onProgressChanged(
+                seekBar: SeekBar?,
+                progress: Int,
+                fromUser: Boolean
+            ) {
                 if (fromUser) {
                     pdfView.jumpTo(progress)
                 }
@@ -217,12 +212,13 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
     }
 
-    fun isFromOtherApp() : Boolean {
-        return intent.extras!!.getBoolean("other_app", false)
+    fun isFromOtherApp(): Boolean {
+        return viewType != 0
     }
 
     private fun getFilePathForN(uri: Uri, context: Context): String? {
-        val returnCursor: Cursor = context.getContentResolver().query(uri, null, null, null, null)!!
+        val returnCursor: Cursor =
+            context.getContentResolver().query(uri, null, null, null, null)!!
         /*
      * Get the column indexes of the data in the Cursor,
      *     * move to the first row in the Cursor, get the data,
@@ -636,15 +632,25 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
     private fun prepareAds() {
         preloadAdsLayout.visibility = View.VISIBLE
-        MobileAds.initialize(
-            this
-        ) { initializationStatus: InitializationStatus? -> }
+        val prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE)
+        val time = prefs.getLong("openFromOtherAppTimeOut", 5000)
+        Admod.getInstance().loadSplashInterstitalAds(this,
+            Constants.ADMOB_Iterstitial_Open_From_Other_App,
+            time,
+            object : AdCallback() {
 
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd!!.adUnitId = Constants.ADMOB_Iterstitial_Open_From_Other_App
-        mInterstitialAd!!.adListener = mDefaultListener
-        val adRequest = AdRequest.Builder().build()
-        mInterstitialAd!!.loadAd(adRequest)
+                override fun onAdClosed() {
+                    preloadAdsLayout.visibility = View.GONE
+
+                    initData()
+                }
+
+                override fun onAdFailedToLoad(i: Int) {
+                    preloadAdsLayout.visibility = View.GONE
+
+                    initData()
+                }
+            })
     }
 
     private val mDefaultListener: AdListener = object : AdListener() {
@@ -845,7 +851,8 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                         number = -1
                     }
                     if (number == -1 || number > pdfView.pageCount) {
-                        Toast.makeText(this, " Not valid page number", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, " Not valid page number", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         onChangePage(number)
 
