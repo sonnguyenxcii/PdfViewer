@@ -51,6 +51,7 @@ class MultiFileSelectAdapter(
             holder.date.text = data.date
 
             holder.itemView.setOnClickListener {
+
                 clickListener.onItemClick(holder.adapterPosition)
 //                data.isCheck = !data.isCheck!!
 //                notifyItemChanged(holder.adapterPosition)

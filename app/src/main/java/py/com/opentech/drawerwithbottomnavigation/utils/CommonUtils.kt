@@ -164,7 +164,7 @@ object CommonUtils {
 
     fun isPasswordProtected(pdfFullname: String): Boolean {
         try {
-            var pdfReader = PdfReader(pdfFullname)
+            PdfReader(pdfFullname)
             return false
         } catch (e: BadPasswordException) {
             return true

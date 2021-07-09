@@ -30,6 +30,7 @@ import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.model.PdfModel
 import py.com.opentech.drawerwithbottomnavigation.ui.home.RecycleViewOnClickListener
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.utils.CommonUtils
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
 import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 import java.io.File
@@ -102,6 +103,12 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
 
     override fun onItemClick(pos: Int) {
         var data = listData[pos]
+
+        if (CommonUtils.isPasswordProtected(data.path!!)) {
+            showAlertDialog("Temporarily unable to merge password protected file, the feature will be available soon")
+            return
+        }
+
         data.isCheck = !data.isCheck!!
         adapter.notifyItemChanged(pos)
         caculateSelectCount()
