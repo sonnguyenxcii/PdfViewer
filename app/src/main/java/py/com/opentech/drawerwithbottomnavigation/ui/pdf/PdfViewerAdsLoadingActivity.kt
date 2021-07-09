@@ -1,5 +1,6 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
@@ -35,17 +36,11 @@ class PdfViewerAdsLoadingActivity : AppCompatActivity() {
             object : AdCallback() {
 
                 override fun onAdClosed() {
-//                    if (mAnimationDone) {
                     gotoRead()
-//                    }
-
                 }
 
                 override fun onAdFailedToLoad(i: Int) {
-
-//                    if (mAnimationDone) {
                     gotoRead()
-//                    }
                 }
             })
 //        MobileAds.initialize(this, new OnInitializationCompleteListener() {
@@ -119,20 +114,23 @@ class PdfViewerAdsLoadingActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("Recycle")
     private fun getFilePathForN(uri: Uri, context: Context): String? {
-        val returnCursor: Cursor = context.getContentResolver().query(uri, null, null, null, null)!!
-        /*
-     * Get the column indexes of the data in the Cursor,
-     *     * move to the first row in the Cursor, get the data,
-     *     * and display it.
-     * */
-        val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        val sizeIndex: Int = returnCursor.getColumnIndex(OpenableColumns.SIZE)
-        returnCursor.moveToFirst()
-        val name: String = returnCursor.getString(nameIndex)
-        val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
-        val file: File = File(context.getFilesDir(), name)
+
         try {
+            val returnCursor: Cursor = context.contentResolver.query(uri, null, null, null, null)!!
+            /*
+         * Get the column indexes of the data in the Cursor,
+         *     * move to the first row in the Cursor, get the data,
+         *     * and display it.
+         * */
+            val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex: Int = returnCursor.getColumnIndex(OpenableColumns.SIZE)
+            returnCursor.moveToFirst()
+            val name: String = returnCursor.getString(nameIndex)
+            val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
+            val file: File = File(context.getFilesDir(), name)
+
             val inputStream: InputStream = context.getContentResolver().openInputStream(uri)!!
             val outputStream = FileOutputStream(file)
             var read = 0
@@ -150,9 +148,11 @@ class PdfViewerAdsLoadingActivity : AppCompatActivity() {
             outputStream.close()
             Log.e("File Path", "Path " + file.path)
             Log.e("File Size", "Size " + file.length())
-        } catch (e: java.lang.Exception) {
+            return file.path
+        } catch (e: Exception) {
+
             e.message?.let { Log.e("Exception", it) }
         }
-        return file.path
+        return uri.path
     }
 }

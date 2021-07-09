@@ -168,6 +168,8 @@ object CommonUtils {
             return false
         } catch (e: BadPasswordException) {
             return true
+        }catch (e:Exception){
+            return true
         }
     }
 }
