@@ -217,20 +217,22 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     private fun getFilePathForN(uri: Uri, context: Context): String? {
-        val returnCursor: Cursor =
-            context.getContentResolver().query(uri, null, null, null, null)!!
-        /*
-     * Get the column indexes of the data in the Cursor,
-     *     * move to the first row in the Cursor, get the data,
-     *     * and display it.
-     * */
-        val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        val sizeIndex: Int = returnCursor.getColumnIndex(OpenableColumns.SIZE)
-        returnCursor.moveToFirst()
-        val name: String = returnCursor.getString(nameIndex)
-        val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
-        val file: File = File(context.getFilesDir(), name)
+        var path = ""
         try {
+            val returnCursor: Cursor =
+                context.getContentResolver().query(uri, null, null, null, null)!!
+            /*
+         * Get the column indexes of the data in the Cursor,
+         *     * move to the first row in the Cursor, get the data,
+         *     * and display it.
+         * */
+            val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val sizeIndex: Int = returnCursor.getColumnIndex(OpenableColumns.SIZE)
+            returnCursor.moveToFirst()
+            val name: String = returnCursor.getString(nameIndex)
+            val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
+            val file: File = File(context.getFilesDir(), name)
+
             val inputStream: InputStream = context.getContentResolver().openInputStream(uri)!!
             val outputStream = FileOutputStream(file)
             var read = 0
@@ -248,10 +250,11 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             outputStream.close()
             Log.e("File Path", "Path " + file.path)
             Log.e("File Size", "Size " + file.length())
-        } catch (e: java.lang.Exception) {
+            path = file.path
+        } catch (e: Exception) {
             e.message?.let { Log.e("Exception", it) }
         }
-        return file.path
+        return path
     }
 
     private fun uriToPath(uri: Uri): String {
@@ -707,27 +710,31 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     }
 
     fun showInputPassword() {
-
-        val view = layoutInflater.inflate(R.layout.dialog_input_password, null)
-        val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
-        val dialog: AlertDialog = AlertDialog.Builder(this)
-            .setTitle("Password protect")
-            .setMessage("Input password to view file")
-            .setView(view)
-            .setPositiveButton("OK") { dialog, which ->
-                val text = categoryEditText.text.toString()
-                password = text
-                if (viewType == 0) {
-                    viewFile()
-                } else {
-                    viewFileFromStream()
+        try {
+            val view = layoutInflater.inflate(R.layout.dialog_input_password, null)
+            val categoryEditText = view.findViewById(R.id.categoryEditText) as EditText
+            val dialog: AlertDialog = AlertDialog.Builder(this)
+                .setTitle("Password protect")
+                .setMessage("Input password to view file")
+                .setView(view)
+                .setPositiveButton("OK") { dialog, which ->
+                    val text = categoryEditText.text.toString()
+                    password = text
+                    if (viewType == 0) {
+                        viewFile()
+                    } else {
+                        viewFileFromStream()
+                    }
                 }
-            }
-            .setNegativeButton("Cancel") { dialog, which ->
-                onFinishing()
-            }
-            .create()
-        dialog.show()
+                .setNegativeButton("Cancel") { dialog, which ->
+                    onFinishing()
+                }
+                .create()
+            dialog.show()
+        }catch (e:Exception){
+
+        }
+
     }
 
     fun showFullscreen() {
