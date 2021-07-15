@@ -11,10 +11,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
-import com.google.android.gms.ads.interstitial.InterstitialAd
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.utils.Constants
-import py.com.opentech.drawerwithbottomnavigation.utils.admob.InterstitialUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -23,7 +21,6 @@ class PdfViewerAdsLoadingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preload_ads)
-        InterstitialUtils.initInterstitialStartup(this)
         loadAds()
     }
 
