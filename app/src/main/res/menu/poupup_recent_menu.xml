@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/open"
-        android:title="Open"/>
+        android:title="@string/open"/>
 
     <item
         android:id="@+id/delete"
-        android:title="Remove from recents"/>
+        android:title="@string/remove_from_recents"/>
 
 <!--    <item-->
 <!--        android:id="@+id/bookmark"-->
 <!--        android:title="Thêm vào đánh dấu"/>-->
     <item
         android:id="@+id/share"
-        android:title="Share"/>
+        android:title="@string/share"/>
 
 <!--    <item-->
 <!--        android:id="@+id/shortcut"-->

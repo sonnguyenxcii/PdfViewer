@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_3sdp"
                 android:fontFamily="@font/segoe_normal"
-                android:text="Download"
+                android:text="@string/download"
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/_10ssp" />
         </androidx.appcompat.widget.LinearLayoutCompat>

@@ -13,7 +13,7 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/_16sdp"
         android:fontFamily="@font/product_sans_regular"
-        android:text="Update New Version"
+        android:text="@string/update_new_version"
         android:textColor="@color/black"
         android:textSize="@dimen/_13ssp"
         android:textStyle="bold" />
@@ -48,7 +48,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="PDF Reader"
+            android:text="@string/pdf_reader"
             android:textColor="@android:color/black"
             android:textSize="@dimen/_13ssp"
             app:layout_constraintBottom_toTopOf="@id/version"
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_8sdp"
             android:fontFamily="@font/product_sans_regular"
-            android:text="Version 2.3.0"
+            tools:text="Version 2.3.0"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/_11ssp"
             app:layout_constraintBottom_toBottomOf="@id/image"
@@ -78,7 +78,7 @@
         android:layout_marginLeft="@dimen/_16sdp"
         android:layout_marginRight="@dimen/_16sdp"
         android:fontFamily="@font/product_sans_regular"
-        android:text="Updated version with many performance improvements and new features. Update your apps now!"
+        android:text="@string/update_version_desc"
         android:textColor="#262626"
         android:textSize="@dimen/_11ssp" />
 
@@ -101,7 +101,7 @@
         android:gravity="center"
         android:paddingTop="@dimen/_12sdp"
         android:paddingBottom="@dimen/_12sdp"
-        android:text="Update"
+        android:text="@string/update"
         android:textColor="@color/white"
         android:textSize="@dimen/_11ssp"
         android:textStyle="bold" />

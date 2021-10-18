@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_8sdp"
             android:fontFamily="@font/segoe_normal"
-            android:text="04/03/2021"
+            tools:text="04/03/2021"
             android:textColor="@color/colorPrimaryText"
             android:textSize="@dimen/_9ssp"
             app:layout_constraintLeft_toRightOf="@id/image"
@@ -119,7 +119,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_16sdp"
             android:fontFamily="@font/seguisb"
-            android:text="Rename"
+            android:text="@string/rename"
             android:textColor="@color/black"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
@@ -146,7 +146,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_16sdp"
             android:fontFamily="@font/seguisb"
-            android:text="Bookmark"
+            android:text="@string/bookmark"
             android:textColor="@color/black"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
@@ -171,7 +171,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_16sdp"
             android:fontFamily="@font/seguisb"
-            android:text="Share"
+            android:text="@string/share"
             android:textColor="@color/black"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
@@ -197,7 +197,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_16sdp"
             android:fontFamily="@font/seguisb"
-            android:text="Merge PDF"
+            android:text="@string/merge_pdf"
             android:textColor="@color/black"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />
@@ -222,7 +222,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/_16sdp"
             android:fontFamily="@font/seguisb"
-            android:text="Delete"
+            android:text="@string/delete"
             android:textColor="@color/black"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold" />

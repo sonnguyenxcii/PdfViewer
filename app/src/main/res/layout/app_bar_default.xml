@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_16sdp"
             android:fontFamily="@font/seguisb"
-            android:text="PDF Reader"
+            android:text="@string/pdf_reader"
             android:textColor="@color/white"
             android:textSize="@dimen/_15ssp"
             android:textStyle="bold"

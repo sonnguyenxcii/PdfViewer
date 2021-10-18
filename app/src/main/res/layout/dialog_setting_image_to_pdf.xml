@@ -35,7 +35,7 @@
                 style="@style/HuyCommonTextStyleImportProperties"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="File name" />
+                android:text="@string/file_name" />
 
             <EditText
                 android:id="@+id/import_file_file_name"
@@ -74,7 +74,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Scale type"/>
+                    android:text="@string/scale_type"/>
 
                 <TextView
                     android:id="@+id/import_file_scale_type"
@@ -100,7 +100,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Page size"/>
+                    android:text="@string/page_size"/>
 
                 <TextView
                     android:id="@+id/import_file_page_size"
@@ -126,7 +126,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Page number"/>
+                    android:text="@string/page_number"/>
 
                 <TextView
                     android:id="@+id/import_file_page_number"
@@ -170,7 +170,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Convert"
+            android:text="@string/convert"
             android:textAllCaps="false"
             android:textStyle="bold"
             android:textColor="@color/white"

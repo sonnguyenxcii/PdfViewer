@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/seguisb"
                 android:gravity="center"
-                android:text="Sort by"
+                android:text="@string/sort_by"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_17ssp"
                 android:textStyle="bold" />
@@ -64,7 +64,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/_48sdp"
                         android:fontFamily="@font/seguisb"
-                        android:text="Name"
+                        android:text="@string/name"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13ssp"
                         android:textStyle="bold" />
@@ -96,7 +96,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/_48sdp"
                         android:fontFamily="@font/seguisb"
-                        android:text="File Size"
+                        android:text="@string/file_size"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13ssp"
                         android:textStyle="bold" />
@@ -128,7 +128,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/_48sdp"
                         android:fontFamily="@font/seguisb"
-                        android:text="Created Date"
+                        android:text="@string/created_date"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13ssp"
                         android:textStyle="bold" />
@@ -176,7 +176,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/_48sdp"
                         android:fontFamily="@font/seguisb"
-                        android:text="Ascending"
+                        android:text="@string/ascending"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13ssp"
                         android:textStyle="bold" />
@@ -208,7 +208,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/_48sdp"
                         android:fontFamily="@font/seguisb"
-                        android:text="Descending"
+                        android:text="@string/descending"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_13ssp"
                         android:textStyle="bold" />
@@ -255,7 +255,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="@drawable/bg_button_radius_border_gray"
-                    android:text="Cancel"
+                    android:text="@string/cancel"
                     android:textColor="#77788E"
                     android:textSize="14sp"
                     tools:targetApi="lollipop" />
@@ -271,7 +271,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="@drawable/background_button_radius_primary_8"
-                    android:text="Ok"
+                    android:text="@string/ok"
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     tools:targetApi="lollipop" />

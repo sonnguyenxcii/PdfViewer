@@ -25,6 +25,6 @@
         android:layout_below="@+id/spin_kit"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/_20sdp"
-        android:text="Loading Ads..."
+        android:text="@string/loading_ads"
         android:textSize="@dimen/_13sdp" />
 </RelativeLayout>

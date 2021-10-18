@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:gravity="center"
-        android:text="Delete file"
+        android:text="@string/delete_file"
         android:textStyle="bold"
         android:textSize="@dimen/title_first_component_text_size"
         app:layout_constraintEnd_toEndOf="parent"

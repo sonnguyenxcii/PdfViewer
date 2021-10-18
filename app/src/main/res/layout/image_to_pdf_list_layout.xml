@@ -28,7 +28,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="Convert to pdf" />
+            android:text="@string/convert_to_pdf" />
 
         <include
             android:id="@+id/toolbar"

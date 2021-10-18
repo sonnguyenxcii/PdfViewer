@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="PDF Reader"
+        android:text="@string/pdf_reader"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView

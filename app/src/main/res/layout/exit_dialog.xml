@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:fontFamily="@font/seguisb"
-            android:text="Confirm Exit"
+            android:text="@string/confirm_exit"
             android:textColor="@color/gnt_black"
             android:textSize="@dimen/_15ssp" />
 
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:fontFamily="@font/segoe_normal"
-            android:text="Are you sure want to exit?"
+            android:text="@string/are_you_sure_want_to_exit"
             android:textColor="@color/gnt_black"
             android:textSize="@dimen/_13ssp" />
 
@@ -53,7 +53,7 @@
                 android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:text="Yes"
+                android:text="@string/yes"
                 android:textColor="@color/colorPrimary" />
 
             <TextView
@@ -68,7 +68,7 @@
                 android:textSize="@dimen/_11ssp"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:text="No"
+                android:text="@string/no"
                 android:textColor="@color/colorPrimary" />
         </LinearLayout>
     </LinearLayout>

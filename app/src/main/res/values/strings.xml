@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">PDFReader</string>
-
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Recent</string>
     <string name="menu_slideshow">Bookmark</string>
@@ -12,11 +11,8 @@
     <string name="search_result_empty_tittle">No results for: \"%s\"</string>
     <string name="search_result_count">Show %s items</string>
     <string name="select_convert_to_pdf">Convert to PDF</string>
-
     <string name="page_size">Page size</string>
     <string name="page_number">Page number</string>
-
-
     <string name="header_error_text">Oops…</string>
     <string name="confirm_text">OK</string>
     <string name="understood_text">OK! Understood</string>
@@ -63,68 +59,16 @@
     <string name="can_not_open_folder">Can not open folder now.</string>
     <string name="accept_permission_file_selector">Accept storage permission</string>
     <string name="done_create_pdf_title">Result</string>
-    <!--  file option  -->
-
-    <!--  navigation  -->
-
-    <!--   home fragment -->
-
     <string name="image_to_pdf">Image to PDF</string>
-
-    <!--   lib fragment -->
-
-    <!-- bookmark   -->
-
-    <!--  theme  -->
-
-    <!-- image to pdf-->
-
-    <!-- edit image-->
-
-    <!-- open PDF file -->
     <string name="open_file">Select app</string>
     <string name="open_file_error">No app to read this File</string>
-
-    <!-- text to pdf   -->
-
-    <!--  protect pdf  -->
-
-    <!--  unlock pdf  -->
-
-    <!-- excel to pdf   -->
-
-    <!--  add watermark -->
     <string name="add_watermark_converting_success_pdf">Converted to PDF successfully!</string>
     <string name="add_watermark_creating_fail_pdf">Create PDF fail!</string>
     <string name="add_watermark_creating_pdf">Creating PDF file…</string>
-
-    <!--  merge pdf -->
-
-    <!--  split pdf -->
-
-    <!--  option create pdf  -->
     <string name="scale_type">Scale type</string>
     <string name="cancel">Cancel</string>
-
-    <!--  option dialog  -->
-
-    <!--  EDIT / CROP  -->
     <string name="crop_image_title">Crop image</string>
-
-    <!--  pdf to images  -->
-
-    <!--  pdf to text  -->
-
-    <!--  edit pdf  -->
-
-    <!--  view pdf  -->
-
-    <!--  setting  -->
-
-    <!-- rate us  -->
-
     <string name="import_file">Import</string>
-
     <string name="crop">Crop</string>
     <string name="crop_reset">Reset</string>
     <string name="crop_done">Done</string>
@@ -132,5 +76,61 @@
     <string name="share">Share</string>
     <string name="delete_file_question">Are you sure you want to delete this file?</string>
     <string name="old_price"><strike>$3.00</strike></string>
-
+    <string name="file_management">File Management</string>
+    <string name="pdf_scanner">PDF Scanner</string>
+    <string name="merge_pdf">Merge PDF</string>
+    <string name="remove_ads">Remove Ads</string>
+    <string name="feedback">Feedback</string>
+    <string name="rate">Rate</string>
+    <string name="click_to_select_the_pdf_file">Click + to select the PDF file</string>
+    <string name="loading_ads">Loading Ads...</string>
+    <string name="remove_all_anoying_ads_forever">Remove all anoying ads forever</string>
+    <string name="read_pdf_files_2_times_faster">Read PDF files 2 times faster</string>
+    <string name="quick_access_to_your_app">Quick access to your app</string>
+    <string name="all_update_and_new_features">All update and new features</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="camera">Camera</string>
+    <string name="image">Image</string>
+    <string name="search">Search</string>
+    <string name="pdf_reader">PDF Reader</string>
+    <string name="all_file">All File</string>
+    <string name="recently">Recently</string>
+    <string name="rename">Rename</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="delete">Delete</string>
+    <string name="update_new_version">Update New Version</string>
+    <string name="update_version_desc">Updated version with many performance improvements and new features. Update your apps now!</string>
+    <string name="update">Update</string>
+    <string name="delete_file">Delete file</string>
+    <string name="do_you_want_to_delete_this_file">Do you want to delete this file?</string>
+    <string name="ok">Ok</string>
+    <string name="do_you_like_our_app">Do you like our app?</string>
+    <string name="rating_content">Give us a quick rating so we know if\n you like it?</string>
+    <string name="please_leave_a_feedback_to_help_us_improve_product">Please leave a feedback to help us improve product</string>
+    <string name="maybe_later">Maybe later</string>
+    <string name="submit">Submit</string>
+    <string name="file_name">File name</string>
+    <string name="convert">Convert</string>
+    <string name="sort_by">Sort by</string>
+    <string name="name">Name</string>
+    <string name="file_size">File Size</string>
+    <string name="created_date">Created Date</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="confirm_exit">Confirm Exit</string>
+    <string name="are_you_sure_want_to_exit">Are you sure want to exit?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="fast_search">Fast Search</string>
+    <string name="you_can_quickly_search_for_pdf_nfiles_here">You can quickly search for PDF\nfiles here</string>
+    <string name="convert_to_pdf">Convert to pdf</string>
+    <string name="add_image">Add image</string>
+    <string name="download">Download</string>
+    <string name="done">Done</string>
+    <string name="remove_from_bookmark">Remove from bookmark</string>
+    <string name="printer">Printer</string>
+    <string name="favorite">Favorite</string>
+    <string name="go_to_page">Go to Page</string>
+    <string name="upload_to_drive">Upload to Drive</string>
+    <string name="remove_from_recents">Remove from recents</string>
 </resources>

@@ -16,7 +16,7 @@
             android:layout_marginTop="@dimen/_32sdp"
             android:fontFamily="@font/svn_gilroy_regular"
             android:gravity="center"
-            android:text="Remove Ads"
+            android:text="@string/remove_ads"
             android:textColor="#22215B"
             android:textSize="@dimen/_29ssp"
             android:textStyle="bold" />
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/svn_gilroy_regular"
-                android:text="Remove all anoying ads forever"
+                android:text="@string/remove_all_anoying_ads_forever"
                 android:textColor="#22215B" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/svn_gilroy_regular"
-                android:text="Read PDF files 2 times faster"
+                android:text="@string/read_pdf_files_2_times_faster"
                 android:textColor="#22215B" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/svn_gilroy_regular"
-                android:text="Quick access to your app"
+                android:text="@string/quick_access_to_your_app"
                 android:textColor="#22215B" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -107,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_16sdp"
                 android:fontFamily="@font/svn_gilroy_regular"
-                android:text="All update and new features"
+                android:text="@string/all_update_and_new_features"
                 android:textColor="#22215B" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -160,7 +160,7 @@
             android:textStyle="bold"
             android:paddingBottom="@dimen/_16sdp"
             android:textSize="@dimen/_14ssp"
-            android:text="Buy Now"
+            android:text="@string/buy_now"
             android:layout_height="wrap_content" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 

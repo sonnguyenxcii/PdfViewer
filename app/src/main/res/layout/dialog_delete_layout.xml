@@ -32,7 +32,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_12sdp"
                 android:fontFamily="@font/segoe_normal"
-                android:text="Do you want to delete this file?"
+                android:text="@string/do_you_want_to_delete_this_file"
                 android:textColor="#000000"
                 android:textSize="@dimen/_12ssp" />
 
@@ -43,7 +43,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:background="@drawable/background_button_radius_primary_8"
-                android:text="Ok"
+                android:text="@string/ok"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 tools:targetApi="lollipop" />
@@ -56,7 +56,7 @@
                 android:layout_marginTop="@dimen/_8sdp"
                 android:layout_marginBottom="@dimen/_16sdp"
                 android:background="@drawable/bg_button_radius_border_primary"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textColor="@color/colorBtnDialog"
                 android:textSize="14sp"
                 tools:targetApi="lollipop" />

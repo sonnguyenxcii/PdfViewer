@@ -5,24 +5,24 @@
         android:id="@+id/printer"
         android:icon="@drawable/ic_baseline_print"
         android:iconTint="@color/black"
-        android:title="Printer"/>
+        android:title="@string/printer"/>
 
     <item
         android:id="@+id/favorite"
         android:icon="@drawable/ic_baseline_bookmark_24"
         android:iconTint="@color/black"
-        android:title="Favorite"/>
+        android:title="@string/favorite"/>
 
     <item
         android:id="@+id/gotoPage"
         android:icon="@drawable/ic_baseline_find_in_page_24"
         android:iconTint="@color/black"
-        android:title="Go to Page"/>
+        android:title="@string/go_to_page"/>
 
     <item
         android:id="@+id/upload"
         android:icon="@drawable/ic_baseline_cloud_upload_24"
         android:iconTint="@color/black"
-        android:title="Upload to Drive"/>
+        android:title="@string/upload_to_drive"/>
 
 </menu>
