@@ -25,28 +25,6 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.RadioButtonLikeBottomNavigationView" parent="@android:style/Widget.Button">
-        <item name="android:background">?attr/selectableItemBackground</item>
-        <item name="android:button">@null</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:minHeight">54dip</item>
-        <item name="android:minWidth">64dp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@drawable/selector_bottom_navigation_view_text_color</item>
-    </style>
-
-    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
-        <item name="android:background">@drawable/background_toolbar</item>
-        <item name="background">@drawable/background_toolbar</item>
-        <!--<item name="titleTextStyle" >@style/MyActionBar.TitleTextStyle</item>-->
-        <!--        <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-        <!--        <item name="android:subtitleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-        <!--        <item name="titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-        <!--        <item name="subtitleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>-->
-    </style>
-
     <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
@@ -60,11 +38,6 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="Theme.Fab_Bottom_app_bar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#0F9D58</item>
-        <item name="colorPrimaryVariant">#0F9D58</item>
-        <item name="colorOnPrimary">#000</item>
-    </style>
 
     <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:progressBackgroundTint">@color/white</item>
@@ -143,10 +116,5 @@
     <style name="AppModalStyle"
         parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/rounded_dialog</item>
-    </style>
-    <style name="CustomRatingBarStyle" parent="Widget.AppCompat.RatingBar">
-        <item name="android:progressDrawable">@drawable/custom_rating</item>
-        <item name="android:minHeight">15dip</item>
-        <item name="android:maxHeight">47dip</item>
     </style>
 </resources>

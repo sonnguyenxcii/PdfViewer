@@ -15,11 +15,14 @@ android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
     defaultConfig {
+        configurations.all {
+            resolutionStrategy { force 'androidx.core:core-ktx:1.6.0' }
+        }
         applicationId "com.pdfreader.scanner.pdfviewer"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 206
-        versionName "2.0.6"
+        versionCode 210
+        versionName "2.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
