@@ -203,11 +203,11 @@ public abstract class BaseBindingActivity<T extends ViewDataBinding, V extends B
     }
 
     public boolean notHaveStoragePermission() {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             return (!hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) && !hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE));
-        } else {
-            return (!Environment.isExternalStorageManager());
-        }
+//        } else {
+//            return (!Environment.isExternalStorageManager());
+//        }
     }
 
     @SuppressLint("RestrictedApi")

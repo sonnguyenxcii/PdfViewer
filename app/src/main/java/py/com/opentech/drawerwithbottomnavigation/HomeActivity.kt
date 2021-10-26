@@ -1,7 +1,6 @@
 package py.com.opentech.drawerwithbottomnavigation
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.Manifest.permission.*
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -648,26 +647,31 @@ class HomeActivity : AppCompatActivity(),
             readFile()
 
         } else {
-            if (SDK_INT >= Build.VERSION_CODES.R) {
-                try {
-                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                    intent.addCategory("android.intent.category.DEFAULT")
-                    intent.data =
-                        Uri.parse(String.format("package:%s", applicationContext.packageName))
-                    startActivityForResult(intent, 2296)
-                } catch (e: java.lang.Exception) {
-                    val intent = Intent()
-                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                    startActivityForResult(intent, 2296)
-                }
-            } else {
-                //below android 11
+//            if (SDK_INT >= Build.VERSION_CODES.R) {
+//                try {
+//                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+//                    intent.addCategory("android.intent.category.DEFAULT")
+//                    intent.data =
+//                        Uri.parse(String.format("package:%s", applicationContext.packageName))
+//                    startActivityForResult(intent, 2296)
+//                } catch (e: java.lang.Exception) {
+//                    val intent = Intent()
+//                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+//                    startActivityForResult(intent, 2296)
+//                }
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(WRITE_EXTERNAL_STORAGE),
+                    arrayOf(WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE),
                     MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
                 )
-            }
+//            } else {
+//                //below android 11
+//                ActivityCompat.requestPermissions(
+//                    this,
+//                    arrayOf(WRITE_EXTERNAL_STORAGE),
+//                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE
+//                )
+//            }
         }
 
     }
@@ -779,15 +783,15 @@ class HomeActivity : AppCompatActivity(),
 
 
     private fun checkPermission(): Boolean {
-        return if (SDK_INT >= Build.VERSION_CODES.R) {
-            Environment.isExternalStorageManager()
-        } else {
+//        return if (SDK_INT >= Build.VERSION_CODES.R) {
+//            Environment.isExternalStorageManager()
+//        } else {
             val result =
                 ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE)
             val result1 =
                 ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
-            result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
-        }
+          return  result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED
+//        }
     }
 
     override fun onRequestPermissionsResult(
