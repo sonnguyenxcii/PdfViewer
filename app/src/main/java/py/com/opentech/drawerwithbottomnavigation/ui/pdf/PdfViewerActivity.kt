@@ -30,6 +30,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import com.ads.control.Admod
 import com.ads.control.funtion.AdCallback
+import com.artifex.mupdfdemo.MuPDFReaderView
 import com.github.barteksc.pdfviewer.PDFView
 import com.github.barteksc.pdfviewer.listener.OnTapListener
 import com.google.android.gms.ads.*
@@ -55,6 +56,12 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.*
 import kotlin.math.roundToInt
+import com.artifex.mupdfdemo.MuPDFPageAdapter
+
+import com.artifex.mupdfdemo.MuPDFCore
+
+
+
 
 
 class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
@@ -64,6 +71,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
     lateinit var seekBar: AppCompatSeekBar
     lateinit var rotate: AppCompatImageView
     lateinit var nightMode: AppCompatImageView
+    lateinit var editablePdfReaderView: MuPDFReaderView
     var url: String? = null
     var currentPage = 0
     var viewType = 0 // 0: file, 1: content
@@ -94,7 +102,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         rootView = findViewById(R.id.rootView)
         bottom = findViewById(R.id.bottom)
         more = findViewById(R.id.more)
-
+        editablePdfReaderView = findViewById(R.id.muPdfReaderView)
         try {
             setSupportActionBar(toolbar)
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -309,6 +317,9 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             }
         }
         thread.start()
+
+        val muPDFCore = MuPDFCore(this, url)
+        editablePdfReaderView.adapter = MuPDFPageAdapter(this, muPDFCore)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -520,6 +531,9 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             }
         }
         thread.start()
+
+        val muPDFCore = MuPDFCore(this, fileUri?.path)
+        editablePdfReaderView.adapter = MuPDFPageAdapter(this, muPDFCore)
     }
 
     override fun onNegativeButtonClicked() {
@@ -797,12 +811,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
             override fun onMenuItemSelected(menu: MenuBuilder, item: MenuItem): Boolean {
                 when (item.itemId) {
                     R.id.printer -> {
-                        println("-printer-------------url---------" + url)
-//                        if (isPasswordProtect) {
-//
-//                        } else {
                         url?.let { CommonUtils.onActionPrint(this@PdfViewerActivity, it) }
-//                        }
                     }
 
                     R.id.favorite -> {
@@ -814,11 +823,13 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     }
 
                     R.id.upload -> {
-                        println("-upload-------------url---------" + url)
                         url?.let {
                             CommonUtils.onFileClick(this@PdfViewerActivity, it)
-
                         }
+                    }
+
+                    R.id.edit -> {
+                        editablePdfReaderView.visibility = View.VISIBLE
                     }
                 }
 

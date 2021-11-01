@@ -133,6 +133,11 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
             </LinearLayout>
 
+            <com.artifex.mupdfdemo.MuPDFReaderView
+                android:id="@+id/muPdfReaderView"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
