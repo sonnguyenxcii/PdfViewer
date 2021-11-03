@@ -318,6 +318,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
         thread.start()
 
+        println("----url---------------"+url)
         val muPDFCore = MuPDFCore(this, url)
         editablePdfReaderView.adapter = MuPDFPageAdapter(this, muPDFCore)
     }
@@ -829,7 +830,10 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                     }
 
                     R.id.edit -> {
-                        editablePdfReaderView.visibility = View.VISIBLE
+                        url?.let {
+                            CommonUtils.onEditAction(this@PdfViewerActivity, it)
+                        }
+
                     }
                 }
 

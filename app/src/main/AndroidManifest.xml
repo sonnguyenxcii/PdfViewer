@@ -166,6 +166,8 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity android:name=".PremiumActivity" />
+        <activity android:name=".ui.pdf.edit.MoreSetActivity" />
+        <activity android:name=".ui.pdf.edit.OutlineActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

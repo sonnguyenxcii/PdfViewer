@@ -26,6 +26,8 @@ import com.itextpdf.text.exceptions.BadPasswordException
 import com.itextpdf.text.pdf.PdfReader
 import py.com.opentech.drawerwithbottomnavigation.R
 import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfDocumentAdapter
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.PdfViewerActivity
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.edit.MoreSetActivity
 import java.io.File
 
 object CommonUtils {
@@ -162,6 +164,20 @@ object CommonUtils {
 
     }
 
+    fun onEditAction(context: Context, path: String) {
+        if (isPasswordProtected(path)) {
+            Toast.makeText(
+                context,
+                "Temporarily unable to print the file, the feature will be available soon",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            val intent = Intent(context, MoreSetActivity::class.java)
+            intent.putExtra("url", path)
+            context.startActivity(intent)
+        }
+
+    }
     fun isPasswordProtected(pdfFullname: String): Boolean {
         try {
             PdfReader(pdfFullname)
