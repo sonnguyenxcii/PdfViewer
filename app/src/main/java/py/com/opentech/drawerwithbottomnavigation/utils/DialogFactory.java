@@ -94,7 +94,7 @@ public class DialogFactory {
 
     public static SweetAlertDialog getDialogRequestRating(Context context, String title, String message) {
         SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
-                .setCustomImage(R.mipmap.ic_launcher)
+                .setCustomImage(R.mipmap.ic_launcher_new)
                 .setTitleText(title)
                 .setContentText(message)
                 .setConfirmText(context.getString(R.string.agree_text));

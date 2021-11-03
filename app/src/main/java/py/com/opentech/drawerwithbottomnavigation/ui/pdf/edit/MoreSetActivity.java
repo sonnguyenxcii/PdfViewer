@@ -115,16 +115,16 @@ public class MoreSetActivity extends AppCompatActivity {
     private void initView() {
         SharedPreferencesUtil.init(getApplication());
 
-        muPDFReaderView = (MuPDFReaderView)findViewById(R.id.mupdfreaderview);
+        muPDFReaderView = (MuPDFReaderView) findViewById(R.id.mupdfreaderview);
 
         initToolsView();
         createPDF();
         setPDFVoid();
     }
 
-    private void setPDFVoid(){
+    private void setPDFVoid() {
         //切换横竖显示
-        btn_change_hv = (Button)findViewById(R.id.btn_change_hv);
+        btn_change_hv = (Button) findViewById(R.id.btn_change_hv);
         btn_change_hv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,7 +141,7 @@ public class MoreSetActivity extends AppCompatActivity {
         });
 
         // 改变超链接颜色
-        btn_linkhighlightcolor = (Button)findViewById(R.id.btn_linkhighlightcolor);
+        btn_linkhighlightcolor = (Button) findViewById(R.id.btn_linkhighlightcolor);
         btn_linkhighlightcolor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +150,7 @@ public class MoreSetActivity extends AppCompatActivity {
         });
 
         // 改变搜索文字颜色
-        btn_searchtextcolor = (Button)findViewById(R.id.btn_searchtextcolor);
+        btn_searchtextcolor = (Button) findViewById(R.id.btn_searchtextcolor);
         btn_searchtextcolor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +159,7 @@ public class MoreSetActivity extends AppCompatActivity {
         });
 
         // 设置画笔颜色
-        btn_paintcolor = (Button)findViewById(R.id.btn_set_paint_color);
+        btn_paintcolor = (Button) findViewById(R.id.btn_set_paint_color);
         btn_paintcolor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,7 +169,7 @@ public class MoreSetActivity extends AppCompatActivity {
         });
 
         // 设置画笔粗细
-        btn_paintstrokewidth = (Button)findViewById(R.id.btn_set_paint_strokewidth);
+        btn_paintstrokewidth = (Button) findViewById(R.id.btn_set_paint_strokewidth);
         btn_paintstrokewidth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,13 +198,13 @@ public class MoreSetActivity extends AppCompatActivity {
         mPageNumberView = (TextView) findViewById(R.id.pageNumber);
         mPageSlider = (SeekBar) findViewById(R.id.pageSlider);
 
-        mTopBarSwitcher.setVisibility(View.INVISIBLE);
-        mPageNumberView.setVisibility(View.INVISIBLE);
-        mPageSlider.setVisibility(View.INVISIBLE);
+//        mTopBarSwitcher.setVisibility(View.INVISIBLE);
+//        mPageNumberView.setVisibility(View.INVISIBLE);
+//        mPageSlider.setVisibility(View.INVISIBLE);
     }
 
     private void createPDF() {
-        mAlertBuilder  = new AlertDialog.Builder(this);
+        mAlertBuilder = new AlertDialog.Builder(this);
 
         // 通过MuPDFCore打开pdf文件
         muPDFCore = openFile(filePath);
@@ -213,8 +213,8 @@ public class MoreSetActivity extends AppCompatActivity {
         // 判断如果core为空，提示不能打开文件
         if (muPDFCore == null) {
             AlertDialog alert = mAlertBuilder.create();
-            alert.setTitle(com.lonelypluto.pdflibrary.R.string.cannot_open_document);
-            alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(com.lonelypluto.pdflibrary.R.string.dismiss),
+            alert.setTitle(getString(R.string.invalid_format));
+            alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dismiss),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
@@ -278,6 +278,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 打开文件
+     *
      * @param path 文件路径
      * @return
      */
@@ -302,7 +303,7 @@ public class MoreSetActivity extends AppCompatActivity {
     /**
      * 设置监听事件
      */
-    private void setListener(){
+    private void setListener() {
         // 设置MuPDFReaderView的监听事件
         setMuPDFReaderViewListener();
         // 设置页面拖动条监听事件
@@ -399,7 +400,7 @@ public class MoreSetActivity extends AppCompatActivity {
     /**
      * 设置MuPDFReaderView的监听事件
      */
-    private void setMuPDFReaderViewListener(){
+    private void setMuPDFReaderViewListener() {
         muPDFReaderView.setListener(new MuPDFReaderViewListener() {
             @Override
             public void onMoveToChild(int i) {
@@ -470,6 +471,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 设置超链接颜色
+     *
      * @param color 颜色值
      */
     private void setLinkHighlightColor(int color) {
@@ -478,6 +480,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 设置搜索文字颜色
+     *
      * @param color 颜色值
      */
     private void setSearchTextColor(int color) {
@@ -486,6 +489,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 设置画笔颜色
+     *
      * @param color 颜色值
      */
     private void setInkColor(int color) {
@@ -494,6 +498,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 设置画笔粗细
+     *
      * @param inkThickness 粗细值
      */
     private void setPaintStrockWidth(float inkThickness) {
@@ -544,7 +549,7 @@ public class MoreSetActivity extends AppCompatActivity {
                 }
 
                 public void onAnimationEnd(Animation animation) {
-                    mPageNumberView.setVisibility(View.VISIBLE);
+//                    mPageNumberView.setVisibility(View.VISIBLE);
                 }
             });
             mPageSlider.startAnimation(anim);
@@ -578,7 +583,7 @@ public class MoreSetActivity extends AppCompatActivity {
             anim.setDuration(200);
             anim.setAnimationListener(new Animation.AnimationListener() {
                 public void onAnimationStart(Animation animation) {
-                    mPageNumberView.setVisibility(View.INVISIBLE);
+//                    mPageNumberView.setVisibility(View.INVISIBLE);
                 }
 
                 public void onAnimationRepeat(Animation animation) {
@@ -594,6 +599,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 更新当前是第多少页
+     *
      * @param index
      */
     private void updatePageNumView(int index) {
@@ -622,6 +628,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 工具栏 - 注释点击事件
+     *
      * @param v
      */
     public void OnEditAnnotButtonClick(View v) {
@@ -631,6 +638,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 工具栏 - 复制点击事件
+     *
      * @param v
      */
     public void OnCopyTextButtonClick(View v) {
@@ -638,12 +646,13 @@ public class MoreSetActivity extends AppCompatActivity {
         mTopBarSwitcher.setDisplayedChild(mTopBarMode.ordinal());
         mAcceptMode = AcceptMode.CopyText;
         muPDFReaderView.setMode(MuPDFReaderView.Mode.Selecting);
-        mAnnotTypeText.setText(getString(com.lonelypluto.pdflibrary.R.string.copy_text));
-        showInfo(getString(com.lonelypluto.pdflibrary.R.string.select_text));
+        mAnnotTypeText.setText(R.string.copy_text);
+        showInfo(getString(R.string.select_text));
     }
 
     /**
      * 工具栏 - 搜索框取消点击事件
+     *
      * @param v
      */
     public void OnCancelSearchButtonClick(View v) {
@@ -652,6 +661,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 工具栏 - 注释取消点击事件
+     *
      * @param v
      */
     public void OnCancelMoreButtonClick(View v) {
@@ -689,6 +699,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 工具栏 - 注释 - 高亮点击事件
+     *
      * @param v
      */
     public void OnHighlightButtonClick(View v) {
@@ -696,12 +707,13 @@ public class MoreSetActivity extends AppCompatActivity {
         mTopBarSwitcher.setDisplayedChild(mTopBarMode.ordinal());
         mAcceptMode = AcceptMode.Highlight;
         muPDFReaderView.setMode(MuPDFReaderView.Mode.Selecting);
-        mAnnotTypeText.setText(com.lonelypluto.pdflibrary.R.string.pdf_tools_highlight);
-        showInfo(getString(com.lonelypluto.pdflibrary.R.string.select_text));
+        mAnnotTypeText.setText(R.string.highlight);
+        showInfo(getString(R.string.select_text));
     }
 
     /**
      * 工具栏 - 注释 - 底部画线点击事件
+     *
      * @param v
      */
     public void OnUnderlineButtonClick(View v) {
@@ -709,12 +721,13 @@ public class MoreSetActivity extends AppCompatActivity {
         mTopBarSwitcher.setDisplayedChild(mTopBarMode.ordinal());
         mAcceptMode = AcceptMode.Underline;
         muPDFReaderView.setMode(MuPDFReaderView.Mode.Selecting);
-        mAnnotTypeText.setText(com.lonelypluto.pdflibrary.R.string.pdf_tools_underline);
-        showInfo(getString(com.lonelypluto.pdflibrary.R.string.select_text));
+        mAnnotTypeText.setText(R.string.underline);
+        showInfo(getString(R.string.select_text));
     }
 
     /**
      * 工具栏 - 注释 - 废弃线点击事件
+     *
      * @param v
      */
     public void OnStrikeOutButtonClick(View v) {
@@ -722,12 +735,13 @@ public class MoreSetActivity extends AppCompatActivity {
         mTopBarSwitcher.setDisplayedChild(mTopBarMode.ordinal());
         mAcceptMode = AcceptMode.StrikeOut;
         muPDFReaderView.setMode(MuPDFReaderView.Mode.Selecting);
-        mAnnotTypeText.setText(com.lonelypluto.pdflibrary.R.string.pdf_tools_strike_out);
+        mAnnotTypeText.setText(R.string.strike_out);
         showInfo(getString(com.lonelypluto.pdflibrary.R.string.select_text));
     }
 
     /**
      * 工具栏 - 注释 - 签字点击事件
+     *
      * @param v
      */
     public void OnInkButtonClick(View v) {
@@ -735,12 +749,13 @@ public class MoreSetActivity extends AppCompatActivity {
         mTopBarSwitcher.setDisplayedChild(mTopBarMode.ordinal());
         mAcceptMode = AcceptMode.Ink;
         muPDFReaderView.setMode(MuPDFReaderView.Mode.Drawing);
-        mAnnotTypeText.setText(com.lonelypluto.pdflibrary.R.string.pdf_tools_ink);
-        showInfo(getString(com.lonelypluto.pdflibrary.R.string.pdf_tools_draw_annotation));
+        mAnnotTypeText.setText(R.string.ink);
+        showInfo(getString(R.string.please_draw));
     }
 
     /**
      * 工具栏 - 注释 - 删除注释点击事件
+     *
      * @param v
      */
     public void OnDeleteButtonClick(View v) {
@@ -751,8 +766,13 @@ public class MoreSetActivity extends AppCompatActivity {
         mTopBarSwitcher.setDisplayedChild(mTopBarMode.ordinal());
     }
 
+    public void OnDoneButtonClick(View v) {
+        onBackPressed();
+    }
+
     /**
      * 工具栏 - 注释 - 取消删除注释点击事件
+     *
      * @param v
      */
     public void OnCancelDeleteButtonClick(View v) {
@@ -765,6 +785,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 工具栏 - 注释 - 取消点击事件
+     *
      * @param v
      */
     public void OnCancelAcceptButtonClick(View v) {
@@ -787,6 +808,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 工具栏 - 注释 - 确定点击事件
+     *
      * @param v
      */
     public void OnAcceptButtonClick(View v) {
@@ -797,7 +819,7 @@ public class MoreSetActivity extends AppCompatActivity {
                 if (pageView != null)
                     success = pageView.copySelection();
                 mTopBarMode = TopBarMode.Main;
-                showInfo(success ? getString(com.lonelypluto.pdflibrary.R.string.copied_to_clipboard) : getString(com.lonelypluto.pdflibrary.R.string.no_text_selected));
+                showInfo(success ? getString(R.string.copied_to_clipboard) : getString(R.string.no_text_selected));
                 break;
             case Highlight:
                 // 高亮
@@ -806,7 +828,7 @@ public class MoreSetActivity extends AppCompatActivity {
                 }
                 mTopBarMode = TopBarMode.Annot;
                 if (!success) {
-                    showInfo(getString(com.lonelypluto.pdflibrary.R.string.no_text_selected));
+                    showInfo(getString(R.string.nothing_to_save));
                 }
                 break;
             case Underline:
@@ -814,7 +836,7 @@ public class MoreSetActivity extends AppCompatActivity {
                     success = pageView.markupSelection(Annotation.Type.UNDERLINE);
                 mTopBarMode = TopBarMode.Annot;
                 if (!success)
-                    showInfo(getString(com.lonelypluto.pdflibrary.R.string.no_text_selected));
+                    showInfo(getString(R.string.nothing_to_save));
                 break;
 
             case StrikeOut:
@@ -822,7 +844,7 @@ public class MoreSetActivity extends AppCompatActivity {
                     success = pageView.markupSelection(Annotation.Type.STRIKEOUT);
                 mTopBarMode = TopBarMode.Annot;
                 if (!success)
-                    showInfo(getString(com.lonelypluto.pdflibrary.R.string.no_text_selected));
+                    showInfo(getString(R.string.nothing_to_save));
                 break;
 
             case Ink:
@@ -830,7 +852,7 @@ public class MoreSetActivity extends AppCompatActivity {
                     success = pageView.saveDraw();
                 mTopBarMode = TopBarMode.Annot;
                 if (!success)
-                    showInfo(getString(com.lonelypluto.pdflibrary.R.string.nothing_to_save));
+                    showInfo(getString(R.string.nothing_to_save));
                 break;
         }
         mTopBarSwitcher.setDisplayedChild(mTopBarMode.ordinal());
@@ -839,6 +861,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 设置按钮是否可点击
+     *
      * @param button
      * @param enabled
      */
@@ -849,6 +872,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 开始搜索
+     *
      * @param direction 搜索内容
      */
     private void search(int direction) {
@@ -861,6 +885,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 设置超链接高亮显示
+     *
      * @param highlight
      */
     private void setLinkHighlight(boolean highlight) {
@@ -873,6 +898,7 @@ public class MoreSetActivity extends AppCompatActivity {
 
     /**
      * 工具栏弹出提示信息
+     *
      * @param message 提示内容
      */
     private void showInfo(String message) {
@@ -973,7 +999,7 @@ public class MoreSetActivity extends AppCompatActivity {
                         mAlertDialog.setButton(AlertDialog.BUTTON2, getString(com.lonelypluto.pdflibrary.R.string.cancel), listener);
                         pressed[1] = MuPDFAlert.ButtonPressed.Cancel;
                     case Ok:
-                        mAlertDialog.setButton(AlertDialog.BUTTON1, getString(com.lonelypluto.pdflibrary.R.string.okay), listener);
+                        mAlertDialog.setButton(AlertDialog.BUTTON1, getString(R.string.ok), listener);
                         pressed[0] = MuPDFAlert.ButtonPressed.Ok;
                         break;
                     case YesNoCancel:
@@ -1072,12 +1098,13 @@ public class MoreSetActivity extends AppCompatActivity {
                     if (which == AlertDialog.BUTTON_POSITIVE) {
                         muPDFCore.save();
                     }
+                    setResult(RESULT_OK);
                     finish();
                 }
             };
             AlertDialog alert = mAlertBuilder.create();
-            alert.setTitle(com.lonelypluto.pdflibrary.R.string.dialog_title);
-            alert.setMessage(getString(com.lonelypluto.pdflibrary.R.string.document_has_changes_save_them));
+            alert.setTitle(getString(R.string.confirm));
+            alert.setMessage(getString(R.string.save_prompt_content));
             alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(com.lonelypluto.pdflibrary.R.string.yes), listener);
             alert.setButton(AlertDialog.BUTTON_NEGATIVE, getString(com.lonelypluto.pdflibrary.R.string.no), listener);
             alert.show();

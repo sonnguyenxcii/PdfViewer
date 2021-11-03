@@ -13,15 +13,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.ads.control.Admod
-import com.ads.control.funtion.AdCallback
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.tom_roush.pdfbox.io.MemoryUsageSetting
 import com.tom_roush.pdfbox.multipdf.PDFMergerUtility
 import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.include_preload_ads.*
@@ -36,7 +33,6 @@ import py.com.opentech.drawerwithbottomnavigation.utils.InternetConnection
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.String
 
 
 class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener {
@@ -238,7 +234,7 @@ class MultiFileSelectActivity : AppCompatActivity(), RecycleViewOnClickListener 
         try {
             val dialogBuilder = android.app.AlertDialog.Builder(this)
             dialogBuilder.setTitle(null)
-            dialogBuilder.setIcon(R.mipmap.ic_launcher)
+            dialogBuilder.setIcon(R.mipmap.ic_launcher_new)
             dialogBuilder.setMessage(msg)
             dialogBuilder.setPositiveButton(
                 "OK"

@@ -65,7 +65,7 @@ public class PdfReaderFirebaseMessageService extends FirebaseMessagingService {
 
             String appName = getString(R.string.app_name);
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel_id)
-                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setSmallIcon(R.mipmap.ic_launcher_round_new)
                     .setContentTitle(appName)
                     .setContentText(message)
                     .setAutoCancel(true);
@@ -92,7 +92,7 @@ public class PdfReaderFirebaseMessageService extends FirebaseMessagingService {
             String channel_id = createNotificationChannel(getApplicationContext());
 
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, channel_id)
-                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setSmallIcon(R.mipmap.ic_launcher_round_new)
                     .setContentTitle(getString(R.string.app_name))
                     .setContentText(dataObj.toString())
                     .setAutoCancel(true);

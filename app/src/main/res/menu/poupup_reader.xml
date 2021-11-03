@@ -27,7 +27,7 @@
 
     <item
         android:id="@+id/edit"
-        android:icon="@drawable/ic_baseline_cloud_upload_24"
+        android:icon="@drawable/ic_baseline_edit_24"
         android:iconTint="@color/black"
         android:title="Edit"/>
 </menu>

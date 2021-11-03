@@ -1,6 +1,7 @@
 package py.com.opentech.drawerwithbottomnavigation.ui.pdf
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -59,9 +60,7 @@ import kotlin.math.roundToInt
 import com.artifex.mupdfdemo.MuPDFPageAdapter
 
 import com.artifex.mupdfdemo.MuPDFCore
-
-
-
+import py.com.opentech.drawerwithbottomnavigation.ui.pdf.edit.MoreSetActivity
 
 
 class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
@@ -318,7 +317,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         }
         thread.start()
 
-        println("----url---------------"+url)
+        println("----url---------------" + url)
         val muPDFCore = MuPDFCore(this, url)
         editablePdfReaderView.adapter = MuPDFPageAdapter(this, muPDFCore)
     }
@@ -746,7 +745,7 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
                 }
                 .create()
             dialog.show()
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
 
@@ -831,7 +830,18 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
 
                     R.id.edit -> {
                         url?.let {
-                            CommonUtils.onEditAction(this@PdfViewerActivity, it)
+                            if (CommonUtils.isPasswordProtected(url!!)) {
+                                Toast.makeText(
+                                    this@PdfViewerActivity,
+                                    "Temporarily unable to print the file, the feature will be available soon",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                val intent =
+                                    Intent(this@PdfViewerActivity, MoreSetActivity::class.java)
+                                intent.putExtra("url", url)
+                                startActivityForResult(intent,1)
+                            }
                         }
 
                     }
@@ -849,6 +859,19 @@ class PdfViewerActivity : AppCompatActivity(), CustomRatingDialogListener {
         optionsMenu.show() //showing popup menu
 
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK){
+            if (requestCode == 1){
+                if (viewType == 0) {
+                    viewFile()
+                } else {
+                    viewFileFromStream()
+                }
+            }
+        }
     }
 
     fun showInputPage() {

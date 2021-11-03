@@ -24,14 +24,15 @@
     <application
         android:name=".PdfApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        tools:replace="android:icon"
+        android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_round_new"
         android:largeHeap="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        >
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -166,8 +167,12 @@
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity android:name=".PremiumActivity" />
-        <activity android:name=".ui.pdf.edit.MoreSetActivity" />
-        <activity android:name=".ui.pdf.edit.OutlineActivity" />
+        <activity android:name=".ui.pdf.edit.MoreSetActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity android:name=".ui.pdf.edit.OutlineActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"
