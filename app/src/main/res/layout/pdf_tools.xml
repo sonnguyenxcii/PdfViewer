@@ -21,11 +21,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="2dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginBottom="2dp"
                 android:background="@drawable/pdf_tools_btn_bg"
                 android:contentDescription="@string/pdf_tools_toggle_links"
-                android:scaleType="fitCenter"
                 android:onClick="OnDoneButtonClick"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_baseline_check_24" />
 
             <ImageButton
