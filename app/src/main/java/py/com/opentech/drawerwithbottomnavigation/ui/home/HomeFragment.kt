@@ -152,7 +152,7 @@ class HomeFragment : Fragment(), RecycleViewOnClickListener {
 
     override fun onResume() {
         super.onResume()
-        EventBus.getDefault().postSticky(FileChangeEvent())
+//        EventBus.getDefault().postSticky(FileChangeEvent())
 
     }
 
